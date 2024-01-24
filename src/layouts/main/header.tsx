@@ -1,6 +1,6 @@
 import Navbar from "./nav";
 import Image from "next/image";
-import Logo from "src/assets/frontend/images/logo/logo.png";
+import Logo from "src/assets/frontend/images/hulyalogo.png";
 
 export default function Header() {
   return (
@@ -9,7 +9,7 @@ export default function Header() {
         <div className="header-wrapper">
           <div className="logo">
             <a href="/">
-              <Image src={Logo} alt="Logo" />
+              <Image width={200} src={Logo} alt="Logo" />
             </a>
           </div>
           <Navbar />

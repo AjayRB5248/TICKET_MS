@@ -54,8 +54,6 @@ import $ from "jquery";
           },
         });
     });
-    // Wow js active
-    new WOW().init();
     //Faq
     $(".faq-wrapper .faq-title").on("click", function (e) {
       var element = $(this).parent(".faq-item");

@@ -5,7 +5,7 @@ import SportsTicket from "src/assets/frontend/images/ticket/ticket-tab03.png";
 import CityImg from "src/assets/frontend/images/ticket/city.png";
 import DateImg from "src/assets/frontend/images/ticket/date.png";
 import CinemaImg from "src/assets/frontend/images/ticket/cinema.png";
-import TicketSearchBg from "src/assets/frontend/images/ticket/ticket-bg01.jpg";
+import TicketSearchBg from "src/assets/frontend/images/event3.jpg";
 import withNiceSelect from "src/layouts/_common/nice-select/withNiceSelect";
 const ticketTabItems = [
   {
@@ -30,7 +30,7 @@ const TicketSearch = () => {
           <div className="row align-items-center mb--20">
             <div className="col-lg-6 mb-20">
               <div className="search-ticket-header">
-                <h6 className="category">welcome to Boleto </h6>
+                <h6 className="category">welcome to Hulya Events</h6>
                 <h3 className="title">what are you looking for</h3>
               </div>
             </div>
@@ -62,13 +62,13 @@ const TicketSearch = () => {
                   </div>
                   <span className="type">city</span>
                   <select className="select-bar">
-                    <option value="london">London</option>
-                    <option value="dhaka">dhaka</option>
-                    <option value="rosario">rosario</option>
-                    <option value="madrid">madrid</option>
-                    <option value="koltaka">kolkata</option>
-                    <option value="rome">rome</option>
-                    <option value="khoksa">khoksa</option>
+                    <option value="london">Sydney</option>
+                    <option value="dhaka">Perth</option>
+                    <option value="rosario">Melbourne</option>
+                    <option value="madrid">Darwin</option>
+                    <option value="koltaka">Adelaide</option>
+                    <option value="rome">Brisbane</option>
+                    <option value="khoksa">Gold Coast</option>
                   </select>
                 </div>
                 <div className="form-group">
@@ -87,15 +87,15 @@ const TicketSearch = () => {
                   <div className="thumb">
                     <Image src={CinemaImg} alt="ticket" />
                   </div>
-                  <span className="type">cinema</span>
+                  <span className="type">Location</span>
                   <select className="select-bar">
-                    <option value="Awaken">Awaken</option>
-                    <option value="dhaka">dhaka</option>
-                    <option value="rosario">rosario</option>
-                    <option value="madrid">madrid</option>
-                    <option value="koltaka">kolkata</option>
-                    <option value="rome">rome</option>
-                    <option value="khoksa">khoksa</option>
+                    <option value="Awaken">Opera House</option>
+                    <option value="dhaka">Enmore theatre</option>
+                    <option value="rosario">City Recital Hall</option>
+                    <option value="madrid">Hamer Hall</option>
+                    <option value="koltaka">Palias Theatre</option>
+                    <option value="rome">Corner Hotel</option>
+                    <option value="khoksa">Arts Center Melbourne</option>
                   </select>
                 </div>
               </form>

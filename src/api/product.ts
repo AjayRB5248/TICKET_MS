@@ -18,7 +18,7 @@ export function useGetProducts() {
       productsLoading: isLoading,
       productsError: error,
       productsValidating: isValidating,
-      productsEmpty: !isLoading && !data?.products.length,
+      productsEmpty: !isLoading && !data?.products?.length,
     }),
     [data?.products, error, isLoading, isValidating]
   );
