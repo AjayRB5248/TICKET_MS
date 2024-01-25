@@ -65,7 +65,7 @@ const Navbar: React.FC = () => {
         </a>
       </li>
       <li className="header-button secondary-theme-btn pr-0">
-        <a href="">Join Us</a>
+        <a href="/login-as">Join Us</a>
       </li>
     </ul>
   );
