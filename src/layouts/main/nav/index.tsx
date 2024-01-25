@@ -21,47 +21,51 @@ const navigationItems: NavItem[] = [
   },
   {
     label: "Events",
-    href: "#",
-    submenu: [
-      {
-        label: "Trending Now",
-        href: "",
-      },
-    ],
+    href: "/events",
+    submenu: [],
   },
-  { label: "Sports", href: "#", submenu: [] },
-  { label: "Blog", href: "#", submenu: [] },
-  { label: "Contact", href: "" },
+  { label: "Concerts", href: "/concerts" },
+  { label: "Hot Tickets", href: "/hot-tickets" },
 ];
 
 const Navbar: React.FC = () => {
   const pathname = usePathname();
 
-  const renderLink = (item: NavItem | SubmenuItem, key: number) => (
-    <li key={key}>
-      <Link href={item.href} legacyBehavior>
-        <a className={`${item.href === pathname ? "active" : ""}`}>{item.label}</a>
-      </Link>
-    </li>
-  );
-
   return (
     <ul className="menu">
       {navigationItems.map((item, index) => (
-        <li key={index} className={item.submenu && item.submenu.length ? "menu-item-has-children" : ""}>
-          {item.submenu && item.submenu.length > 0 ? (
-            <>
-              {renderLink(item, index)}
-              <ul className="submenu">{item.submenu.map(renderLink)}</ul>
-            </>
-          ) : (
-            renderLink(item, index)
-          )}
-        </li>
+        <>
+          <li key={index} className={item.submenu && item.submenu.length ? "menu-item-has-children" : ""}>
+            {item.submenu && item.submenu.length > 0 ? (
+              <>
+                <Link href={"/"} legacyBehavior>
+                  <a className={`${item.href === pathname ? "active" : ""}`}>{item.label}</a>
+                </Link>
+                <ul className="submenu">
+                  {item.submenu.map((subItem, subIndex) => (
+                    <li key={subIndex}>
+                      <Link href={subItem.href}>{subItem.label}</Link>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            ) : (
+              <Link href={item.href} legacyBehavior>
+                <a className={`${item.href === pathname ? "active" : ""}`}>{item.label}</a>
+              </Link>
+            )}
+          </li>
+        </>
       ))}
       {/* Sign Up Link */}
-      <li className="header-button pr-0">
-        <a href="">Buy Ticket</a>
+      <li className="header-button primary-theme-btn pr-0">
+        <a href="">
+          <i className="fa fa-ticket-alt mr-2"></i>
+          Buy Ticket
+        </a>
+      </li>
+      <li className="header-button secondary-theme-btn pr-0">
+        <a href="">Join Us</a>
       </li>
     </ul>
   );
