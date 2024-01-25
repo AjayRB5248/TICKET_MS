@@ -39,7 +39,7 @@ import $ from "jquery";
   });
   $(document).ready(function () {
     // Nice Select
-    $(".select-bar").niceSelect();
+    // $(".select-bar").niceSelect();
     // Lightcase
     $(".video-popup").magnificPopup({
       type: "iframe",
