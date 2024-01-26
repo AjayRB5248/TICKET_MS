@@ -61,7 +61,7 @@ export function useNavData() {
         items: [
           { title: t('booking'), path: paths.dashboard.general.booking, icon: ICONS.booking },
           {
-            title: t('tour'),
+            title: t('Events'),
             path: paths.dashboard.tour.root,
             icon: ICONS.tour,
             children: [
@@ -72,7 +72,7 @@ export function useNavData() {
             ],
           },
           {
-            title: t('blog'),
+            title: t('blogs'),
             path: paths.dashboard.post.root,
             icon: ICONS.blog,
             children: [
