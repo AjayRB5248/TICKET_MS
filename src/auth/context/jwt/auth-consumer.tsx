@@ -13,8 +13,12 @@ type Props = {
 
 export function AuthConsumer({ children }: Props) {
   return (
-    <AuthContext.Consumer>
-      {(auth) => (auth.loading ? <SplashScreen /> : children)}
-    </AuthContext.Consumer>
+    // <AuthContext.Consumer>
+    //   {(auth) => (auth.loading ? <SplashScreen /> : children)}
+    // </AuthContext.Consumer>
+    <>   
+     {children}
+    </>
+
   );
 }

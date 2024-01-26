@@ -64,9 +64,9 @@ export default function JwtLoginView() {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await login?.(data.email, data.password);
-
-      router.push(returnTo || PATH_AFTER_LOGIN);
+      if(data.email==='hulya@events.com.au' && data.password==='hulya1234'){
+      router.push(paths.dashboard.general.booking);
+      }
     } catch (error) {
       console.error(error);
       reset();
@@ -131,7 +131,7 @@ export default function JwtLoginView() {
       {renderHead}
 
       <Alert severity="info" sx={{ mb: 3 }}>
-        Use email : <strong>demo@minimals.cc</strong> / password :<strong> demo1234</strong>
+        Use email : <strong>hulya@events.com.au</strong> / password :<strong> hulya1234</strong>
       </Alert>
 
       {renderForm}

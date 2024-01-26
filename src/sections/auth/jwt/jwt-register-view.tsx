@@ -42,15 +42,15 @@ export default function JwtRegisterView() {
   const password = useBoolean();
 
   const RegisterSchema = Yup.object().shape({
-    firstName: Yup.string().required('First name required'),
-    lastName: Yup.string().required('Last name required'),
+    companyName: Yup.string().required('Company name required'),
+    phone: Yup.number().required('Phone number required'),
     email: Yup.string().required('Email is required').email('Email must be a valid email address'),
     password: Yup.string().required('Password is required'),
   });
 
   const defaultValues = {
-    firstName: '',
-    lastName: '',
+    companyName: '',
+    phone: '',
     email: '',
     password: '',
   };
@@ -68,7 +68,7 @@ export default function JwtRegisterView() {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await register?.(data.email, data.password, data.firstName, data.lastName);
+      await register?.(data.email, data.password, data.phone, data.companyName);
 
       router.push(returnTo || PATH_AFTER_LOGIN);
     } catch (error) {
@@ -80,7 +80,7 @@ export default function JwtRegisterView() {
 
   const renderHead = (
     <Stack spacing={2} sx={{ mb: 5, position: 'relative' }}>
-      <Typography variant="h4">Get started absolutely free</Typography>
+    <Typography variant="h4">Get started </Typography>
 
       <Stack direction="row" spacing={0.5}>
         <Typography variant="body2"> Already have an account? </Typography>
@@ -114,12 +114,11 @@ export default function JwtRegisterView() {
       <Stack spacing={2.5}>
         {!!errorMsg && <Alert severity="error">{errorMsg}</Alert>}
 
-        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-          <RHFTextField name="firstName" label="First name" />
-          <RHFTextField name="lastName" label="Last name" />
-        </Stack>
-
+        <RHFTextField name="companyName" label="Company Name" />
+        
         <RHFTextField name="email" label="Email address" />
+        
+        <RHFTextField name="phone" label="Phone" />
 
         <RHFTextField
           name="password"

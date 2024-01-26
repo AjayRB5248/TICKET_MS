@@ -21,38 +21,38 @@ type Props = {
 };
 
 export default function AuthGuard({ children }: Props) {
-  const router = useRouter();
-  console.log(router, "router")
+  // const router = useRouter();
+  // console.log(router, "router")
 
-  const { authenticated, method } = useAuthContext();
-  console.log(authenticated, method, "from useAuthContext")
+  // const { authenticated, method } = useAuthContext();
+  // console.log(authenticated, method, "from useAuthContext")
 
-  const [checked, setChecked] = useState(false);
-  console.log(checked, "checked")
+  // const [checked, setChecked] = useState(false);
+  // console.log(checked, "checked")
 
-  const check = useCallback(() => {
-    if (!authenticated) {
-      const searchParams = new URLSearchParams({ returnTo: window.location.pathname }).toString();
-      console.log(searchParams, "searchParams===")
+  // const check = useCallback(() => {
+  //   if (!authenticated) {
+  //     const searchParams = new URLSearchParams({ returnTo: window.location.pathname }).toString();
+  //     console.log(searchParams, "searchParams===")
 
-      const loginPath = loginPaths[method];
+  //     const loginPath = loginPaths[method];
 
-      const href = `${loginPath}?${searchParams}`;
-      console.log(href, "href===")
-      router.replace(href);
-    } else {
-      setChecked(true);
-    }
-  }, [authenticated, method, router]);
+  //     const href = `${loginPath}?${searchParams}`;
+  //     console.log(href, "href===")
+  //     router.replace(href);
+  //   } else {
+  //     setChecked(true);
+  //   }
+  // }, [authenticated, method, router]);
 
-  useEffect(() => {
-    check();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // useEffect(() => {
+  //   check();
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
-  if (!checked) {
-    return null;
-  }
+  // if (!checked) {
+  //   return null;
+  // }
 
   return <>{children}</>;
 }

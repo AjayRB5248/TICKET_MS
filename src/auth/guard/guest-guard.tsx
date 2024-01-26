@@ -22,9 +22,9 @@ export default function GuestGuard({ children }: Props) {
     }
   }, [authenticated, router]);
 
-  useEffect(() => {
-    check();
-  }, [check]);
+  // useEffect(() => {
+  //   check();
+  // }, [check]);
 
   return <>{children}</>;
 }
