@@ -19,6 +19,7 @@ import "src/assets/frontend/css/odometer.css";
 import "src/assets/frontend/css/owl.carousel.min.css";
 import "src/assets/frontend/css/owl.theme.default.min.css";
 import "src/assets/frontend/css/animatedheadline.css";
+import "react-phone-number-input/style.css";
 
 // custom css
 import "src/assets/frontend/sass/main.scss";
@@ -44,7 +45,7 @@ import { useEffect } from "react";
 
 type Props = {
   children: React.ReactNode;
-  headless: Boolean;
+  headless?: Boolean;
 };
 
 export default function MainLayout({ children, headless }: Props) {
