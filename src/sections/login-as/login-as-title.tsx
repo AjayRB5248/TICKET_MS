@@ -23,10 +23,18 @@ export default function FaqsHero() {
             bottom: { md: 80 },
             position: { md: "absolute" },
             textAlign: { xs: "center", md: "center" },
+            left: { md: 0 },
+            right: { md: 0 },
           }}
         >
           <div>
-            <Stack spacing={2} display="inline-flex" direction="row" justifyContent="center" sx={{ color: "common.white" }}>
+            <Stack
+              spacing={2}
+              display="inline-flex"
+              direction="row"
+              justifyContent="center"
+              sx={{ color: "common.white" }}
+            >
               <TextAnimate text="Are" />
               <TextAnimate text="you" />
               <TextAnimate text="a" />

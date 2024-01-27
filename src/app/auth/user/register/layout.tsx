@@ -1,9 +1,10 @@
-'use client';
+"use client";
 
 // auth
-import { GuestGuard } from 'src/auth/guard';
+import { GuestGuard } from "src/auth/guard";
 // components
-import AuthClassicLayout from 'src/layouts/auth/classic';
+import AuthClassicLayout from "src/layouts/auth/classic";
+import MainLayout from "src/layouts/main/layout";
 
 // ----------------------------------------------------------------------
 
@@ -11,12 +12,12 @@ type Props = {
   children: React.ReactNode;
 };
 
+console.log("In layout.tsx");
+
 export default function Layout({ children }: Props) {
   return (
-    <GuestGuard>
-      <AuthClassicLayout title="Manage the job more effectively with Minimal">
-        {children}
-      </AuthClassicLayout>
-    </GuestGuard>
+    // <GuestGuard>
+      <MainLayout headless>{children}</MainLayout>
+    // </GuestGuard>
   );
 }

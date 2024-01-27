@@ -1,12 +1,14 @@
 // sections
-import { JwtRegisterView } from 'src/sections/auth/jwt';
+import { UserRegisterView } from "src/sections/auth/user";
 
 // ----------------------------------------------------------------------
 
 export const metadata = {
-  title: 'Jwt: Register',
+  title: "Login with Hulya Events",
 };
 
-export default function RegisterPage() {
-  return <JwtRegisterView />;
+console.log("In Login page.tsx");
+
+export default function LoginPage() {
+  return <UserRegisterView />;
 }

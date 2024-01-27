@@ -1,14 +1,14 @@
 // sections
-import { JwtLoginView } from 'src/sections/auth/jwt';
+import { UserLoginView } from "src/sections/auth/user";
 
 // ----------------------------------------------------------------------
 
 export const metadata = {
-  title: 'Login with Hulya Events',
+  title: "Login with Hulya Events",
 };
 
-console.log("In Login page.tsx")
+console.log("In Login page.tsx");
 
 export default function LoginPage() {
-  return <JwtLoginView />;
+  return <UserLoginView />;
 }

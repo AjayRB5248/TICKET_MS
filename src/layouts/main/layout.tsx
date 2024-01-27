@@ -44,15 +44,16 @@ import { useEffect } from "react";
 
 type Props = {
   children: React.ReactNode;
+  headless: Boolean;
 };
 
-export default function MainLayout({ children }: Props) {
+export default function MainLayout({ children, headless }: Props) {
   const pathname = usePathname();
 
   const isHome = pathname === "/";
 
   return (
-    <div className={mainFont.className}>
+    <div className={`${mainFont.className} ${headless ? "headless-layout" : ""}`}>
       {/* <Preloader /> */}
       <Header />
       {children}
