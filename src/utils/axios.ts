@@ -1,8 +1,11 @@
-import axios from 'axios';
-import AuthService from 'src/services/auths';
+import axios from "axios";
+import { BASE_URL } from "src/config-global";
+import AuthService from "src/services/auths";
+
+console.log(BASE_URL, " process.env.BASE_URL======");
 
 const axiosInstance = axios.create({
-  baseURL: 'process.env.BASE_URL',
+  baseURL: BASE_URL,
 });
 
 axiosInstance.interceptors.response.use(
@@ -13,21 +16,21 @@ axiosInstance.interceptors.response.use(
       originalRequest._retry = true;
       const token = await AuthService.refreshToken();
       if (token) {
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
         return axiosInstance(originalRequest);
       }
     }
-    return Promise.reject((error.response && error.response.data) || 'Something went wrong');
+    return Promise.reject((error.response && error.response.data) || "Something went wrong");
   }
 );
 
 axiosInstance.interceptors.request.use(
   async (config) => {
-    const token = 'access-token' 
+    const token = "access-token";
     if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
+      config.headers["Authorization"] = `Bearer ${token}`;
     }
-    config.headers['Content-Type'] = 'application/json';
+    config.headers["Content-Type"] = "application/json";
     return config;
   },
   (error) => {
@@ -35,21 +38,21 @@ axiosInstance.interceptors.request.use(
   }
 );
 
-
 export default axiosInstance;
 
 export const endpoints = {
   auth: {
-    login: '/auth/login',
-    register: '/auth/register',
-    sendOtp: '/auth/send-otp',
-    refreshToken: '/auth/refresh',
+    login: "/auth/login",
+    register: "/auth/register",
+    sendOtp: "/auth/send-otp",
+    refreshToken: "/auth/refresh",
+    sendEmailVerification: "auth/send-verification-email",
   },
   events: {
-    list: '/events',
-    create: '/event',
+    list: "/events",
+    create: "/event",
     update: (id: string) => `/event/${id}`,
     details: (id: string) => `/event/${id}`,
     remove: (id: string) => `/event/${id}/disable`,
-  }
+  },
 };

@@ -7,6 +7,8 @@ import { paths } from 'src/routes/paths';
 export const HOST_API = process.env.NEXT_PUBLIC_HOST_API;
 export const ASSETS_API = process.env.NEXT_PUBLIC_ASSETS_API;
 
+export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
 export const FIREBASE_API = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
