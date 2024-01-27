@@ -1,53 +1,55 @@
-import axios, { AxiosRequestConfig } from 'axios';
-// config
-import { HOST_API } from 'src/config-global';
+import axios from 'axios';
+import AuthService from 'src/services/auths';
 
-// ----------------------------------------------------------------------
-
-const axiosInstance = axios.create({ baseURL: HOST_API });
+const axiosInstance = axios.create({
+  baseURL: 'process.env.BASE_URL',
+});
 
 axiosInstance.interceptors.response.use(
   (res) => res,
-  (error) => Promise.reject((error.response && error.response.data) || 'Something went wrong')
+  async (error) => {
+    const originalRequest = error.config;
+    if (error.response && error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      const token = await AuthService.refreshToken();
+      if (token) {
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        return axiosInstance(originalRequest);
+      }
+    }
+    return Promise.reject((error.response && error.response.data) || 'Something went wrong');
+  }
 );
+
+axiosInstance.interceptors.request.use(
+  async (config) => {
+    const token = 'access-token' 
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
+    config.headers['Content-Type'] = 'application/json';
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 
 export default axiosInstance;
 
-// ----------------------------------------------------------------------
-
-export const fetcher = async (args: string | [string, AxiosRequestConfig]) => {
-  const [url, config] = Array.isArray(args) ? args : [args];
-
-  const res = await axiosInstance.get(url, { ...config });
-
-  return res.data;
-};
-
-// ----------------------------------------------------------------------
-
 export const endpoints = {
-  chat: '/api/chat',
-  kanban: '/api/kanban',
-  calendar: '/api/calendar',
   auth: {
-    me: '/api/auth/me',
-    login: '/api/auth/login',
-    register: '/api/auth/register',
+    login: '/auth/login',
+    register: '/auth/register',
+    sendOtp: '/auth/send-otp',
+    refreshToken: '/auth/refresh',
   },
-  mail: {
-    list: '/api/mail/list',
-    details: '/api/mail/details',
-    labels: '/api/mail/labels',
-  },
-  post: {
-    list: '/api/post/list',
-    details: '/api/post/details',
-    latest: '/api/post/latest',
-    search: '/api/post/search',
-  },
-  product: {
-    list: '/api/product/list',
-    details: '/api/product/details',
-    search: '/api/product/search',
-  },
+  events: {
+    list: '/events',
+    create: '/event',
+    update: (id: string) => `/event/${id}`,
+    details: (id: string) => `/event/${id}`,
+    remove: (id: string) => `/event/${id}/disable`,
+  }
 };
