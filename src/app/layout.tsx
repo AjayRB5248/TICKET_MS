@@ -37,7 +37,9 @@ import MotionLazy from "src/components/animate/motion-lazy";
 import SnackbarProvider from "src/components/snackbar/snackbar-provider";
 import { SettingsProvider, SettingsDrawer } from "src/components/settings";
 // auth
-import { AuthProvider, AuthConsumer } from "src/auth/context/jwt";
+import { AuthConsumer } from "src/auth/context/jwt";
+import { AuthProvider } from "src/auth/context/user/auth-provider";
+
 // import { AuthProvider, AuthConsumer } from 'src/auth/context/auth0';
 // import { AuthProvider, AuthConsumer } from 'src/auth/context/amplify';
 // import { AuthProvider, AuthConsumer } from 'src/auth/context/firebase';
