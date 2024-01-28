@@ -22,7 +22,7 @@ const UserVerifyOTP = () => {
   const router = useRouter();
 
   const OTPSchema = Yup.object().shape({
-    otp: Yup.string().min(6, "Code must be at least 6 characters").required("Code is required"),
+    otp: Yup.string().min(8, "Code must be at least 8 characters").required("Code is required"),
   });
 
   const defaultValues = {
