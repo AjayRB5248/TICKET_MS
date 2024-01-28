@@ -12,13 +12,12 @@ import { Link } from "@mui/material";
 import * as Yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-
-const userData: any = localStorage.getItem("user");
-const parsedUserData = JSON.parse(userData);
+import { useAuth } from "src/auth/context/users/auth-context";
 
 const UserVerifyOTP = () => {
   const sendOTPMutation = sendOTP();
   const verifyOTPMutation = verifyOTP();
+  const { user } = useAuth();
 
   const router = useRouter();
 
@@ -45,16 +44,14 @@ const UserVerifyOTP = () => {
   const onSubmit = handleSubmit(async (data) => {
     try {
       let verifiedOTPRes;
-      if (userData) {
+      if (user) {
         const payloadForGeneratingOTP = {
-          email: parsedUserData?.user?.email,
+          email: user?.email,
           otp: data?.otp,
         };
-        console.log(payloadForGeneratingOTP, "payloadForGeneratingOTP------from localstorage");
+
         verifiedOTPRes = await verifyOTPMutation.mutateAsync(payloadForGeneratingOTP);
       }
-
-      console.log(verifiedOTPRes, "verifiedOTPRes");
 
       setTimeout(() => {
         router.push("/");
@@ -67,15 +64,13 @@ const UserVerifyOTP = () => {
   const generateOTPCode = async () => {
     try {
       let generatedOTPRes;
-      if (userData) {
+      if (user) {
         const payloadForGeneratingOTP = {
-          email: parsedUserData?.user?.email,
+          email: user?.email,
           tokenType: "OTP_MOBILE",
         };
-        console.log(payloadForGeneratingOTP, "payloadForGeneratingOTP------from localstorage");
         generatedOTPRes = await sendOTPMutation.mutateAsync(payloadForGeneratingOTP);
       }
-      console.log(generatedOTPRes, "generatedOTPRes");
     } catch (error) {
       console.error(error);
     }
@@ -112,7 +107,6 @@ const UserVerifyOTP = () => {
     </Stack>
   );
 
-  console.log(isSubmitting, "isSubmitting===");
   return (
     <section className="account-section bg_img" style={{ backgroundImage: `url(${LoginBg.src})` }}>
       <div className="container">
