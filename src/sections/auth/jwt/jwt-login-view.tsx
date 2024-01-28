@@ -1,54 +1,54 @@
-'use client';
+"use client";
 
-import * as Yup from 'yup';
-import { useForm } from 'react-hook-form';
-import { useState } from 'react';
-import { yupResolver } from '@hookform/resolvers/yup';
+import * as Yup from "yup";
+import { useForm } from "react-hook-form";
+import { useState } from "react";
+import { yupResolver } from "@hookform/resolvers/yup";
 // @mui
-import LoadingButton from '@mui/lab/LoadingButton';
-import Link from '@mui/material/Link';
-import Alert from '@mui/material/Alert';
-import Stack from '@mui/material/Stack';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import InputAdornment from '@mui/material/InputAdornment';
-// routes
-import { paths } from 'src/routes/paths';
-import { RouterLink } from 'src/routes/components';
-import { useSearchParams, useRouter } from 'src/routes/hook';
-// config
-import { PATH_AFTER_LOGIN } from 'src/config-global';
+import LoadingButton from "@mui/lab/LoadingButton";
+import Link from "@mui/material/Link";
+import Alert from "@mui/material/Alert";
+import Stack from "@mui/material/Stack";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import InputAdornment from "@mui/material/InputAdornment";
 // hooks
-import { useBoolean } from 'src/hooks/use-boolean';
+import { useBoolean } from "src/hooks/use-boolean";
+// routes
+import { paths } from "src/routes/paths";
+import { RouterLink } from "src/routes/components";
+import { useSearchParams, useRouter } from "src/routes/hook";
+// config
+import { PATH_AFTER_LOGIN } from "src/config-global";
 // auth
-import { useAuthContext } from 'src/auth/hooks';
-// components
-import Iconify from 'src/components/iconify';
-import FormProvider, { RHFTextField } from 'src/components/hook-form';
+
+import Iconify from "src/components/iconify";
+import FormProvider, { RHFTextField } from "src/components/hook-form";
+import { useLogin } from "src/api/auth";
 
 // ----------------------------------------------------------------------
 
-export default function JwtLoginView() {
-  const { login } = useAuthContext();
-
+export default function JwtRegisterView() {
   const router = useRouter();
 
-  const [errorMsg, setErrorMsg] = useState('');
+  const [errorMsg, setErrorMsg] = useState("");
 
   const searchParams = useSearchParams();
 
-  const returnTo = searchParams.get('returnTo');
+  const returnTo = searchParams.get("returnTo");
 
   const password = useBoolean();
 
+  const loginMutation = useLogin();
+
   const LoginSchema = Yup.object().shape({
-    email: Yup.string().required('Email is required').email('Email must be a valid email address'),
-    password: Yup.string().required('Password is required'),
+    email: Yup.string().required("Email is required").email("Email must be a valid email address"),
+    password: Yup.string().required("Password is required"),
   });
 
   const defaultValues = {
-    email: 'demo@minimals.cc',
-    password: 'demo1234',
+    email: "dibyamagar5@gmail.com",
+    password: "123456A!",
   };
 
   const methods = useForm({
@@ -64,18 +64,23 @@ export default function JwtLoginView() {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      if(data.email==='hulya@events.com.au' && data.password==='hulya1234'){
-      router.push(paths.dashboard.general.booking);
-      }
+      const loginPayload = {
+        email: data?.email,
+        password: data?.password,
+      };
+
+      await loginMutation.mutateAsync(loginPayload);
+
+      router.push(returnTo || PATH_AFTER_LOGIN);
     } catch (error) {
       console.error(error);
       reset();
-      setErrorMsg(typeof error === 'string' ? error : error.message);
+      setErrorMsg(typeof error === "string" ? error : error.message);
     }
   });
 
   const renderHead = (
-    <Stack spacing={2} sx={{ mb: 5 }}>
+    <Stack spacing={2} sx={{ mb: 5, position: "relative" }}>
       <Typography variant="h4">Sign in to Hulya Events</Typography>
 
       <Stack direction="row" spacing={0.5}>
@@ -89,52 +94,43 @@ export default function JwtLoginView() {
   );
 
   const renderForm = (
-    <Stack spacing={2.5}>
-      {!!errorMsg && <Alert severity="error">{errorMsg}</Alert>}
+    <FormProvider methods={methods} onSubmit={onSubmit}>
+      <Stack spacing={2.5}>
+        {!!errorMsg && <Alert severity="error">{errorMsg}</Alert>}
 
-      <RHFTextField name="email" label="Email address" />
+        <RHFTextField name="email" label="Email address" />
 
-      <RHFTextField
-        name="password"
-        label="Password"
-        type={password.value ? 'text' : 'password'}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton onClick={password.onToggle} edge="end">
-                <Iconify icon={password.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
-              </IconButton>
-            </InputAdornment>
-          ),
-        }}
-      />
+        <RHFTextField
+          name="password"
+          label="Password"
+          type={password.value ? "text" : "password"}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton onClick={password.onToggle} edge="end">
+                  <Iconify icon={password.value ? "solar:eye-bold" : "solar:eye-closed-bold"} />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
 
-      <Link variant="body2" color="inherit" underline="always" sx={{ alignSelf: 'flex-end' }}>
-        Forgot password?
-      </Link>
+        <Link variant="body2" color="inherit" underline="always" sx={{ alignSelf: "flex-end" }}>
+          Forgot password?
+        </Link>
 
-      <LoadingButton
-        fullWidth
-        color="inherit"
-        size="large"
-        type="submit"
-        variant="contained"
-        loading={isSubmitting}
-      >
-        Login
-      </LoadingButton>
-    </Stack>
+        <LoadingButton fullWidth color="inherit" size="large" type="submit" variant="contained" loading={isSubmitting}>
+          Login
+        </LoadingButton>
+      </Stack>
+    </FormProvider>
   );
 
   return (
-    <FormProvider methods={methods} onSubmit={onSubmit}>
+    <>
       {renderHead}
 
-      <Alert severity="info" sx={{ mb: 3 }}>
-        Use email : <strong>hulya@events.com.au</strong> / password :<strong> hulya1234</strong>
-      </Alert>
-
       {renderForm}
-    </FormProvider>
+    </>
   );
 }

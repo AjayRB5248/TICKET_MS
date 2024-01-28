@@ -1,9 +1,11 @@
-'use client';
+"use client";
 
+import { QueryClientProvider } from "@tanstack/react-query";
 // auth
-import { GuestGuard } from 'src/auth/guard';
+import { GuestGuard } from "src/auth/guard";
 // components
-import AuthClassicLayout from 'src/layouts/auth/classic';
+import AuthClassicLayout from "src/layouts/auth/classic";
+import { queryClient } from "src/lib/queryClient";
 
 // ----------------------------------------------------------------------
 
@@ -13,8 +15,12 @@ type Props = {
 
 export default function Layout({ children }: Props) {
   return (
-    <GuestGuard>
-      <AuthClassicLayout>{children}</AuthClassicLayout>
-    </GuestGuard>
+    <QueryClientProvider client={queryClient}>
+      <GuestGuard>
+        <AuthClassicLayout>
+          {children}
+        </AuthClassicLayout>
+      </GuestGuard>
+    </QueryClientProvider>
   );
 }

@@ -4,7 +4,7 @@ import { JwtLoginView } from 'src/sections/auth/jwt';
 // ----------------------------------------------------------------------
 
 export const metadata = {
-  title: 'Jwt: Login',
+  title: 'Login to Hulya Events',
 };
 
 export default function LoginPage() {
