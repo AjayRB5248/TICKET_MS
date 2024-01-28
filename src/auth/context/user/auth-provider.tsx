@@ -91,7 +91,7 @@ export function AuthProvider({ children }: Props) {
       if (accessToken && isValidToken(accessToken)) {
         setSession(accessToken);
 
-        const response = await axios.get(endpoints.auth.me);
+        const response = await axios.get(endpoints.auth.login);
 
         const { user } = response.data;
 
@@ -125,16 +125,10 @@ export function AuthProvider({ children }: Props) {
   }, [initialize]);
 
   // LOGIN
-  const login = useCallback(async (email: string, password: string) => {
-    const data = {
-      email,
-      password,
-    };
+  const login = useCallback(async (userData: any) => {
+    const { user, tokens } = userData;
 
-    const response = await axios.post(endpoints.auth.login, data);
-    const { accessToken, user } = response.data;
-
-    setSession(accessToken);
+    setSession(tokens?.access?.token);
 
     dispatch({
       type: Types.LOGIN,

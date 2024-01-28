@@ -142,3 +142,52 @@ export const verifyOTP = () => {
     }
   );
 };
+
+export const useForgotPassword = () => {
+  const notify = useSnackbar();
+
+  return useMutation(
+    ["verifyOTP"],
+    async (data: any) => {
+      const res = await AuthService.forgotPassword(data);
+      return res?.data;
+    },
+
+    {
+      onSuccess: (data: any) => {
+        notify.enqueueSnackbar("OTP Sent Successfully!", { variant: "success" });
+      },
+      onError: (error: any) => {
+        console.log(error, "error");
+        notify.enqueueSnackbar(error?.response?.data?.message || "Something went wrong", {
+          variant: "error",
+        });
+        return error;
+      },
+    }
+  );
+};
+
+export const resetPassword = () => {
+  const notify = useSnackbar();
+
+  return useMutation(
+    ["verifyOTP"],
+    async (data: any) => {
+      const res = await AuthService.resetPassword(data);
+      return res?.data;
+    },
+    {
+      onSuccess: (data: any) => {
+        notify.enqueueSnackbar("Password Reset Successfully!", { variant: "success" });
+      },
+      onError: (error: any) => {
+        console.log(error, "error");
+        notify.enqueueSnackbar(error?.response?.data?.message || "Something went wrong", {
+          variant: "error",
+        });
+        return error;
+      },
+    }
+  );
+};

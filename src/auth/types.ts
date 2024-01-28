@@ -1,4 +1,4 @@
-import { LogoutOptions, RedirectLoginOptions, PopupLoginOptions } from '@auth0/auth0-react';
+import { LogoutOptions, RedirectLoginOptions, PopupLoginOptions } from "@auth0/auth0-react";
 
 // ----------------------------------------------------------------------
 
@@ -25,12 +25,7 @@ export type AuthStateType = {
 
 type CanRemove = {
   login?: (email: string, password: string) => Promise<void>;
-  register?: (
-    email: string,
-    password: string,
-    firstName: string,
-    lastName: string
-  ) => Promise<void>;
+  register?: (email: string, password: string, firstName: string, lastName: string) => Promise<void>;
   //
   loginWithGoogle?: () => Promise<void>;
   loginWithGithub?: () => Promise<void>;
@@ -51,7 +46,7 @@ export type JWTContextType = CanRemove & {
   loading: boolean;
   authenticated: boolean;
   unauthenticated: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (userData: { user: any; userToken: any }) => Promise<void>;
   register: (userData: any) => Promise<void>;
   logout: () => Promise<void>;
 };
@@ -78,12 +73,7 @@ export type AmplifyContextType = CanRemove & {
   authenticated: boolean;
   unauthenticated: boolean;
   login: (email: string, password: string) => Promise<unknown>;
-  register: (
-    email: string,
-    password: string,
-    firstName: string,
-    lastName: string
-  ) => Promise<unknown>;
+  register: (email: string, password: string, firstName: string, lastName: string) => Promise<unknown>;
   logout: () => Promise<unknown>;
   confirmRegister: (email: string, code: string) => Promise<void>;
   forgotPassword: (email: string) => Promise<void>;

@@ -2,7 +2,7 @@
 
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
-import { useLogin } from "src/api/auth";
+import { useForgotPassword, useLogin } from "src/api/auth";
 import LoginBg from "src/assets/frontend/images/account/account-bg.jpg";
 import FormProvider from "src/components/hook-form";
 import * as Yup from "yup";
@@ -22,18 +22,21 @@ interface FormData {
 const UserRegisterView: React.FC = () => {
   const router = useRouter();
   const loginMutation = useLogin();
+  const forgotPasswordMutation = useForgotPassword();
 
   const { login } = useAuthContext();
-
-  const LoginSchema = Yup.object().shape({
-    email: Yup.string().required("Email is required").email("Email must be a valid email address"),
-    password: Yup.string().required("Password is required"),
-  });
 
   const defaultValues: FormData = {
     email: "dibyamagar56@gmail.com",
     password: "1234567A!",
   };
+
+  const [loggedInUser, setLoggedInUser] = useState(defaultValues);
+
+  const LoginSchema = Yup.object().shape({
+    email: Yup.string().required("Email is required").email("Email must be a valid email address"),
+    password: Yup.string().required("Password is required"),
+  });
 
   const methods = useForm<FormData>({
     resolver: yupResolver(LoginSchema),
@@ -50,12 +53,31 @@ const UserRegisterView: React.FC = () => {
     try {
       const loginUser = await loginMutation.mutateAsync(data);
       console.log(loginUser, "registeredUser");
-      // await register(loginUser);
+
+      await login(loginUser);
+
+      router.push("/");
     } catch (error) {
       console.error(error);
       reset();
     }
   });
+
+  const forgotPassword = async () => {
+    setLoggedInUser(methods.getValues());
+    try {
+      const payload = {
+        email: loggedInUser?.email,
+        tokenType: "OTP_RESET_PASSWORD",
+      };
+      await forgotPasswordMutation.mutateAsync(payload);
+
+      router.push("/auth/user/forgot-password");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <section className="account-section bg_img" style={{ backgroundImage: `url(${LoginBg.src})` }}>
       <div className="container">
@@ -84,7 +106,10 @@ const UserRegisterView: React.FC = () => {
               </div>
 
               <div className="option text-right">
-                <a href="/auth/user/reset-password"> Forgot Password? </a>
+                <a href="javascript:void(0)" onClick={forgotPassword}>
+                  {" "}
+                  Forgot Password?{" "}
+                </a>
               </div>
 
               <div className="form-group text-center">

@@ -48,6 +48,8 @@ export const endpoints = {
     verifyOTP: "/auth/verify-otp",
     refreshToken: "/auth/refresh",
     sendEmailVerification: "auth/send-verification-email",
+    forgotPassword: "auth/forgot-password",
+    resetPassword: "auth/reset-password",
   },
   events: {
     list: "/events",
