@@ -1,5 +1,6 @@
 "use client";
 
+import { QueryClientProvider, queryClient } from "src/lib/queryClient";
 // auth
 import { GuestGuard } from "src/auth/guard";
 // components
@@ -12,12 +13,12 @@ type Props = {
   children: React.ReactNode;
 };
 
-console.log("In layout.tsx");
-
 export default function Layout({ children }: Props) {
   return (
     // <GuestGuard>
+    <QueryClientProvider client={queryClient}>
       <MainLayout headless>{children}</MainLayout>
+    </QueryClientProvider>
     // </GuestGuard>
   );
 }

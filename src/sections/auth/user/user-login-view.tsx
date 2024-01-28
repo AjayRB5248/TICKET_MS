@@ -1,62 +1,102 @@
-import LoginBg from "src/assets/frontend/images/account/account-bg.jpg";
+"use client";
 
-const UserLoginView = () => {
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm } from "react-hook-form";
+import { useLogin } from "src/api/auth";
+import LoginBg from "src/assets/frontend/images/account/account-bg.jpg";
+import FormProvider from "src/components/hook-form";
+import * as Yup from "yup";
+
+import PhoneInput from "react-phone-number-input";
+import { useState } from "react";
+
+import { useRouter } from "src/routes/hook";
+import { useAuthContext } from "src/auth/hooks";
+import { LoadingButton } from "@mui/lab";
+
+interface FormData {
+  email: string;
+  password: string;
+}
+
+const UserRegisterView: React.FC = () => {
+  const router = useRouter();
+  const loginMutation = useLogin();
+
+  const { login } = useAuthContext();
+
+  const LoginSchema = Yup.object().shape({
+    email: Yup.string().required("Email is required").email("Email must be a valid email address"),
+    password: Yup.string().required("Password is required"),
+  });
+
+  const defaultValues: FormData = {
+    email: "dibyamagar56@gmail.com",
+    password: "1234567A!",
+  };
+
+  const methods = useForm<FormData>({
+    resolver: yupResolver(LoginSchema),
+    defaultValues,
+  });
+
+  const {
+    reset,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = methods;
+
+  const onSubmit = handleSubmit(async (data) => {
+    try {
+      const loginUser = await loginMutation.mutateAsync(data);
+      console.log(loginUser, "registeredUser");
+      // await register(loginUser);
+    } catch (error) {
+      console.error(error);
+      reset();
+    }
+  });
   return (
     <section className="account-section bg_img" style={{ backgroundImage: `url(${LoginBg.src})` }}>
       <div className="container">
         <div className="padding-top padding-bottom">
           <div className="account-area">
             <div className="section-header-3">
-              <span className="cate">hello</span>
-              <h2 className="title">welcome back</h2>
+              <span className="cate">Welcome to Hulya Events </span>
+              <h4 className="title">Elevate Your Experience – Login for Hassle-Free Ticketing!</h4>
             </div>
-            <form className="account-form">
+
+            <FormProvider methods={methods} onSubmit={onSubmit} className={"account-form"}>
               <div className="form-group">
-                <label htmlFor="email2">
+                <label htmlFor="email">
                   Email<span>*</span>
                 </label>
-                <input type="text" placeholder="Enter Your Email" id="email2" required />
+                <input type="text" placeholder="Enter Your Email" id="email" {...methods.register("email")} />
+                <p className="text-danger">{methods.formState.errors.email?.message}</p>
               </div>
+
               <div className="form-group">
-                <label htmlFor="pass3">
+                <label htmlFor="password">
                   Password<span>*</span>
                 </label>
-                <input type="password" placeholder="Password" id="pass3" required />
+                <input type="password" placeholder="Password" id="password" {...methods.register("password")} />
+                <p className="text-danger">{methods.formState.errors.password?.message}</p>
               </div>
-              <div className="form-group checkgroup">
-                <input type="checkbox" id="bal2" required checked />
-                <label htmlFor="bal2">remember password</label>
-                <a href="#0" className="forget-pass">
-                  Forget Password
-                </a>
+
+              <div className="option text-right">
+                <a href="/auth/user/reset-password"> Forgot Password? </a>
               </div>
+
               <div className="form-group text-center">
-                <input type="submit" value="log in" />
+                <LoadingButton type="submit" className="btn-loading" loadingPosition="start" loading={isSubmitting}>
+                  <span>Sign In</span>
+                </LoadingButton>
               </div>
-            </form>
+            </FormProvider>
+
             <div className="option">
-              Don't have an account? <a href="/auth/user/register">sign up now</a>
+              New user? <a href="/auth/user/register">Sign Up Now</a>
             </div>
-            <div className="or">
-              <span>Or</span>
-            </div>
-            <ul className="social-icons">
-              <li>
-                <a href="#0">
-                  <i className="fab fa-facebook-f"></i>
-                </a>
-              </li>
-              <li>
-                <a href="#0" className="active">
-                  <i className="fab fa-twitter"></i>
-                </a>
-              </li>
-              <li>
-                <a href="#0">
-                  <i className="fab fa-google"></i>
-                </a>
-              </li>
-            </ul>
           </div>
         </div>
       </div>
@@ -64,4 +104,4 @@ const UserLoginView = () => {
   );
 };
 
-export default UserLoginView;
+export default UserRegisterView;
