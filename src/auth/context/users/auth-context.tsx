@@ -30,6 +30,7 @@ interface AuthContextType {
   user: User | null;
   accessToken: string | null;
   refreshToken: string | null;
+  register: (userData: User, token: string, refreshToken: string) => void;
   login: (userData: User, token: string, refreshToken: string) => void;
   logout: () => void;
 }
@@ -63,6 +64,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   }, [queryClient]);
 
+  const register = (userData: User, token: string, refreshToken: string) => {
+    setUser(userData);
+    setAccessToken(token);
+    setRefreshToken(refreshToken);
+  };
+
   const login = (userData: User, token: string, refreshToken: string) => {
     setUser(userData);
     setAccessToken(token);
@@ -76,7 +83,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   return (
-    <AuthContext.Provider value={{ user, accessToken, refreshToken, login, logout }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ user, accessToken, refreshToken, register, login, logout }}>
+      {children}
+    </AuthContext.Provider>
   );
 };
 

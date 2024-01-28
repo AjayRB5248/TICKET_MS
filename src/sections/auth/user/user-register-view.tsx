@@ -11,13 +11,13 @@ import PhoneInput from "react-phone-number-input";
 import { useState } from "react";
 
 import { useRouter } from "src/routes/hook";
-import { useAuthContext } from "src/auth/hooks";
+import { LoadingButton } from "@mui/lab";
 
 interface FormData {
   name: string;
   email: string;
   password: string;
-  // confirmPassword: string;
+  confirmPassword: string;
   mobileNumber: string;
 }
 
@@ -26,17 +26,15 @@ const UserRegisterView: React.FC = () => {
   const registerMutation = useRegister();
   const verifyEmailMutation = verifyEmail();
 
-  const { register } = useAuthContext();
-
   const [phoneNumber, setPhoneNumber] = useState<any>("");
 
   const RegisterSchema = Yup.object().shape({
     name: Yup.string().required("User Full Name required"),
     email: Yup.string().required("Email is required").email("Email must be a valid email address"),
     password: Yup.string().required("Password is required"),
-    // confirmPassword: Yup.string()
-    //   .required("Confirm Password is required")
-    //   .oneOf([Yup.ref("password")], "Passwords must match"),
+    confirmPassword: Yup.string()
+      .required("Confirm Password is required")
+      .oneOf([Yup.ref("password")], "Passwords must match"),
     mobileNumber: Yup.string()
       .required("Mobile Number is required")
       .test("isValidMobileNumber", "Invalid mobile number", (value) => {
@@ -50,7 +48,7 @@ const UserRegisterView: React.FC = () => {
     name: "Dibya Magar",
     email: "dibyamagar56@gmail.com",
     password: "1234567A!",
-    // confirmPassword: "1234567A!",
+    confirmPassword: "1234567A!",
     mobileNumber: "+97 9860315483",
   };
 
@@ -79,14 +77,14 @@ const UserRegisterView: React.FC = () => {
   };
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log(data, "data=====");
-
     try {
-      const registeredUser = await registerMutation.mutateAsync(data);
-      console.log(registeredUser, "registeredUser");
-      await register(registeredUser);
-
-      // await sendVerificationEmail(registeredUser);
+      const registerPayload = {
+        name: data?.name,
+        email: data?.email,
+        password: data?.password,
+        mobileNumber: data?.mobileNumber,
+      };
+      await registerMutation.mutateAsync(registerPayload);
 
       router.push("/auth/user/verifyOTP");
     } catch (error) {
@@ -130,7 +128,7 @@ const UserRegisterView: React.FC = () => {
                 <p className="text-danger">{methods.formState.errors.password?.message}</p>
               </div>
 
-              {/* <div className="form-group">
+              <div className="form-group">
                 <label htmlFor="pass2">
                   Confirm Password<span>*</span>
                 </label>
@@ -141,7 +139,7 @@ const UserRegisterView: React.FC = () => {
                   {...methods.register("confirmPassword")}
                 />
                 <p className="text-danger">{methods.formState.errors.confirmPassword?.message}</p>
-              </div> */}
+              </div>
 
               <div className="form-group">
                 <label htmlFor="mobileNumber">
@@ -168,7 +166,9 @@ const UserRegisterView: React.FC = () => {
               </div>
 
               <div className="form-group text-center mt-5">
-                <input type="submit" value="Sign Up" />
+                <LoadingButton type="submit" className="btn-loading" loadingPosition="start" loading={isSubmitting}>
+                  <span>Sign Up</span>
+                </LoadingButton>
               </div>
             </FormProvider>
             {/* Form Ends */}

@@ -48,35 +48,29 @@ export const useLogin = () => {
 
 export const useRegister = () => {
   const notify = useSnackbar();
+  const { register } = useAuth();
 
   return useMutation(
     ["register"],
     async (data: any) => {
-      return {
-        user: {
-          role: "customer",
-          isEmailVerified: false,
-          isNumberVerified: false,
-          name: "Dibya",
-          email: "dibyamagar56@gmail.com",
-          mobileNumber: "+919860315483",
-          id: "65b4bae8ec8c721d229bd7c7",
-        },
-        userToken: {
-          access: {
-            token:
-              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NWI0YmFlOGVjOGM3MjFkMjI5YmQ3YzciLCJpYXQiOjE3MDYzNDMxNDQsImV4cCI6MTcwNjM0NDk0NCwidHlwZSI6ImFjY2VzcyJ9.p0l6W6JcvYulY8An8VdpyzrseQ8qtjqKJ7OkM7qExIc",
-            expires: "2024-01-27T08:42:24.687Z",
-          },
-          refresh: {
-            token:
-              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NWI0YmFlOGVjOGM3MjFkMjI5YmQ3YzciLCJpYXQiOjE3MDYzNDMxNDQsImV4cCI6MTcwODkzNTE0NCwidHlwZSI6InJlZnJlc2gifQ.HBtw4EWNaRrLGbgSmf_A9b7no20Jyoymg7P6sOwYaLI",
-            expires: "2024-02-26T08:12:24.690Z",
-          },
-        },
-      };
-
       const res = await AuthService.register(data);
+
+      const userData = res.data?.user;
+      const accessToken = res.data?.tokens?.access?.token;
+      const refreshToken = res.data?.tokens?.refresh?.token;
+
+      // Cache user and token
+      queryClient.setQueryData(["user"], userData);
+      queryClient.setQueryData(["accessToken"], accessToken);
+      queryClient.setQueryData(["refreshToken"], refreshToken);
+
+      // Persist user and token in storage
+      localStorage.setItem("user", JSON.stringify(userData));
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
+
+      register(userData, accessToken, refreshToken);
+
       return res?.data;
     },
     {
@@ -84,7 +78,7 @@ export const useRegister = () => {
         notify.enqueueSnackbar("User Data Saved Successfully!", { variant: "success" });
       },
       onError: (error: any) => {
-        notify.enqueueSnackbar(error?.message || "Something went wrong", {
+        notify.enqueueSnackbar(error?.response?.data?.message || "Something went wrong", {
           variant: "error",
         });
         return error;
