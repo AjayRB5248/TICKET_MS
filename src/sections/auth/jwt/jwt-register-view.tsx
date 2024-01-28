@@ -1,30 +1,31 @@
-'use client';
+"use client";
 
-import * as Yup from 'yup';
-import { useForm } from 'react-hook-form';
-import { useState } from 'react';
-import { yupResolver } from '@hookform/resolvers/yup';
+import * as Yup from "yup";
+import { useForm } from "react-hook-form";
+import { useState } from "react";
+import { yupResolver } from "@hookform/resolvers/yup";
 // @mui
-import LoadingButton from '@mui/lab/LoadingButton';
-import Link from '@mui/material/Link';
-import Alert from '@mui/material/Alert';
-import Stack from '@mui/material/Stack';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import InputAdornment from '@mui/material/InputAdornment';
+import LoadingButton from "@mui/lab/LoadingButton";
+import Link from "@mui/material/Link";
+import Alert from "@mui/material/Alert";
+import Stack from "@mui/material/Stack";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import InputAdornment from "@mui/material/InputAdornment";
 // hooks
-import { useBoolean } from 'src/hooks/use-boolean';
+import { useBoolean } from "src/hooks/use-boolean";
 // routes
-import { paths } from 'src/routes/paths';
-import { RouterLink } from 'src/routes/components';
-import { useSearchParams, useRouter } from 'src/routes/hook';
+import { paths } from "src/routes/paths";
+import { RouterLink } from "src/routes/components";
+import { useSearchParams, useRouter } from "src/routes/hook";
 // config
-import { PATH_AFTER_LOGIN } from 'src/config-global';
+import { PATH_AFTER_LOGIN } from "src/config-global";
 // auth
-import { useAuthContext } from 'src/auth/hooks';
+import { useAuthContext } from "src/auth/hooks";
 // components
-import Iconify from 'src/components/iconify';
-import FormProvider, { RHFTextField } from 'src/components/hook-form';
+import Iconify from "src/components/iconify";
+import FormProvider, { RHFTextField } from "src/components/hook-form";
+import { useRegister } from "src/api/auth";
 
 // ----------------------------------------------------------------------
 
@@ -33,26 +34,38 @@ export default function JwtRegisterView() {
 
   const router = useRouter();
 
-  const [errorMsg, setErrorMsg] = useState('');
+  const [errorMsg, setErrorMsg] = useState("");
 
   const searchParams = useSearchParams();
 
-  const returnTo = searchParams.get('returnTo');
+  const returnTo = searchParams.get("returnTo");
 
   const password = useBoolean();
 
+  const registerMutation = useRegister();
+
   const RegisterSchema = Yup.object().shape({
-    companyName: Yup.string().required('Company name required'),
-    phone: Yup.number().required('Phone number required'),
-    email: Yup.string().required('Email is required').email('Email must be a valid email address'),
-    password: Yup.string().required('Password is required'),
+    name: Yup.string().required("User Full Name required"),
+    email: Yup.string().required("Email is required").email("Email must be a valid email address"),
+    password: Yup.string().required("Password is required"),
+    confirmPassword: Yup.string()
+      .required("Confirm Password is required")
+      .oneOf([Yup.ref("password")], "Passwords must match"),
+    mobileNumber: Yup.string()
+      .required("Mobile Number is required")
+      .test("isValidMobileNumber", "Invalid mobile number", (value) => {
+        const cleanNumber = value.replace(/\D/g, "");
+        const isValidLength = cleanNumber.length >= 7;
+        return isValidLength;
+      }),
   });
 
   const defaultValues = {
-    companyName: '',
-    phone: '',
-    email: '',
-    password: '',
+    name: "Dibya Events Management Company",
+    email: "dibyamagar5@gmail.com",
+    password: "123456A!",
+    mobileNumber: "+977 9860315482",
+    confirmPassword: "123456A!",
   };
 
   const methods = useForm({
@@ -68,19 +81,27 @@ export default function JwtRegisterView() {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await register?.(data.email, data.password, data.phone, data.companyName);
+      const registerPayload = {
+        name: data?.name,
+        email: data?.email,
+        password: data?.password,
+        mobileNumber: data?.mobileNumber,
+        role: "companyAdmin"
+      };
 
-      router.push(returnTo || PATH_AFTER_LOGIN);
+      await registerMutation.mutateAsync(registerPayload);
+
+      router.push("/auth/company/verify");
     } catch (error) {
       console.error(error);
       reset();
-      setErrorMsg(typeof error === 'string' ? error : error.message);
+      setErrorMsg(typeof error === "string" ? error : error.message);
     }
   });
 
   const renderHead = (
-    <Stack spacing={2} sx={{ mb: 5, position: 'relative' }}>
-    <Typography variant="h4">Get started </Typography>
+    <Stack spacing={2} sx={{ mb: 5, position: "relative" }}>
+      <Typography variant="h4">Get started </Typography>
 
       <Stack direction="row" spacing={0.5}>
         <Typography variant="body2"> Already have an account? </Typography>
@@ -93,15 +114,12 @@ export default function JwtRegisterView() {
   );
 
   const renderTerms = (
-    <Typography
-      component="div"
-      sx={{ color: 'text.secondary', mt: 2.5, typography: 'caption', textAlign: 'center' }}
-    >
-      {'By signing up, I agree to '}
+    <Typography component="div" sx={{ color: "text.secondary", mt: 2.5, typography: "caption", textAlign: "center" }}>
+      {"By signing up, I agree to "}
       <Link underline="always" color="text.primary">
         Terms of Service
       </Link>
-      {' and '}
+      {" and "}
       <Link underline="always" color="text.primary">
         Privacy Policy
       </Link>
@@ -114,35 +132,43 @@ export default function JwtRegisterView() {
       <Stack spacing={2.5}>
         {!!errorMsg && <Alert severity="error">{errorMsg}</Alert>}
 
-        <RHFTextField name="companyName" label="Company Name" />
-        
+        <RHFTextField name="name" label="Company Name" />
+
         <RHFTextField name="email" label="Email address" />
-        
-        <RHFTextField name="phone" label="Phone" />
+
+        <RHFTextField name="mobileNumber" label="Phone" />
 
         <RHFTextField
           name="password"
           label="Password"
-          type={password.value ? 'text' : 'password'}
+          type={password.value ? "text" : "password"}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
                 <IconButton onClick={password.onToggle} edge="end">
-                  <Iconify icon={password.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
+                  <Iconify icon={password.value ? "solar:eye-bold" : "solar:eye-closed-bold"} />
                 </IconButton>
               </InputAdornment>
             ),
           }}
         />
 
-        <LoadingButton
-          fullWidth
-          color="inherit"
-          size="large"
-          type="submit"
-          variant="contained"
-          loading={isSubmitting}
-        >
+        <RHFTextField
+          name="confirmPassword"
+          label="Confirm New Password"
+          type={password.value ? "text" : "password"}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton onClick={password.onToggle} edge="end">
+                  <Iconify icon={password.value ? "solar:eye-bold" : "solar:eye-closed-bold"} />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
+
+        <LoadingButton fullWidth color="inherit" size="large" type="submit" variant="contained" loading={isSubmitting}>
           Create account
         </LoadingButton>
       </Stack>

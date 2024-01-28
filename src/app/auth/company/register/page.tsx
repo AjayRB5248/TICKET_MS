@@ -1,10 +1,10 @@
 // sections
-import { JwtRegisterView } from 'src/sections/auth/jwt';
+import { JwtRegisterView } from "src/sections/auth/jwt";
 
 // ----------------------------------------------------------------------
 
 export const metadata = {
-  title: 'Jwt: Register',
+  title: "Register with Hulya Events",
 };
 
 export default function RegisterPage() {

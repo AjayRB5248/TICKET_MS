@@ -25,11 +25,13 @@ const CATEGORIES = [
     label: "User",
     icon: "/assets/icons/faqs/ic_account.svg",
     href: "/auth/user/login",
+    targetBlank: false,
   },
   {
     label: "Company",
     icon: "/assets/icons/faqs/ic_company.svg",
     href: "/auth/company/login",
+    targetBlank: true,
   },
 ];
 
@@ -47,7 +49,7 @@ export default function LoginUserType() {
       }}
     >
       {CATEGORIES.map((category) => (
-        <Link href={category.href}>
+        <Link href={category.href} target={category.targetBlank ? "_blank" : ""}>
           <m.div key={category.label} variants={varFade().in}>
             <CardDesktop category={category} />
           </m.div>
