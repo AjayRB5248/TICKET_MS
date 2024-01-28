@@ -344,3 +344,18 @@
     display: none;
   }
 }
+
+
+.user-profile-wrapper {
+  font-size: 14px;
+
+  a, span {
+    color: #fff;
+    cursor: pointer;
+
+    i {
+      font-size: 16px;
+    }
+  }
+  
+}

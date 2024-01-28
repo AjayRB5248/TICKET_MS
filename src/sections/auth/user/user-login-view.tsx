@@ -11,7 +11,6 @@ import PhoneInput from "react-phone-number-input";
 import { useState } from "react";
 
 import { useRouter } from "src/routes/hook";
-import { useAuthContext } from "src/auth/hooks";
 import { LoadingButton } from "@mui/lab";
 
 interface FormData {
@@ -23,8 +22,6 @@ const UserRegisterView: React.FC = () => {
   const router = useRouter();
   const loginMutation = useLogin();
   const forgotPasswordMutation = useForgotPassword();
-
-  const { login } = useAuthContext();
 
   const defaultValues: FormData = {
     email: "dibyamagar56@gmail.com",
@@ -51,11 +48,7 @@ const UserRegisterView: React.FC = () => {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      const loginUser = await loginMutation.mutateAsync(data);
-      console.log(loginUser, "registeredUser");
-
-      await login(loginUser);
-
+      await loginMutation.mutateAsync(data);
       router.push("/");
     } catch (error) {
       console.error(error);

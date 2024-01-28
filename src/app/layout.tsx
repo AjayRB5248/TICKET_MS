@@ -1,3 +1,5 @@
+"use Client";
+
 // i18n
 import "src/locales/i18n";
 
@@ -38,7 +40,7 @@ import SnackbarProvider from "src/components/snackbar/snackbar-provider";
 import { SettingsProvider, SettingsDrawer } from "src/components/settings";
 // auth
 import { AuthConsumer } from "src/auth/context/jwt";
-import { AuthProvider } from "src/auth/context/user/auth-provider";
+import { AuthProvider } from "src/auth/context/users/auth-context";
 
 // import { AuthProvider, AuthConsumer } from 'src/auth/context/auth0';
 // import { AuthProvider, AuthConsumer } from 'src/auth/context/amplify';
