@@ -50,6 +50,7 @@ export const endpoints = {
     sendEmailVerification: "auth/send-verification-email",
     forgotPassword: "auth/forgot-password",
     resetPassword: "auth/reset-password",
+    logout: "/auth/logout",
   },
   events: {
     list: "/events",

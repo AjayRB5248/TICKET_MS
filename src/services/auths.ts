@@ -11,6 +11,7 @@ const AuthService = {
     axiosInstance.post(endpoints.auth.forgotPassword, data),
   resetPassword: (data: { otp: string; password: string; email: string }) =>
     axiosInstance.post(endpoints.auth.resetPassword, data),
+  logout: (data: { refreshToken: string }) => axiosInstance.post(endpoints.auth.logout, data),
 };
 
 export default AuthService;
