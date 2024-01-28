@@ -124,7 +124,7 @@ export const sendOTP = () => {
         notify.enqueueSnackbar("OTP Sent Successfully!", { variant: "success" });
       },
       onError: (error: any) => {
-        notify.enqueueSnackbar(error?.message || "Something went wrong", {
+        notify.enqueueSnackbar(error?.response?.data?.message || "Something went wrong", {
           variant: "error",
         });
         return error;

@@ -24,7 +24,7 @@ import { PATH_AFTER_LOGIN } from "src/config-global";
 
 import Iconify from "src/components/iconify";
 import FormProvider, { RHFTextField } from "src/components/hook-form";
-import { useLogin } from "src/api/auth";
+import { useForgotPassword, useLogin } from "src/api/auth";
 
 // ----------------------------------------------------------------------
 
@@ -40,16 +40,19 @@ export default function JwtRegisterView() {
   const password = useBoolean();
 
   const loginMutation = useLogin();
-
-  const LoginSchema = Yup.object().shape({
-    email: Yup.string().required("Email is required").email("Email must be a valid email address"),
-    password: Yup.string().required("Password is required"),
-  });
+  const forgotPasswordMutation = useForgotPassword();
 
   const defaultValues = {
     email: "dibyamagar5@gmail.com",
     password: "123456A!",
   };
+
+  const [loggedInUser, setLoggedInUser] = useState(defaultValues);
+
+  const LoginSchema = Yup.object().shape({
+    email: Yup.string().required("Email is required").email("Email must be a valid email address"),
+    password: Yup.string().required("Password is required"),
+  });
 
   const methods = useForm({
     resolver: yupResolver(LoginSchema),
@@ -78,6 +81,21 @@ export default function JwtRegisterView() {
       setErrorMsg(typeof error === "string" ? error : error.message);
     }
   });
+
+  const forgotPassword = async () => {
+    setLoggedInUser(methods.getValues());
+    try {
+      const payload = {
+        email: loggedInUser?.email,
+        tokenType: "OTP_RESET_PASSWORD",
+      };
+      await forgotPasswordMutation.mutateAsync(payload);
+
+      router.push("/auth/company/reset-password");
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const renderHead = (
     <Stack spacing={2} sx={{ mb: 5, position: "relative" }}>
@@ -115,7 +133,13 @@ export default function JwtRegisterView() {
           }}
         />
 
-        <Link variant="body2" color="inherit" underline="always" sx={{ alignSelf: "flex-end" }}>
+        <Link
+          variant="body2"
+          color="inherit"
+          underline="always"
+          sx={{ alignSelf: "flex-end", cursor: "pointer" }}
+          onClick={forgotPassword}
+        >
           Forgot password?
         </Link>
 
