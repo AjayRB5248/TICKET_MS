@@ -3842,6 +3842,21 @@
     @media screen and (max-width: 450px) {
         padding: 40px 15px;
     }
+
+    .otp-code-input-wrapper input {
+        font-size: 20px;
+        color: $white-color;
+    }
+
+    .verify-otp-button {
+        background-color: #DFE3E8;
+        color: #212B36;
+
+        &:hover, &:active {
+            background-color: transparent;
+            color: #fff;
+        }
+    }
 }
 
 

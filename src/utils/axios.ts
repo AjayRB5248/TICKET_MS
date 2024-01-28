@@ -8,21 +8,21 @@ const axiosInstance = axios.create({
   baseURL: BASE_URL,
 });
 
-axiosInstance.interceptors.response.use(
-  (res) => res,
-  async (error) => {
-    const originalRequest = error.config;
-    if (error.response && error.response.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-      const token = await AuthService.refreshToken();
-      if (token) {
-        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-        return axiosInstance(originalRequest);
-      }
-    }
-    return Promise.reject((error.response && error.response.data) || "Something went wrong");
-  }
-);
+// axiosInstance.interceptors.response.use(
+//   (res) => res,
+//   async (error) => {
+//     const originalRequest = error.config;
+//     if (error.response && error.response.status === 401 && !originalRequest._retry) {
+//       originalRequest._retry = true;
+//       const token = await AuthService.refreshToken();
+//       if (token) {
+//         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+//         return axiosInstance(originalRequest);
+//       }
+//     }
+//     return Promise.reject((error.response && error.response.data) || "Something went wrong");
+//   }
+// );
 
 axiosInstance.interceptors.request.use(
   async (config) => {
@@ -44,7 +44,8 @@ export const endpoints = {
   auth: {
     login: "/auth/login",
     register: "/auth/register",
-    sendOtp: "/auth/send-otp",
+    sendOTP: "/auth/generate-otp",
+    verifyOTP: "/auth/verify-otp",
     refreshToken: "/auth/refresh",
     sendEmailVerification: "auth/send-verification-email",
   },

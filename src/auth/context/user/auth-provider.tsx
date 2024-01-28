@@ -148,6 +148,7 @@ export function AuthProvider({ children }: Props) {
   const register = useCallback(async (userData: any) => {
     const { user, userToken } = userData;
 
+    localStorage.setItem("user", JSON.stringify(userData));
     sessionStorage.setItem(STORAGE_KEY, userToken?.access?.token);
 
     dispatch({

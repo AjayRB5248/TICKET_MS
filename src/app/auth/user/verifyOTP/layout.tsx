@@ -4,7 +4,6 @@ import { QueryClientProvider, queryClient } from "src/lib/queryClient";
 // auth
 import { GuestGuard } from "src/auth/guard";
 // components
-import AuthClassicLayout from "src/layouts/auth/classic";
 import MainLayout from "src/layouts/main/layout";
 
 // ----------------------------------------------------------------------

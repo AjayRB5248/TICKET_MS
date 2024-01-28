@@ -13,8 +13,6 @@ type Props = {
   children: React.ReactNode;
 };
 
-console.log("In layout.tsx");
-
 export default function Layout({ children }: Props) {
   return (
     // <GuestGuard>

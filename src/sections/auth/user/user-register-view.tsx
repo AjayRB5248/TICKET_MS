@@ -86,9 +86,9 @@ const UserRegisterView: React.FC = () => {
       console.log(registeredUser, "registeredUser");
       await register(registeredUser);
 
-      await sendVerificationEmail(registeredUser);
+      // await sendVerificationEmail(registeredUser);
 
-      router.push("/auth/user/verifyEmail");
+      router.push("/auth/user/verifyOTP");
     } catch (error) {
       console.error(error);
       reset();

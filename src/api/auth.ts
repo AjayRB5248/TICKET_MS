@@ -14,7 +14,6 @@ export const useLogin = () => {
     {
       onSuccess: (data: any) => {
         enqueueSnackbar("Login successful", { variant: "success" });
-        console.log({ data });
         return data;
       },
       onError: (error: any) => {
@@ -33,7 +32,6 @@ export const useRegister = () => {
   return useMutation(
     ["register"],
     async (data: any) => {
-      console.log(data, "data------------------register");
       return {
         user: {
           role: "customer",
@@ -59,16 +57,13 @@ export const useRegister = () => {
       };
 
       const res = await AuthService.register(data);
-      console.log(res.data, "res");
       return res?.data;
     },
     {
       onSuccess: (data: any) => {
-        notify.enqueueSnackbar("User Successfully Registered!", { variant: "success" });
-        console.log({ data });
+        notify.enqueueSnackbar("User Data Saved Successfully!", { variant: "success" });
       },
       onError: (error: any) => {
-        console.log(error, "Error-----");
         notify.enqueueSnackbar(error?.message || "Something went wrong", {
           variant: "error",
         });
@@ -84,20 +79,62 @@ export const verifyEmail = () => {
   return useMutation(
     ["verifyEmail"],
     async (data: any) => {
-      console.log(data, "data------------------verifyEmail");
-
       const res = await AuthService.sendEmailVerification(data);
-
-      console.log(res.data, "res");
       return res?.data;
     },
     {
       onSuccess: (data: any) => {
         notify.enqueueSnackbar("Email Sent for Verification Successfully!", { variant: "success" });
-        console.log({ data });
       },
       onError: (error: any) => {
         notify.enqueueSnackbar(error?.message || "Something went wrong", {
+          variant: "error",
+        });
+        return error;
+      },
+    }
+  );
+};
+
+export const sendOTP = () => {
+  const notify = useSnackbar();
+
+  return useMutation(
+    ["sendOTP"],
+    async (data: any) => {
+      const res = await AuthService.sendOTP(data);
+      return res?.data;
+    },
+    {
+      onSuccess: (data: any) => {
+        notify.enqueueSnackbar("OTP Sent Successfully!", { variant: "success" });
+      },
+      onError: (error: any) => {
+        notify.enqueueSnackbar(error?.message || "Something went wrong", {
+          variant: "error",
+        });
+        return error;
+      },
+    }
+  );
+};
+
+export const verifyOTP = () => {
+  const notify = useSnackbar();
+
+  return useMutation(
+    ["verifyOTP"],
+    async (data: any) => {
+      const res = await AuthService.verifyOTP(data);
+      return res?.data;
+    },
+    {
+      onSuccess: (data: any) => {
+        notify.enqueueSnackbar("OTP Verified Successfully!", { variant: "success" });
+      },
+      onError: (error: any) => {
+        console.log(error, "error");
+        notify.enqueueSnackbar(error?.response?.data?.message || "Something went wrong", {
           variant: "error",
         });
         return error;
