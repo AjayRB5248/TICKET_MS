@@ -90,7 +90,7 @@ const Navbar: React.FC = () => {
                 border: (theme) => `solid 2px ${theme.palette.background.default}`,
               }}
             />
-            <span className="user-name ml-3">{user.name}</span>
+            <span className="user-name ml-3">{user.name?.split(' ')[0]}</span>
           </a>
           <span className="ml-2" onClick={logOut}>
             <i className="fas fa-sign-out-alt"></i>
