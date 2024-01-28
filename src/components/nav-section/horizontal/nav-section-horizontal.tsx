@@ -21,7 +21,7 @@ function NavSectionHorizontal({ data, config, sx, ...other }: NavSectionProps) {
       }}
       {...other}
     >
-      {data.map((group, index) => (
+      {data.filter((d) => d.show).map((group, index) => (
         <Group
           key={group.subheader || index}
           items={group.items}
@@ -44,7 +44,7 @@ type GroupProps = {
 function Group({ items, config }: GroupProps) {
   return (
     <>
-      {items.map((list) => (
+      {items.filter((d) => d.show).map((list) => (
         <NavList
           key={list.title + list.path}
           data={list}

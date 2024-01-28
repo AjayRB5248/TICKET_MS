@@ -7,6 +7,7 @@ import { useLocales } from 'src/locales';
 import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
 import SvgColor from 'src/components/svg-color';
+import { useAuth } from 'src/auth/context/users/auth-context';
 
 // ----------------------------------------------------------------------
 
@@ -51,6 +52,7 @@ const ICONS = {
 
 export function useNavData() {
   const { t } = useLocales();
+  const { user, refreshToken } = useAuth();
 
   const data = useMemo(
     () => [
@@ -58,12 +60,14 @@ export function useNavData() {
       // ----------------------------------------------------------------------
       {
         subheader: t('overview'),
+        show: true,
         items: [
           { title: t('booking'), path: paths.dashboard.general.booking, icon: ICONS.booking },
           {
             title: t('Events'),
             path: paths.dashboard.tour.root,
             icon: ICONS.tour,
+            show: true,
             children: [
               { title: t('list'), path: paths.dashboard.tour.root },
               { title: t('details'), path: paths.dashboard.tour.demo.details },
@@ -75,12 +79,24 @@ export function useNavData() {
             title: t('blogs'),
             path: paths.dashboard.post.root,
             icon: ICONS.blog,
+            show: true,
             children: [
               { title: t('list'), path: paths.dashboard.post.root },
               { title: t('details'), path: paths.dashboard.post.demo.details },
               { title: t('create'), path: paths.dashboard.post.new },
               { title: t('edit'), path: paths.dashboard.post.demo.edit },
             ],
+          },
+        ],
+      },
+      {
+        subheader: 'administration',
+        show: user?.role==='superAdmin',
+        items: [
+          {
+            title: 'all events',
+            path: paths.dashboard.general.booking,
+            icon: ICONS.booking,
           },
         ],
       },

@@ -127,7 +127,7 @@ export default function OverviewBookingView() {
 
           <Grid xs={12} md={4}>
             <BookingAvailable
-              title="Tours Available"
+              title="Tickets Available"
               chart={{
                 series: [
                   { label: 'Sold out', value: 120 },
