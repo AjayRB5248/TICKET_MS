@@ -9,7 +9,7 @@ import TicketSearchBg from "src/assets/frontend/images/event3.jpg";
 import withNiceSelect from "src/layouts/_common/nice-select/withNiceSelect";
 const ticketTabItems = [
   {
-    label: "Movie",
+    label: "Concerts",
     img: MovieTicket,
   },
   {
@@ -41,7 +41,7 @@ const TicketSearch = () => {
                     <div className="tab-thumb">
                       <Image src={item.img} alt="ticket" />
                     </div>
-                    <span>movie</span>
+                    <span>{item?.label}</span>
                   </li>
                 ))}
               </ul>
@@ -51,7 +51,7 @@ const TicketSearch = () => {
             <div className="tab-item active">
               <form className="ticket-search-form">
                 <div className="form-group large">
-                  <input type="text" placeholder="Search for Movies" />
+                  <input type="text" placeholder="Search for Events" />
                   <button type="submit">
                     <i className="fas fa-search"></i>
                   </button>

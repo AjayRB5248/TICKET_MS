@@ -26,6 +26,15 @@ export type ITourBooker = {
   guests: number;
 };
 
+export type ITourLocation = {
+  cityName: string;
+  venue: string;
+  availableSeats: string; // or number, as per your requirement
+  ticketPrice: number;
+  eventDateTime: Date | null; // Adding the eventDateTime field
+};
+
+
 export type ITourItem = {
   id: string;
   name: string;
@@ -47,4 +56,5 @@ export type ITourItem = {
     startDate: Date;
     endDate: Date;
   };
+  locations:ITourLocation[]
 };

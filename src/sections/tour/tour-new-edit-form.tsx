@@ -1,7 +1,7 @@
 import * as Yup from 'yup';
 import { useCallback, useMemo, useEffect } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, useFieldArray } from 'react-hook-form';
 // @mui
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import LoadingButton from '@mui/lab/LoadingButton';
@@ -35,6 +35,8 @@ import FormProvider, {
 } from 'src/components/hook-form';
 // types
 import { ITourGuide, ITourItem } from 'src/types/tour';
+import { Button } from '@mui/material';
+import { DateTimePicker } from '@mui/x-date-pickers';
 
 // ----------------------------------------------------------------------
 
@@ -59,6 +61,15 @@ export default function TourNewEditForm({ currentTour }: Props) {
     tags: Yup.array().min(2, 'Must have at least 2 tags'),
     services: Yup.array().min(2, 'Must have at least 2 services'),
     destination: Yup.string().required('Destination is required'),
+    locations: Yup.array().of(
+      Yup.object().shape({
+        cityName: Yup.string().required('City name is required'),
+        venue: Yup.string().required('Venue is required'),
+        availableSeats: Yup.string().required('Available Seats is required'),
+        ticketPrice: Yup.number().positive('Ticket price must be positive').required('Ticket price is required'),
+        eventDateTime: Yup.date().nullable().required('Event date and time are required'),
+      })
+    ),
     available: Yup.object().shape({
       startDate: Yup.mixed<any>().nullable().required('Start date is required'),
       endDate: Yup.mixed<any>()
@@ -86,6 +97,10 @@ export default function TourNewEditForm({ currentTour }: Props) {
         startDate: currentTour?.available.startDate || null,
         endDate: currentTour?.available.endDate || null,
       },
+      locations: currentTour?.locations?.map(location => ({
+        ...location,
+        eventDateTime: location.eventDateTime || null
+      })) || [],
     }),
     [currentTour]
   );
@@ -103,6 +118,11 @@ export default function TourNewEditForm({ currentTour }: Props) {
     handleSubmit,
     formState: { isSubmitting },
   } = methods;
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'locations',
+  });
 
   const values = watch();
 
@@ -150,6 +170,91 @@ export default function TourNewEditForm({ currentTour }: Props) {
   const handleRemoveAllFiles = useCallback(() => {
     setValue('images', []);
   }, [setValue]);
+
+  const handleAddLocation = () => {
+    append({
+      cityName: '',
+      venue: '',
+      availableSeats: '',
+      ticketPrice: 0,
+      eventDateTime: null
+    });
+  };
+  
+  const handleRemoveLocation = (index:any) => {
+    remove(index);
+  };
+  
+  const renderLocationDetails = (
+    <>
+      {mdUp && (
+        <Grid md={4}>
+          <Typography variant="h6" sx={{ mb: 0.5 }}>
+            Location Details
+          </Typography>
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+            Manage locations like city name, venue, seats, and ticket price.
+          </Typography>
+        </Grid>
+      )}
+    
+      <Grid xs={12} md={8}>
+        <Card>
+          {!mdUp && <CardHeader title="Location Details" />}
+    
+          <Stack spacing={3} sx={{ p: 3 }}>
+            {fields.map((location, index) => (
+              <Stack key={location.id} spacing={2} sx={{ mb: 2 }}>
+                <RHFTextField
+                  name={`locations[${index}].cityName`}
+                  label="City Name"
+                  required
+                />
+                <RHFTextField
+                  name={`locations[${index}].venue`}
+                  label="Venue"
+                  required
+                />
+                <RHFTextField
+                  name={`locations[${index}].availableSeats`}
+                  label="Available Seats"
+                  required
+                />
+                <RHFTextField
+                  name={`locations[${index}].ticketPrice`}
+                  label="Ticket Price ($)"
+                  type="number"
+                  required
+                />
+                <Controller
+                name={`locations[${index}].eventDateTime`}
+                control={control}
+                render={({ field, fieldState: { error } }) => (
+                  <DateTimePicker
+                    {...field}
+                    label="Event Date & Time"
+                    inputFormat="dd/MM/yyyy, HH:mm"
+                    renderInput={(params:any) => (
+                      <RHFTextField 
+                        {...params}
+                        fullWidth
+                        error={!!error}
+                        helperText={error?.message}
+                      />
+                    )}
+                  />
+                )}
+              />
+                <Button onClick={() => handleRemoveLocation(index)}>Remove Location</Button>
+              </Stack>
+            ))}
+            <Button onClick={handleAddLocation}>Add Location</Button>
+          </Stack>
+        </Card>
+      </Grid>
+    </>
+  );
+  
 
   const renderDetails = (
     <>
@@ -263,9 +368,9 @@ export default function TourNewEditForm({ currentTour }: Props) {
                   name="available.startDate"
                   control={control}
                   render={({ field, fieldState: { error } }) => (
-                    <DatePicker
+                    <DateTimePicker
                       {...field}
-                      format="dd/MM/yyyy"
+                      format="dd/MM/yyyy, HH:mm"
                       slotProps={{
                         textField: {
                           fullWidth: true,
@@ -405,6 +510,8 @@ export default function TourNewEditForm({ currentTour }: Props) {
     <FormProvider methods={methods} onSubmit={onSubmit}>
       <Grid container spacing={3}>
         {renderDetails}
+
+        {renderLocationDetails}
 
         {renderProperties}
 

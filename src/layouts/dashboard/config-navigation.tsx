@@ -70,9 +70,17 @@ export function useNavData() {
             show: true,
             children: [
               { title: t('list'), path: paths.dashboard.tour.root },
-              { title: t('details'), path: paths.dashboard.tour.demo.details },
               { title: t('create'), path: paths.dashboard.tour.new },
-              { title: t('edit'), path: paths.dashboard.tour.demo.edit },
+            ],
+          },
+          {
+            title: t('users'),
+            path: paths.dashboard.user.root,
+            icon: ICONS.tour,
+            show: true,
+            children: [
+              { title: t('list'), path: paths.dashboard.user.list },
+              { title: t('details'), path: paths.dashboard.user.root },
             ],
           },
           {
@@ -82,9 +90,7 @@ export function useNavData() {
             show: true,
             children: [
               { title: t('list'), path: paths.dashboard.post.root },
-              { title: t('details'), path: paths.dashboard.post.demo.details },
               { title: t('create'), path: paths.dashboard.post.new },
-              { title: t('edit'), path: paths.dashboard.post.demo.edit },
             ],
           },
         ],
@@ -96,6 +102,11 @@ export function useNavData() {
           {
             title: 'all events',
             path: paths.dashboard.general.booking,
+            icon: ICONS.booking,
+          },
+          {
+            title: 'companies',
+            path: paths.dashboard.user.list,
             icon: ICONS.booking,
           },
         ],
