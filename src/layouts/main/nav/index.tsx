@@ -72,7 +72,7 @@ const Navbar: React.FC = () => {
         </>
       ))}
       {/* Sign Up Link */}
-      <li className="header-button primary-theme-btn pr-0">
+      <li className="header-button primary-theme-btn pr-0 d-none">
         <a href="">
           <i className="fa fa-ticket-alt mr-2"></i>
           Buy Ticket
