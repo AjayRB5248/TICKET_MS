@@ -31,11 +31,13 @@ export type NavListProps = {
   disabled?: boolean;
   roles?: string[];
   children?: any;
+  show:boolean
 };
 
 export type NavSectionProps = StackProps & {
   data: {
     subheader: string;
+    show:boolean,
     items: NavListProps[];
   }[];
   config?: NavConfigProps;

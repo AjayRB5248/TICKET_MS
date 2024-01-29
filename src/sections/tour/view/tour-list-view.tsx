@@ -182,7 +182,7 @@ export default function TourListView() {
             variant="contained"
             startIcon={<Iconify icon="mingcute:add-line" />}
           >
-            New Tour
+            New Event
           </Button>
         }
         sx={{

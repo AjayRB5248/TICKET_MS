@@ -7,7 +7,7 @@ import { _tags } from './assets';
 // ----------------------------------------------------------------------
 
 export const TOUR_DETAILS_TABS = [
-  { value: 'content', label: 'Tour Content' },
+  { value: 'content', label: 'Event Content' },
   { value: 'bookers', label: 'Booker' },
 ];
 
@@ -28,18 +28,32 @@ export const TOUR_PUBLISH_OPTIONS = [
   },
 ];
 
+// export const TOUR_SERVICE_OPTIONS = [
+//   { value: 'Audio guide', label: 'Audio guide' },
+//   { value: 'Food and drinks', label: 'Food and drinks' },
+//   { value: 'Lunch', label: 'Lunch' },
+//   { value: 'Private tour', label: 'Private tour' },
+//   { value: 'Special activities', label: 'Special activities' },
+//   { value: 'Entrance fees', label: 'Entrance fees' },
+//   { value: 'Gratuities', label: 'Gratuities' },
+//   { value: 'Pick-up and drop off', label: 'Pick-up and drop off' },
+//   { value: 'Professional guide', label: 'Professional guide' },
+//   { value: 'Transport by air-conditioned', label: 'Transport by air-conditioned' },
+// ];
+
 export const TOUR_SERVICE_OPTIONS = [
-  { value: 'Audio guide', label: 'Audio guide' },
-  { value: 'Food and drinks', label: 'Food and drinks' },
-  { value: 'Lunch', label: 'Lunch' },
-  { value: 'Private tour', label: 'Private tour' },
-  { value: 'Special activities', label: 'Special activities' },
-  { value: 'Entrance fees', label: 'Entrance fees' },
-  { value: 'Gratuities', label: 'Gratuities' },
-  { value: 'Pick-up and drop off', label: 'Pick-up and drop off' },
-  { value: 'Professional guide', label: 'Professional guide' },
-  { value: 'Transport by air-conditioned', label: 'Transport by air-conditioned' },
+  { value: 'VIP seating', label: 'VIP seating' },
+  { value: 'Backstage access', label: 'Backstage access' },
+  { value: 'Meet and greet', label: 'Meet and greet' },
+  { value: 'Merchandise package', label: 'Merchandise package' },
+  { value: 'Pre-event dinner', label: 'Pre-event dinner' },
+  { value: 'Exclusive performances', label: 'Exclusive performances' },
+  { value: 'Photo opportunity', label: 'Photo opportunity' },
+  { value: 'Early entry', label: 'Early entry' },
+  { value: 'Parking pass', label: 'Parking pass' },
+  { value: 'Commemorative ticket', label: 'Commemorative ticket' },
 ];
+
 
 const CONTENT = `
 <h6>Description</h6>
@@ -108,14 +122,24 @@ export const _tours = [...Array(12)].map((_, index) => {
 
   const destination = countries.map((option) => option.label)[index];
 
-  const services = (index % 2 && ['Audio guide', 'Food and drinks']) ||
-    (index % 3 && ['Lunch', 'Private tour']) ||
-    (index % 4 && ['Special activities', 'Entrance fees']) || [
-      'Gratuities',
-      'Pick-up and drop off',
-      'Professional guide',
-      'Transport by air-conditioned',
-    ];
+  // const services = (index % 2 && ['Audio guide', 'Food and drinks']) ||
+  //   (index % 3 && ['Lunch', 'Private tour']) ||
+  //   (index % 4 && ['Special activities', 'Entrance fees']) || [
+  //     'Gratuities',
+  //     'Pick-up and drop off',
+  //     'Professional guide',
+  //     'Transport by air-conditioned',
+  //   ];
+
+  const services = (index % 2 && ['VIP seating', 'Backstage access']) ||
+    (index % 3 && ['Meet and greet', 'Merchandise package']) ||
+    (index % 4 && ['Pre-event dinner', 'Exclusive performances']) || [
+      'Photo opportunity',
+      'Early entry',
+      'Parking pass',
+      'Commemorative ticket',
+    ]
+  
 
   const tourGuides =
     (index === 0 && _tourGuides.slice(0, 1)) ||

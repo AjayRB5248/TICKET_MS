@@ -218,7 +218,7 @@ export default function TourNewEditForm({ currentTour }: Props) {
           <Stack spacing={3} sx={{ p: 3 }}>
             <Stack>
               <Typography variant="subtitle2" sx={{ mb: 1.5 }}>
-                Tour Guide
+                Event Guide
               </Typography>
 
               <RHFAutocomplete
@@ -395,7 +395,7 @@ export default function TourNewEditForm({ currentTour }: Props) {
           loading={isSubmitting}
           sx={{ ml: 2 }}
         >
-          {!currentTour ? 'Create Tour' : 'Save Changes'}
+          {!currentTour ? 'Create Event' : 'Save Changes'}
         </LoadingButton>
       </Grid>
     </>

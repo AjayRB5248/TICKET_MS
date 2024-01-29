@@ -34,7 +34,7 @@ export default function TourEditView() {
             href: paths.dashboard.root,
           },
           {
-            name: 'Tour',
+            name: 'Event',
             href: paths.dashboard.tour.root,
           },
           { name: currentTour?.name },
