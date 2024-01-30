@@ -58,3 +58,28 @@ export type ITourItem = {
   };
   locations:ITourLocation[]
 };
+
+export interface EventFormSchema {
+  eventName: string;
+  eventDescription: string;
+  artists: {
+    name: string;
+    genre: string;
+  }[];
+  venues: {
+    venueName: string;
+    city: string;
+    timeZone: string;
+    dateOfEvent: Date;
+  }[];
+  ticketSettings: {
+    venueName: string;
+    type: string;
+    price: number;
+    totalSeats: number;
+  }[];
+  posterImage: File | null; 
+  images: File[]; 
+  content: string;
+}
+

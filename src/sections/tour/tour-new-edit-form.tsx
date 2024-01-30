@@ -1,148 +1,155 @@
-import * as Yup from 'yup';
-import { useCallback, useMemo, useEffect } from 'react';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { useForm, Controller, useFieldArray } from 'react-hook-form';
+import * as Yup from "yup";
+import { useCallback, useMemo, useEffect, useState } from "react";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm, Controller, useFieldArray } from "react-hook-form";
 // @mui
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import LoadingButton from '@mui/lab/LoadingButton';
-import Chip from '@mui/material/Chip';
-import Card from '@mui/material/Card';
-import Stack from '@mui/material/Stack';
-import Avatar from '@mui/material/Avatar';
-import Switch from '@mui/material/Switch';
-import Grid from '@mui/material/Unstable_Grid2';
-import CardHeader from '@mui/material/CardHeader';
-import Typography from '@mui/material/Typography';
-import FormControlLabel from '@mui/material/FormControlLabel';
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import LoadingButton from "@mui/lab/LoadingButton";
+import Chip from "@mui/material/Chip";
+import Card from "@mui/material/Card";
+import Stack from "@mui/material/Stack";
+import Avatar from "@mui/material/Avatar";
+import Switch from "@mui/material/Switch";
+import Grid from "@mui/material/Unstable_Grid2";
+import CardHeader from "@mui/material/CardHeader";
+import Typography from "@mui/material/Typography";
+import FormControlLabel from "@mui/material/FormControlLabel";
 // hooks
-import { useResponsive } from 'src/hooks/use-responsive';
+import { useResponsive } from "src/hooks/use-responsive";
 // routes
-import { paths } from 'src/routes/paths';
-import { useRouter } from 'src/routes/hook';
+import { paths } from "src/routes/paths";
+import { useRouter } from "src/routes/hook";
 // assets
-import { countries } from 'src/assets/data';
+import { countries } from "src/assets/data";
 // _mock
-import { _tourGuides, TOUR_SERVICE_OPTIONS, _tags } from 'src/_mock';
+import { _tourGuides, TOUR_SERVICE_OPTIONS, _tags } from "src/_mock";
 // components
-import Iconify from 'src/components/iconify';
-import { useSnackbar } from 'src/components/snackbar';
+import Iconify from "src/components/iconify";
+import { useSnackbar } from "src/components/snackbar";
 import FormProvider, {
   RHFEditor,
   RHFUpload,
   RHFTextField,
   RHFAutocomplete,
   RHFMultiCheckbox,
-} from 'src/components/hook-form';
+} from "src/components/hook-form";
 // types
-import { ITourGuide, ITourItem } from 'src/types/tour';
-import { Button } from '@mui/material';
-import { DateTimePicker } from '@mui/x-date-pickers';
+import { ITourGuide, ITourItem ,EventFormSchema} from "src/types/tour";
+import { Button } from "@mui/material";
+import { DateTimePicker } from "@mui/x-date-pickers";
 
 // ----------------------------------------------------------------------
 
 type Props = {
-  currentTour?: ITourItem;
+  currentTour?: EventFormSchema;
 };
 
 export default function TourNewEditForm({ currentTour }: Props) {
   const router = useRouter();
 
-  const mdUp = useResponsive('up', 'md');
+  const mdUp = useResponsive("up", "md");
 
   const { enqueueSnackbar } = useSnackbar();
 
   const NewTourSchema = Yup.object().shape({
-    name: Yup.string().required('Name is required'),
-    content: Yup.string().required('Content is required'),
-    images: Yup.array().min(1, 'Images is required'),
-    //
-    tourGuides: Yup.array().min(1, 'Must have at least 1 guide'),
-    durations: Yup.string().required('Duration is required'),
-    tags: Yup.array().min(2, 'Must have at least 2 tags'),
-    services: Yup.array().min(2, 'Must have at least 2 services'),
-    destination: Yup.string().required('Destination is required'),
-    locations: Yup.array().of(
+    eventName: Yup.string().required("Event name is required"),
+    eventDescription: Yup.string().required("Event description is required"),
+    posterImage:Yup.mixed<any>().nullable().required('Poster image is required')
+    .test('fileType', 'Invalid file format', (value:any) => {
+      if (!value) return true; 
+      return ['image/jpeg', 'image/jpg', 'image/png'].includes(value.type);
+    }),
+    artists: Yup.array().of(
       Yup.object().shape({
-        cityName: Yup.string().required('City name is required'),
-        venue: Yup.string().required('Venue is required'),
-        availableSeats: Yup.string().required('Available Seats is required'),
-        ticketPrice: Yup.number().positive('Ticket price must be positive').required('Ticket price is required'),
-        eventDateTime: Yup.date().nullable().required('Event date and time are required'),
+        name: Yup.string().required("Artist name is required"),
+        genre: Yup.string().required("Genre is required"),
       })
     ),
-    available: Yup.object().shape({
-      startDate: Yup.mixed<any>().nullable().required('Start date is required'),
-      endDate: Yup.mixed<any>()
-        .required('End date is required')
-        .test(
-          'date-min',
-          'End date must be later than start date',
-          (value, { parent }) => value.getTime() > parent.startDate.getTime()
-        ),
-    }),
+    venues: Yup.array().of(
+      Yup.object().shape({
+        venueName: Yup.string().required("Venue name is required"),
+        city: Yup.string().required("City is required"),
+        timeZone: Yup.string().required("Time zone is required"),
+        dateOfEvent: Yup.date().required("Date of event is required"),
+      })
+    ),
+    ticketSettings: Yup.array().of(
+      Yup.object().shape({
+        venueName: Yup.string().required("Venue name is required"),
+        type: Yup.string().required("Ticket type is required"),
+        price: Yup.number()
+          .positive("Price must be positive")
+          .required("Price is required"),
+        totalSeats: Yup.number()
+          .integer()
+          .positive("Total seats must be a positive integer")
+          .required("Total seats are required"),
+      })
+    ),
+    images: Yup.array().min(1, "At least one image is required"),
   });
-
-  const defaultValues = useMemo(
-    () => ({
-      name: currentTour?.name || '',
-      content: currentTour?.content || '',
-      images: currentTour?.images || [],
-      //
-      tourGuides: currentTour?.tourGuides || [],
-      tags: currentTour?.tags || [],
-      durations: currentTour?.durations || '',
-      destination: currentTour?.destination || '',
-      services: currentTour?.services || [],
-      available: {
-        startDate: currentTour?.available.startDate || null,
-        endDate: currentTour?.available.endDate || null,
-      },
-      locations: currentTour?.locations?.map(location => ({
-        ...location,
-        eventDateTime: location.eventDateTime || null
-      })) || [],
-    }),
-    [currentTour]
-  );
 
   const methods = useForm({
     resolver: yupResolver(NewTourSchema),
-    defaultValues,
+    defaultValues: {
+      eventName: "",
+      eventDescription: "",
+      artists: [{ name: "", genre: "" }],
+      venues: [{ venueName: "", city: "", timeZone: "", dateOfEvent: new Date() }],
+      ticketSettings: [{ venueName: "", type: "", price: 0, totalSeats: 0 }],
+      posterImage: null,
+      images: [],
+    },
   });
 
   const {
-    watch,
-    reset,
     control,
-    setValue,
     handleSubmit,
-    formState: { isSubmitting },
+    register,
+    formState: { isSubmitting,errors },
+    setValue,
+    watch,
   } = methods;
 
-  const { fields, append, remove } = useFieldArray({
+  const artistsArray = useFieldArray({ control, name: "artists" });
+  const venuesArray = useFieldArray({ control, name: "venues" });
+  const ticketSettingsArray = useFieldArray({
     control,
-    name: 'locations',
+    name: "ticketSettings",
   });
 
   const values = watch();
 
-  useEffect(() => {
-    if (currentTour) {
-      reset(defaultValues);
-    }
-  }, [currentTour, defaultValues, reset]);
+  // useEffect(() => {
+  //   if (currentTour) {
+  //     reset(defaultValues);
+  //   }
+  // }, [currentTour, defaultValues, reset]);
 
   const onSubmit = handleSubmit(async (data) => {
     try {
       await new Promise((resolve) => setTimeout(resolve, 500));
-      reset();
-      enqueueSnackbar(currentTour ? 'Update success!' : 'Create success!');
-      router.push(paths.dashboard.tour.root);
+      enqueueSnackbar('Create success!');
       console.info('DATA', data);
     } catch (error) {
       console.error(error);
     }
   });
+
+  const handleDropSingleFile = useCallback(
+    (acceptedFiles: File[]) => {
+      const file = acceptedFiles[0];
+
+      const newFile = Object.assign(file, {
+        preview: URL.createObjectURL(file),
+      });
+
+      if (newFile) {
+        setValue('posterImage', newFile, { shouldValidate: true });
+      }
+    },
+    [setValue]
+  );
 
   const handleDrop = useCallback(
     (acceptedFiles: File[]) => {
@@ -154,368 +161,248 @@ export default function TourNewEditForm({ currentTour }: Props) {
         })
       );
 
-      setValue('images', [...files, ...newFiles], { shouldValidate: true });
+      setValue("images", [...files, ...newFiles], { shouldValidate: true });
     },
     [setValue, values.images]
   );
 
   const handleRemoveFile = useCallback(
     (inputFile: File | string) => {
-      const filtered = values.images && values.images?.filter((file) => file !== inputFile);
-      setValue('images', filtered);
+      const filtered =
+        values.images && values.images?.filter((file) => file !== inputFile);
+      setValue("images", filtered);
     },
     [setValue, values.images]
   );
 
   const handleRemoveAllFiles = useCallback(() => {
-    setValue('images', []);
+    setValue("images", []);
   }, [setValue]);
 
-  const handleAddLocation = () => {
-    append({
-      cityName: '',
-      venue: '',
-      availableSeats: '',
-      ticketPrice: 0,
-      eventDateTime: null
-    });
+  const renderArtists = () => {
+    return (
+      <Stack spacing={3}>
+        {artistsArray.fields.map((item, index) => (
+          <Stack key={item.id} direction="row" spacing={2} alignItems="center">
+            <RHFTextField
+              name={`artists[${index}].name`}
+              label="Artist Name"
+              required
+            />
+            <RHFTextField
+              name={`artists[${index}].genre`}
+              label="Artist Genre"
+              required
+            />
+            <Button
+              variant="outlined"
+              color="error"
+              onClick={() => artistsArray.remove(index)}
+            >
+              <Iconify icon="eva:minus-outline" width={24} height={24} />
+            </Button>
+          </Stack>
+        ))}
+        <Button onClick={() => artistsArray.append({ name: "", genre: "" })}>
+          Add Artist
+        </Button>
+      </Stack>
+    );
   };
-  
-  const handleRemoveLocation = (index:any) => {
-    remove(index);
-  };
-  
-  const renderLocationDetails = (
-    <>
-      {mdUp && (
-        <Grid md={4}>
-          <Typography variant="h6" sx={{ mb: 0.5 }}>
-            Location Details
-          </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            Manage locations like city name, venue, seats, and ticket price.
-          </Typography>
-        </Grid>
-      )}
-    
-      <Grid xs={12} md={8}>
-        <Card>
-          {!mdUp && <CardHeader title="Location Details" />}
-    
-          <Stack spacing={3} sx={{ p: 3 }}>
-            {fields.map((location, index) => (
-              <Stack key={location.id} spacing={2} sx={{ mb: 2 }}>
-                <RHFTextField
-                  name={`locations[${index}].cityName`}
-                  label="City Name"
-                  required
-                />
-                <RHFTextField
-                  name={`locations[${index}].venue`}
-                  label="Venue"
-                  required
-                />
-                <RHFTextField
-                  name={`locations[${index}].availableSeats`}
-                  label="Available Seats"
-                  required
-                />
-                <RHFTextField
-                  name={`locations[${index}].ticketPrice`}
-                  label="Ticket Price ($)"
-                  type="number"
-                  required
-                />
-                <Controller
-                name={`locations[${index}].eventDateTime`}
+
+  const renderVenues = () => {
+    return (
+      <Stack spacing={3}>
+        {venuesArray.fields.map((item, index) => (
+          <Card key={item.id} sx={{ p: 2 }}>
+            <Stack spacing={2}>
+              <Typography variant="h6">Venue {index + 1}</Typography>
+
+              <RHFTextField
+                name={`venues[${index}].venueName`}
+                label="Venue Name"
+                required
+              />
+              <RHFTextField
+                name={`venues[${index}].city`}
+                label="City"
+                required
+              />
+              <RHFTextField
+                name={`venues[${index}].timeZone`}
+                label="Time Zone"
+                required
+              />
+              <Controller
+                name={`venues[${index}].dateOfEvent`}
                 control={control}
-                render={({ field, fieldState: { error } }) => (
-                  <DateTimePicker
+                render={({ field }) => (
+                  <DatePicker
+                    label="Date of Event"
+                    inputFormat="yyyy-MM-dd"
                     {...field}
-                    label="Event Date & Time"
-                    inputFormat="dd/MM/yyyy, HH:mm"
-                    renderInput={(params:any) => (
-                      <RHFTextField 
-                        {...params}
-                        fullWidth
-                        error={!!error}
-                        helperText={error?.message}
-                      />
-                    )}
+                    renderInput={(params:any) => <RHFTextField {...params} />}
                   />
                 )}
               />
-                <Button onClick={() => handleRemoveLocation(index)}>Remove Location</Button>
-              </Stack>
-            ))}
-            <Button onClick={handleAddLocation}>Add Location</Button>
-          </Stack>
-        </Card>
-      </Grid>
-    </>
-  );
-  
-
-  const renderDetails = (
-    <>
-      {mdUp && (
-        <Grid md={4}>
-          <Typography variant="h6" sx={{ mb: 0.5 }}>
-            Details
-          </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            Title, short description, image...
-          </Typography>
-        </Grid>
-      )}
-
-      <Grid xs={12} md={8}>
-        <Card>
-          {!mdUp && <CardHeader title="Details" />}
-
-          <Stack spacing={3} sx={{ p: 3 }}>
-            <Stack spacing={1.5}>
-              <Typography variant="subtitle2">Name</Typography>
-              <RHFTextField name="name" placeholder="Ex: Adventure Seekers Expedition..." />
+              <Button
+                variant="outlined"
+                color="error"
+                onClick={() => venuesArray.remove(index)}
+              >
+                Remove Venue
+              </Button>
             </Stack>
-
-            <Stack spacing={1.5}>
-              <Typography variant="subtitle2">Content</Typography>
-              <RHFEditor simple name="content" />
-            </Stack>
-
-            <Stack spacing={1.5}>
-              <Typography variant="subtitle2">Images</Typography>
-              <RHFUpload
-                multiple
-                thumbnail
-                name="images"
-                maxSize={3145728}
-                onDrop={handleDrop}
-                onRemove={handleRemoveFile}
-                onRemoveAll={handleRemoveAllFiles}
-                onUpload={() => console.info('ON UPLOAD')}
-              />
-            </Stack>
-          </Stack>
-        </Card>
-      </Grid>
-    </>
-  );
-
-  const renderProperties = (
-    <>
-      {mdUp && (
-        <Grid md={4}>
-          <Typography variant="h6" sx={{ mb: 0.5 }}>
-            Properties
-          </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            Additional functions and attributes...
-          </Typography>
-        </Grid>
-      )}
-
-      <Grid xs={12} md={8}>
-        <Card>
-          {!mdUp && <CardHeader title="Properties" />}
-
-          <Stack spacing={3} sx={{ p: 3 }}>
-            <Stack>
-              <Typography variant="subtitle2" sx={{ mb: 1.5 }}>
-                Event Guide
-              </Typography>
-
-              <RHFAutocomplete
-                multiple
-                name="tourGuides"
-                placeholder="+ Tour Guides"
-                disableCloseOnSelect
-                options={_tourGuides}
-                getOptionLabel={(option) => (option as ITourGuide).name}
-                isOptionEqualToValue={(option, value) => option.id === value.id}
-                renderOption={(props, tourGuide) => (
-                  <li {...props} key={tourGuide.id}>
-                    <Avatar
-                      key={tourGuide.id}
-                      alt={tourGuide.avatarUrl}
-                      src={tourGuide.avatarUrl}
-                      sx={{ width: 24, height: 24, flexShrink: 0, mr: 1 }}
-                    />
-
-                    {tourGuide.name}
-                  </li>
-                )}
-                renderTags={(selected, getTagProps) =>
-                  selected.map((tourGuide, index) => (
-                    <Chip
-                      {...getTagProps({ index })}
-                      key={tourGuide.id}
-                      size="small"
-                      variant="soft"
-                      label={tourGuide.name}
-                      avatar={<Avatar alt={tourGuide.name} src={tourGuide.avatarUrl} />}
-                    />
-                  ))
-                }
-              />
-            </Stack>
-
-            <Stack spacing={1.5}>
-              <Typography variant="subtitle2">Available</Typography>
-              <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
-                <Controller
-                  name="available.startDate"
-                  control={control}
-                  render={({ field, fieldState: { error } }) => (
-                    <DateTimePicker
-                      {...field}
-                      format="dd/MM/yyyy, HH:mm"
-                      slotProps={{
-                        textField: {
-                          fullWidth: true,
-                          error: !!error,
-                          helperText: error?.message,
-                        },
-                      }}
-                    />
-                  )}
-                />
-                <Controller
-                  name="available.endDate"
-                  control={control}
-                  render={({ field, fieldState: { error } }) => (
-                    <DatePicker
-                      {...field}
-                      format="dd/MM/yyyy"
-                      slotProps={{
-                        textField: {
-                          fullWidth: true,
-                          error: !!error,
-                          helperText: error?.message,
-                        },
-                      }}
-                    />
-                  )}
-                />
-              </Stack>
-            </Stack>
-
-            <Stack spacing={1.5}>
-              <Typography variant="subtitle2">Duration</Typography>
-              <RHFTextField name="durations" placeholder="Ex: 2 days, 4 days 3 nights..." />
-            </Stack>
-
-            <Stack spacing={1.5}>
-              <Typography variant="subtitle2">Destination</Typography>
-              <RHFAutocomplete
-                name="destination"
-                placeholder="+ Destination"
-                options={countries.map((option) => option.label)}
-                getOptionLabel={(option) => option}
-                renderOption={(props, option) => {
-                  const { code, label, phone } = countries.filter(
-                    (country) => country.label === option
-                  )[0];
-
-                  if (!label) {
-                    return null;
-                  }
-
-                  return (
-                    <li {...props} key={label}>
-                      <Iconify
-                        key={label}
-                        icon={`circle-flags:${code.toLowerCase()}`}
-                        width={28}
-                        sx={{ mr: 1 }}
-                      />
-                      {label} ({code}) +{phone}
-                    </li>
-                  );
-                }}
-              />
-            </Stack>
-
-            <Stack spacing={1}>
-              <Typography variant="subtitle2">Services</Typography>
-              <RHFMultiCheckbox
-                name="services"
-                options={TOUR_SERVICE_OPTIONS}
-                sx={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(2, 1fr)',
-                }}
-              />
-            </Stack>
-
-            <Stack spacing={1.5}>
-              <Typography variant="subtitle2">Tags</Typography>
-              <RHFAutocomplete
-                name="tags"
-                placeholder="+ Tags"
-                multiple
-                freeSolo
-                options={_tags.map((option) => option)}
-                getOptionLabel={(option) => option}
-                renderOption={(props, option) => (
-                  <li {...props} key={option}>
-                    {option}
-                  </li>
-                )}
-                renderTags={(selected, getTagProps) =>
-                  selected.map((option, index) => (
-                    <Chip
-                      {...getTagProps({ index })}
-                      key={option}
-                      label={option}
-                      size="small"
-                      color="info"
-                      variant="soft"
-                    />
-                  ))
-                }
-              />
-            </Stack>
-          </Stack>
-        </Card>
-      </Grid>
-    </>
-  );
-
-  const renderActions = (
-    <>
-      {mdUp && <Grid md={4} />}
-      <Grid xs={12} md={8} sx={{ display: 'flex', alignItems: 'center' }}>
-        <FormControlLabel
-          control={<Switch defaultChecked />}
-          label="Publish"
-          sx={{ flexGrow: 1, pl: 3 }}
-        />
-
-        <LoadingButton
-          type="submit"
+          </Card>
+        ))}
+        <Button
           variant="contained"
-          size="large"
-          loading={isSubmitting}
-          sx={{ ml: 2 }}
+          onClick={() =>
+            venuesArray.append({
+              venueName: "",
+              city: "",
+              timeZone: "",
+              dateOfEvent: new Date(),
+            })
+          }
         >
-          {!currentTour ? 'Create Event' : 'Save Changes'}
-        </LoadingButton>
-      </Grid>
-    </>
-  );
+          Add Venue
+        </Button>
+      </Stack>
+    );
+  };
+
+  const renderTicketSettings = () => {
+    return (
+      <Stack spacing={3}>
+        {ticketSettingsArray.fields.map((item, index) => (
+          <Card key={item.id} sx={{ p: 2 }}>
+            <Stack spacing={2}>
+              <Typography variant="h6">Ticket Setting {index + 1}</Typography>
+
+              <RHFTextField
+                name={`ticketSettings[${index}].venueName`}
+                label="Venue Name"
+                required
+              />
+              <RHFTextField
+                name={`ticketSettings[${index}].type`}
+                label="Ticket Type"
+                required
+              />
+              <RHFTextField
+                name={`ticketSettings[${index}].price`}
+                label="Price"
+                type="number"
+                required
+              />
+              <RHFTextField
+                name={`ticketSettings[${index}].totalSeats`}
+                label="Total Seats"
+                type="number"
+                required
+              />
+              <Button
+                variant="outlined"
+                color="error"
+                onClick={() => ticketSettingsArray.remove(index)}
+              >
+                Remove Ticket Setting
+              </Button>
+            </Stack>
+          </Card>
+        ))}
+        <Button
+          variant="contained"
+          onClick={() =>
+            ticketSettingsArray.append({
+              venueName: "",
+              type: "",
+              price: 0,
+              totalSeats: 0,
+            })
+          }
+        >
+          Add Ticket Setting
+        </Button>
+      </Stack>
+    );
+  };
 
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
       <Grid container spacing={3}>
-        {renderDetails}
+        <Grid xs={12}>
+          <RHFTextField name="eventName" label="Event Name" required />
+        </Grid>
+        <Grid  xs={12}>
+      <Stack spacing={1.5}>
+        <Typography variant="subtitle2">Event Description</Typography>
+        <RHFEditor simple name="eventDescription" />
+      </Stack>
+    </Grid>
+      </Grid>
+      <Grid  xs={12}>
+          <Stack spacing={1.5}>
+            <Typography variant="subtitle2">Event Poster</Typography>
+               <RHFUpload
+                name="posterImage"
+                maxSize={3145728}
+                onDrop={handleDropSingleFile}
+                onDelete={() => setValue('posterImage', null, { shouldValidate: true })}
+              />
+          </Stack>
+        </Grid>
+      <Grid container spacing={3}>
+        <Grid xs={12}>
+          <Typography variant="h4" sx={{ mb: 3 }}>
+            Artists
+          </Typography>
+          {renderArtists()}
+        </Grid>
+        <Grid xs={12}>
+          <Typography variant="h4" sx={{ mb: 3 }}>
+            Venues
+          </Typography>
+          {renderVenues()}
+        </Grid>
+        <Grid xs={12}>
+          <Typography variant="h4" sx={{ mb: 3 }}>
+            Ticket Settings
+          </Typography>
+          {renderTicketSettings()}
+        </Grid>
 
-        {renderLocationDetails}
+       
 
-        {renderProperties}
+        <Grid xs={12}>
+          <Stack spacing={1.5}>
+            <Typography variant="subtitle2">Images</Typography>
+            <RHFUpload
+              multiple
+              thumbnail
+              name="images"
+              maxSize={3145728}
+              onDrop={handleDrop}
+              onRemove={handleRemoveFile}
+              onRemoveAll={handleRemoveAllFiles}
+              onUpload={() => console.info("ON UPLOAD")}
+            />
+          </Stack>
+        </Grid>
 
-        {renderActions}
+        <Grid xs={12}>
+          <LoadingButton
+            type="submit"
+            variant="contained"
+            color="primary"
+            size="large"
+            loading={isSubmitting}
+            sx={{ mt: 3 }}
+          >
+            Submit Event
+          </LoadingButton>
+        </Grid>
       </Grid>
     </FormProvider>
   );
