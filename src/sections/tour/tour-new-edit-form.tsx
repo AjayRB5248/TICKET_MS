@@ -32,10 +32,11 @@ import FormProvider, {
   RHFTextField,
   RHFAutocomplete,
   RHFMultiCheckbox,
+  RHFSelect,
 } from "src/components/hook-form";
 // types
-import { ITourGuide, ITourItem ,EventFormSchema} from "src/types/tour";
-import { Button } from "@mui/material";
+import { ITourGuide, ITourItem, EventFormSchema } from "src/types/tour";
+import { Button, Divider, MenuItem } from "@mui/material";
 import { DateTimePicker } from "@mui/x-date-pickers";
 
 // ----------------------------------------------------------------------
@@ -43,6 +44,32 @@ import { DateTimePicker } from "@mui/x-date-pickers";
 type Props = {
   currentTour?: EventFormSchema;
 };
+
+const timeZones = [
+  { label: "ACT", value: "Australia/ACT" },
+  { label: "Adelaide", value: "Australia/Adelaide" },
+  { label: "Brisbane", value: "Australia/Brisbane" },
+  { label: "Broken Hill", value: "Australia/Broken_Hill" },
+  { label: "Canberra", value: "Australia/Canberra" },
+  { label: "Currie", value: "Australia/Currie" },
+  { label: "Darwin", value: "Australia/Darwin" },
+  { label: "Eucla", value: "Australia/Eucla" },
+  { label: "Hobart", value: "Australia/Hobart" },
+  { label: "LHI", value: "Australia/LHI" },
+  { label: "Lindeman", value: "Australia/Lindeman" },
+  { label: "Lord Howe", value: "Australia/Lord_Howe" },
+  { label: "Melbourne", value: "Australia/Melbourne" },
+  { label: "NSW", value: "Australia/NSW" },
+  { label: "North", value: "Australia/North" },
+  { label: "Perth", value: "Australia/Perth" },
+  { label: "Queensland", value: "Australia/Queensland" },
+  { label: "South", value: "Australia/South" },
+  { label: "Sydney", value: "Australia/Sydney" },
+  { label: "Tasmania", value: "Australia/Tasmania" },
+  { label: "Victoria", value: "Australia/Victoria" },
+  { label: "West", value: "Australia/West" },
+  { label: "Yancowinna", value: "Australia/Yancowinna" },
+];
 
 export default function TourNewEditForm({ currentTour }: Props) {
   const router = useRouter();
@@ -54,11 +81,13 @@ export default function TourNewEditForm({ currentTour }: Props) {
   const NewTourSchema = Yup.object().shape({
     eventName: Yup.string().required("Event name is required"),
     eventDescription: Yup.string().required("Event description is required"),
-    posterImage:Yup.mixed<any>().nullable().required('Poster image is required')
-    .test('fileType', 'Invalid file format', (value:any) => {
-      if (!value) return true; 
-      return ['image/jpeg', 'image/jpg', 'image/png'].includes(value.type);
-    }),
+    posterImage: Yup.mixed<any>()
+      .nullable()
+      .required("Poster image is required")
+      .test("fileType", "Invalid file format", (value: any) => {
+        if (!value) return true;
+        return ["image/jpeg", "image/jpg", "image/png"].includes(value.type);
+      }),
     artists: Yup.array().of(
       Yup.object().shape({
         name: Yup.string().required("Artist name is required"),
@@ -95,7 +124,9 @@ export default function TourNewEditForm({ currentTour }: Props) {
       eventName: "",
       eventDescription: "",
       artists: [{ name: "", genre: "" }],
-      venues: [{ venueName: "", city: "", timeZone: "", dateOfEvent: new Date() }],
+      venues: [
+        { venueName: "", city: "", timeZone: "", dateOfEvent: new Date() },
+      ],
       ticketSettings: [{ venueName: "", type: "", price: 0, totalSeats: 0 }],
       posterImage: null,
       images: [],
@@ -106,10 +137,13 @@ export default function TourNewEditForm({ currentTour }: Props) {
     control,
     handleSubmit,
     register,
-    formState: { isSubmitting,errors },
+    formState: { isSubmitting, errors },
     setValue,
     watch,
   } = methods;
+
+  const venueNames = watch("venues").map((venue) => venue.venueName).filter(Boolean);
+
 
   const artistsArray = useFieldArray({ control, name: "artists" });
   const venuesArray = useFieldArray({ control, name: "venues" });
@@ -129,8 +163,8 @@ export default function TourNewEditForm({ currentTour }: Props) {
   const onSubmit = handleSubmit(async (data) => {
     try {
       await new Promise((resolve) => setTimeout(resolve, 500));
-      enqueueSnackbar('Create success!');
-      console.info('DATA', data);
+      enqueueSnackbar("Create success!");
+      console.info("DATA", data);
     } catch (error) {
       console.error(error);
     }
@@ -145,7 +179,7 @@ export default function TourNewEditForm({ currentTour }: Props) {
       });
 
       if (newFile) {
-        setValue('posterImage', newFile, { shouldValidate: true });
+        setValue("posterImage", newFile, { shouldValidate: true });
       }
     },
     [setValue]
@@ -228,20 +262,23 @@ export default function TourNewEditForm({ currentTour }: Props) {
                 label="City"
                 required
               />
-              <RHFTextField
-                name={`venues[${index}].timeZone`}
-                label="Time Zone"
-                required
-              />
+              <RHFSelect name={`venues[${index}].timeZone`} label="Time Zone">
+                {timeZones.map((timeZone) => (
+                  <MenuItem key={timeZone.value} value={timeZone.value}>
+                    {timeZone.label}
+                  </MenuItem>
+                ))}
+              </RHFSelect>
+
               <Controller
                 name={`venues[${index}].dateOfEvent`}
                 control={control}
                 render={({ field }) => (
-                  <DatePicker
+                  <DateTimePicker
                     label="Date of Event"
-                    inputFormat="yyyy-MM-dd"
+                    inputFormat="yyyy-MM-dd HH:mm"
                     {...field}
-                    renderInput={(params:any) => <RHFTextField {...params} />}
+                    renderInput={(params: any) => <RHFTextField {...params} />}
                   />
                 )}
               />
@@ -280,11 +317,13 @@ export default function TourNewEditForm({ currentTour }: Props) {
             <Stack spacing={2}>
               <Typography variant="h6">Ticket Setting {index + 1}</Typography>
 
-              <RHFTextField
-                name={`ticketSettings[${index}].venueName`}
-                label="Venue Name"
-                required
-              />
+              <RHFSelect name={`ticketSettings[${index}].venueName`} label="Venue Name" required>
+              {venueNames.map((name, idx) => (
+                <MenuItem key={idx} value={name}>
+                  {name}
+                </MenuItem>
+              ))}
+            </RHFSelect>
               <RHFTextField
                 name={`ticketSettings[${index}].type`}
                 label="Ticket Type"
@@ -335,24 +374,26 @@ export default function TourNewEditForm({ currentTour }: Props) {
         <Grid xs={12}>
           <RHFTextField name="eventName" label="Event Name" required />
         </Grid>
-        <Grid  xs={12}>
-      <Stack spacing={1.5}>
-        <Typography variant="subtitle2">Event Description</Typography>
-        <RHFEditor simple name="eventDescription" />
-      </Stack>
-    </Grid>
-      </Grid>
-      <Grid  xs={12}>
+        <Grid xs={12}>
           <Stack spacing={1.5}>
-            <Typography variant="subtitle2">Event Poster</Typography>
-               <RHFUpload
-                name="posterImage"
-                maxSize={3145728}
-                onDrop={handleDropSingleFile}
-                onDelete={() => setValue('posterImage', null, { shouldValidate: true })}
-              />
+            <Typography variant="subtitle2">Event Description</Typography>
+            <RHFEditor simple name="eventDescription" />
           </Stack>
         </Grid>
+      </Grid>
+      <Grid xs={12}>
+        <Stack spacing={1.5}>
+          <Typography variant="subtitle2">Event Poster</Typography>
+          <RHFUpload
+            name="posterImage"
+            maxSize={3145728}
+            onDrop={handleDropSingleFile}
+            onDelete={() =>
+              setValue("posterImage", null, { shouldValidate: true })
+            }
+          />
+        </Stack>
+      </Grid>
       <Grid container spacing={3}>
         <Grid xs={12}>
           <Typography variant="h4" sx={{ mb: 3 }}>
@@ -372,8 +413,6 @@ export default function TourNewEditForm({ currentTour }: Props) {
           </Typography>
           {renderTicketSettings()}
         </Grid>
-
-       
 
         <Grid xs={12}>
           <Stack spacing={1.5}>
