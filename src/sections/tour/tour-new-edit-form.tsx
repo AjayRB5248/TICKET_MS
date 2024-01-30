@@ -118,21 +118,22 @@ export default function TourNewEditForm({ currentTour }: Props) {
     images: Yup.array().min(1, "At least one image is required"),
   });
 
+  const defaultValues = useMemo(() => ({
+    eventName: currentTour?.eventName || "",
+    eventDescription: currentTour?.eventDescription || "",
+    artists: currentTour?.artists || [{ name: "", genre: "" }],
+    venues: currentTour?.venues || [{ venueName: "", city: "", timeZone: "", dateOfEvent: new Date() }],
+    ticketSettings: currentTour?.ticketSettings || [{ venueName: "", type: "", price: 0, totalSeats: 0 }],
+    posterImage: currentTour?.posterImage || null,
+    images: currentTour?.images || [],
+  }), [currentTour]);
+  
+
   const methods = useForm({
     resolver: yupResolver(NewTourSchema),
-    defaultValues: {
-      eventName: "",
-      eventDescription: "",
-      artists: [{ name: "", genre: "" }],
-      venues: [
-        { venueName: "", city: "", timeZone: "", dateOfEvent: new Date() },
-      ],
-      ticketSettings: [{ venueName: "", type: "", price: 0, totalSeats: 0 }],
-      posterImage: null,
-      images: [],
-    },
+    defaultValues,
   });
-
+  
   const {
     control,
     handleSubmit,
@@ -140,6 +141,7 @@ export default function TourNewEditForm({ currentTour }: Props) {
     formState: { isSubmitting, errors },
     setValue,
     watch,
+    reset
   } = methods;
 
   const venueNames = watch("venues").map((venue) => venue.venueName).filter(Boolean);
@@ -154,11 +156,11 @@ export default function TourNewEditForm({ currentTour }: Props) {
 
   const values = watch();
 
-  // useEffect(() => {
-  //   if (currentTour) {
-  //     reset(defaultValues);
-  //   }
-  // }, [currentTour, defaultValues, reset]);
+  useEffect(() => {
+    if (currentTour) {
+      reset(defaultValues);
+    }
+  }, [currentTour, defaultValues, reset]);
 
   const onSubmit = handleSubmit(async (data) => {
     try {
