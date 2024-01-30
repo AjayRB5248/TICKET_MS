@@ -71,6 +71,14 @@ const timeZones = [
   { label: "Yancowinna", value: "Australia/Yancowinna" },
 ];
 
+const EventStatusEnum = {
+  PLANNED: 'Planned',
+  ONGOING: 'Ongoing',
+  COMPLETED: 'Completed',
+  CANCELLED: 'Cancelled',
+};
+
+
 export default function TourNewEditForm({ currentTour }: Props) {
   const router = useRouter();
 
@@ -81,6 +89,7 @@ export default function TourNewEditForm({ currentTour }: Props) {
   const NewTourSchema = Yup.object().shape({
     eventName: Yup.string().required("Event name is required"),
     eventDescription: Yup.string().required("Event description is required"),
+    eventStatus:Yup.string().required('Event Status is Required').oneOf(Object.values(EventStatusEnum), 'Invalid event status'),
     posterImage: Yup.mixed<any>()
       .nullable()
       .required("Poster image is required")
@@ -121,6 +130,7 @@ export default function TourNewEditForm({ currentTour }: Props) {
   const defaultValues = useMemo(() => ({
     eventName: currentTour?.eventName || "",
     eventDescription: currentTour?.eventDescription || "",
+    eventStatus:currentTour?.eventStatus || "",
     artists: currentTour?.artists || [{ name: "", genre: "" }],
     venues: currentTour?.venues || [{ venueName: "", city: "", timeZone: "", dateOfEvent: new Date() }],
     ticketSettings: currentTour?.ticketSettings || [{ venueName: "", type: "", price: 0, totalSeats: 0 }],
@@ -382,9 +392,18 @@ export default function TourNewEditForm({ currentTour }: Props) {
             <RHFEditor simple name="eventDescription" />
           </Stack>
         </Grid>
+        <Grid xs={12}>
+        <RHFSelect name="eventStatus" label="Event Status" required>
+          {Object.entries(EventStatusEnum).map(([key, value]) => (
+            <MenuItem key={key} value={key}>
+              {value}
+            </MenuItem>
+          ))}
+        </RHFSelect>
+      </Grid>
       </Grid>
       <Grid xs={12}>
-        <Stack spacing={1.5}>
+        <Stack spacing={2}>
           <Typography variant="subtitle2">Event Poster</Typography>
           <RHFUpload
             name="posterImage"
