@@ -1,58 +1,41 @@
-import { useEffect, useCallback, useState } from 'react';
-// routes
-import { paths } from 'src/routes/paths';
-import { useRouter } from 'src/routes/hook';
-//
-import { useAuthContext } from '../hooks';
+import { useRouter } from "src/routes/hook/use-router";
+import { useAuth } from "../context/users/auth-context";
+import { useCallback, useEffect, useState } from "react";
 
-// ----------------------------------------------------------------------
-
-const loginPaths: Record<string, string> = {
-  jwt: paths.auth.jwt.login,
-  auth0: paths.auth.auth0.login,
-  amplify: paths.auth.amplify.login,
-  firebase: paths.auth.firebase.login,
-};
-
-// ----------------------------------------------------------------------
+import { paths } from "src/routes/paths";
 
 type Props = {
   children: React.ReactNode;
 };
 
+const loginPaths: Record<string, string> = {
+  company: paths.auth.company.login,
+};
+
 export default function AuthGuard({ children }: Props) {
-  // const router = useRouter();
-  // console.log(router, "router")
+  const router = useRouter();
+  const { user } = useAuth();
 
-  // const { authenticated, method } = useAuthContext();
-  // console.log(authenticated, method, "from useAuthContext")
+  const [checked, setChecked] = useState(false);
 
-  // const [checked, setChecked] = useState(false);
-  // console.log(checked, "checked")
+  const checkAuth = useCallback(() => {
+    if (!user || user.role === "customer") {
+      const searchParams = new URLSearchParams({ returnTo: window.location.pathname }).toString();
+      const loginPath = loginPaths.company;
 
-  // const check = useCallback(() => {
-  //   if (!authenticated) {
-  //     const searchParams = new URLSearchParams({ returnTo: window.location.pathname }).toString();
-  //     console.log(searchParams, "searchParams===")
+      router.replace(`${loginPath}?${searchParams}`);
+    } else {
+      setChecked(true);
+    }
+  }, [user, router]);
 
-  //     const loginPath = loginPaths[method];
+  useEffect(() => {
+    checkAuth();
+  }, [user, router]);
 
-  //     const href = `${loginPath}?${searchParams}`;
-  //     console.log(href, "href===")
-  //     router.replace(href);
-  //   } else {
-  //     setChecked(true);
-  //   }
-  // }, [authenticated, method, router]);
-
-  // useEffect(() => {
-  //   check();
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
-
-  // if (!checked) {
-  //   return null;
-  // }
+  if (!checked) {
+    return null;
+  }
 
   return <>{children}</>;
 }
