@@ -1,5 +1,6 @@
 import Navbar from "./nav";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import Logo from "src/assets/frontend/images/hulyalogo.png";
 
@@ -28,9 +29,9 @@ export default function Header() {
       <div className="container">
         <div className="header-wrapper">
           <div className="logo">
-            <a href="/">
+            <Link href="/">
               <Image width={200} src={Logo} alt="Logo" />
-            </a>
+            </Link>
           </div>
           <Navbar />
           <div className="header-bar d-lg-none">
