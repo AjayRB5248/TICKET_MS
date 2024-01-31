@@ -1,4 +1,4 @@
-import BannerImg from "src/assets/frontend/images/banner/banner11.jpeg";
+import BannerImg from "src/assets/frontend/images/banner/banner13.jpg";
 
 const BannerHeader = () => {
   return (
