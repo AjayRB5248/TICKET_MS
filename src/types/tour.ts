@@ -26,6 +26,15 @@ export type ITourBooker = {
   guests: number;
 };
 
+export type ITourLocation = {
+  cityName: string;
+  venue: string;
+  availableSeats: string; // or number, as per your requirement
+  ticketPrice: number;
+  eventDateTime: Date | null; // Adding the eventDateTime field
+};
+
+
 export type ITourItem = {
   id: string;
   name: string;
@@ -47,4 +56,37 @@ export type ITourItem = {
     startDate: Date;
     endDate: Date;
   };
+  locations:ITourLocation[]
 };
+
+interface EventEnum {
+  PLANNED: 'PLANNED',
+  ONGOING: 'ONGOING',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED',
+}
+
+export interface EventFormSchema {
+  eventName: string;
+  eventDescription: string;
+  // status:EventEnum;
+  artists: {
+    name: string;
+    genre: string;
+  }[];
+  venues: {
+    venueName: string;
+    city: string;
+    timeZone: string;
+    eventDate: Date;
+  }[];
+  ticketSettings: {
+    venueName: string;
+    type: string;
+    price: number;
+    totalSeats: number;
+  }[];
+  posterImage: File | null; 
+  images: File[]; 
+}
+

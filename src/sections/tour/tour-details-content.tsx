@@ -20,6 +20,7 @@ import Iconify from 'src/components/iconify';
 import Markdown from 'src/components/markdown';
 import { varTranHover } from 'src/components/animate';
 import Lightbox, { useLightBox } from 'src/components/lightbox';
+import { Paper } from '@mui/material';
 
 // ----------------------------------------------------------------------
 
@@ -43,6 +44,77 @@ export default function TourDetailsContent({ tour }: Props) {
   const slides = images.map((slide) => ({
     src: slide,
   }));
+  const eventDetails = {
+    eventName: "Sacar In Australia",
+    eventDescription: "<p>Sacar is coming</p>",
+    eventStatus: "Planned",
+    artists: [
+      {
+        name: "Sacar",
+        genre: "Rap"
+      }
+    ],
+    venues: [
+      {
+        venueName: "Opera House",
+        city: "Sydney",
+        timeZone: "Australia/Sydney",
+        dateOfEvent: "2024-01-30T18:32:01.650Z"
+      },
+      {
+        venueName: " Victoria Pavilion",
+        city: "Melbourne",
+        timeZone: "Australia/Melbourne",
+        dateOfEvent: "2024-02-21T18:32:50.000Z"
+      },
+      {
+        venueName: "Rangasala",
+        city: "Perth",
+        timeZone: "Australia/Melbourne",
+        dateOfEvent: "2024-02-21T18:32:50.000Z"
+      },
+      {
+        venueName: "TU Ground",
+        city: "Melbourne",
+        timeZone: "Australia/Melbourne",
+        dateOfEvent: "2024-02-21T18:32:50.000Z"
+      }
+    ],
+    
+    ticketSettings: [
+      {
+        venueName: "Opera House",
+        type: "Vip",
+        price: 150,
+        totalSeats: 242
+      },
+      {
+        venueName: "Opera House",
+        type: "Gold",
+        price: 100,
+        totalSeats: 300
+      },
+      {
+        venueName: "Rangasala",
+        type: "Standard",
+        price: 201,
+        totalSeats: 298
+      },
+      {
+        venueName: "TU Ground",
+        type: "Standard",
+        price: 201,
+        totalSeats: 298
+      },
+      {
+        venueName: " Victoria Pavilion",
+        type: "Standard",
+        price: 201,
+        totalSeats: 298
+      }
+
+    ]
+  };
 
   const {
     selected: selectedImage,
@@ -116,141 +188,95 @@ export default function TourDetailsContent({ tour }: Props) {
     <>
       <Stack direction="row" sx={{ mb: 3 }}>
         <Typography variant="h4" sx={{ flexGrow: 1 }}>
-          {name}
+          Sacar Australia Tour - 2024
         </Typography>
-
-        <IconButton>
-          <Iconify icon="solar:share-bold" />
-        </IconButton>
-
-        <Checkbox
-          defaultChecked
-          color="error"
-          icon={<Iconify icon="solar:heart-outline" />}
-          checkedIcon={<Iconify icon="solar:heart-bold" />}
-        />
       </Stack>
 
       <Stack spacing={3} direction="row" flexWrap="wrap" alignItems="center">
         <Stack direction="row" alignItems="center" spacing={0.5} sx={{ typography: 'body2' }}>
-          <Iconify icon="eva:star-fill" sx={{ color: 'warning.main' }} />
-          <Box component="span" sx={{ typography: 'subtitle2' }}>
-            {ratingNumber}
-          </Box>
-          <Link sx={{ color: 'text.secondary' }}>(234 reviews)</Link>
-        </Stack>
-
-        <Stack direction="row" alignItems="center" spacing={0.5} sx={{ typography: 'body2' }}>
           <Iconify icon="mingcute:location-fill" sx={{ color: 'error.main' }} />
-          {destination}
+          Australia
         </Stack>
+      <Stack direction="row" alignItems="center" spacing={0.5} sx={{ typography: 'body2' }}>
+        <Iconify icon={eventDetails?.eventStatus === 'Planned' ? "ic:baseline-event-available" : "ic:baseline-event-busy"} />
+        {eventDetails?.eventStatus}
+      </Stack>
+      </Stack>
 
-        <Stack direction="row" alignItems="center" spacing={0.5} sx={{ typography: 'subtitle2' }}>
-          <Iconify icon="solar:flag-bold" sx={{ color: 'info.main' }} />
-          <Box component="span" sx={{ typography: 'body2', color: 'text.secondary' }}>
-            Guide by
-          </Box>
-          {tourGuides.map((tourGuide) => tourGuide.name).join(', ')}
-        </Stack>
+      <Stack direction="row" sx={{ mb: 3 }}>
+        <Typography variant="h4" sx={{ flexGrow: 1 }}>
+         
+        </Typography>
       </Stack>
     </>
   );
 
-  const renderOverview = (
-    <Box
-      gap={3}
-      display="grid"
-      gridTemplateColumns={{
-        xs: 'repeat(1, 1fr)',
-        md: 'repeat(2, 1fr)',
-      }}
-    >
-      {[
-        {
-          label: 'Available',
-          value: `${fDate(available.startDate)} - ${fDate(available.endDate)}`,
-          icon: <Iconify icon="solar:calendar-date-bold" />,
-        },
-        {
-          label: 'Contact name',
-          value: tourGuides.map((tourGuide) => tourGuide.phoneNumber).join(', '),
-          icon: <Iconify icon="solar:user-rounded-bold" />,
-        },
-        {
-          label: 'Durations',
-          value: durations,
-          icon: <Iconify icon="solar:clock-circle-bold" />,
-        },
-        {
-          label: 'Contact phone',
-          value: tourGuides.map((tourGuide) => tourGuide.name).join(', '),
-          icon: <Iconify icon="solar:phone-bold" />,
-        },
-      ].map((item) => (
-        <Stack key={item.label} spacing={1.5} direction="row">
-          {item.icon}
-          <ListItemText
-            primary={item.label}
-            secondary={item.value}
-            primaryTypographyProps={{
-              typography: 'body2',
-              color: 'text.secondary',
-              mb: 0.5,
-            }}
-            secondaryTypographyProps={{
-              typography: 'subtitle2',
-              color: 'text.primary',
-              component: 'span',
-            }}
-          />
-        </Stack>
-      ))}
-    </Box>
-  );
+  
 
-  const renderContent = (
-    <>
-      <Markdown children={content} />
-
-      <Stack spacing={2}>
-        <Typography variant="h6"> Services</Typography>
-
+  function renderEventVenueDetails() {
+    const combinedDetails = eventDetails.venues.map(venue => {
+      const eventDateTime = new Date(venue.dateOfEvent);
+      const ticketsForVenue = eventDetails.ticketSettings.filter(ticket => ticket.venueName === venue.venueName);
+  
+      return {
+        venueName: venue.venueName,
+        city: venue.city,
+        date: eventDateTime.toLocaleDateString(),
+        time: eventDateTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        tickets: ticketsForVenue,
+        icon: <Iconify icon="solar:calendar-date-bold" />,
+      };
+    });
+  
+    return (
+      <Box sx={{ mt: 4 }}>
+        <Typography variant="h6" gutterBottom>
+          Event Venues and Tickets
+        </Typography>
         <Box
-          rowGap={2}
           display="grid"
           gridTemplateColumns={{
             xs: 'repeat(1, 1fr)',
             md: 'repeat(2, 1fr)',
           }}
+          gap={3}
         >
-          {TOUR_SERVICE_OPTIONS.map((benefit) => (
-            <Stack
-              key={benefit.label}
-              spacing={1}
-              direction="row"
-              alignItems="center"
-              sx={{
-                ...(services.includes(benefit.label) && {
-                  color: 'text.disabled',
-                }),
-              }}
-            >
-              <Iconify
-                icon="eva:checkmark-circle-2-outline"
-                sx={{
-                  color: 'primary.main',
-                  ...(services.includes(benefit.label) && {
-                    color: 'text.disabled',
-                  }),
-                }}
-              />
-              {benefit.label}
-            </Stack>
+          {combinedDetails.map((venue, index) => (
+            <Paper key={index} elevation={3} sx={{ p: 2, borderRadius: 2 }}>
+              <Stack spacing={2}>
+                <Stack direction="row" spacing={2} alignItems="center">
+                  {venue.icon}
+                  <Typography variant="subtitle1">{venue.venueName}</Typography>
+                </Stack>
+                <Typography variant="body2" color="text.secondary">
+                  City: {venue.city}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Date: {venue.date}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Time: {venue.time}
+                </Typography>
+                <Box>
+                  {venue.tickets.map((ticket, idx) => (
+                    <Box key={idx} p={1} mt={1} border={1} borderColor="grey.300" borderRadius={1}>
+                      <Stack direction="row" spacing={2} alignItems="center">
+                        <Iconify icon="ant-design:ticket-outlined" />
+                        <Typography variant="body2">
+                          {ticket.type} - Price: ${ticket.price}, Seats: {ticket.totalSeats}
+                        </Typography>
+                      </Stack>
+                    </Box>
+                  ))}
+                </Box>
+              </Stack>
+            </Paper>
           ))}
         </Box>
-      </Stack>
-    </>
-  );
+      </Box>
+    );
+  }
+
 
   return (
     <>
@@ -261,11 +287,12 @@ export default function TourDetailsContent({ tour }: Props) {
 
         <Divider sx={{ borderStyle: 'dashed', my: 5 }} />
 
-        {renderOverview}
+        {renderEventVenueDetails()}
 
         <Divider sx={{ borderStyle: 'dashed', my: 5 }} />
 
-        {renderContent}
+        <Markdown children={content} />
+
       </Stack>
     </>
   );

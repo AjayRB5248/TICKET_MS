@@ -38,8 +38,8 @@ export function useCreateEvent() {
 
   return useMutation(
     ["event/create"],
-    async (details) => {
-      const response = await EventsService.create(details);
+    async (formData) => {
+      const response = await EventsService.create(formData);
       return response?.data;
     },
     {

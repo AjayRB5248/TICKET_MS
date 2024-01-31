@@ -54,7 +54,7 @@ export const endpoints = {
   },
   events: {
     list: "/events",
-    create: "/event",
+    create: "/events/add-new-event",
     update: (id: string) => `/event/${id}`,
     details: (id: string) => `/event/${id}`,
     remove: (id: string) => `/event/${id}/disable`,

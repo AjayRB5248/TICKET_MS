@@ -35,61 +35,13 @@ export default function TourItem({ tour, onView, onEdit, onDelete }: Props) {
   const {
     id,
     name,
-    price,
     images,
-    bookers,
     createdAt,
     available,
-    priceSale,
     destination,
-    ratingNumber,
   } = tour;
 
   const shortLabel = shortDateLabel(available.startDate, available.endDate);
-
-  const renderRating = (
-    <Stack
-      direction="row"
-      alignItems="center"
-      sx={{
-        top: 8,
-        right: 8,
-        zIndex: 9,
-        borderRadius: 1,
-        position: 'absolute',
-        p: '2px 6px 2px 4px',
-        typography: 'subtitle2',
-        bgcolor: 'warning.lighter',
-      }}
-    >
-      <Iconify icon="eva:star-fill" sx={{ color: 'warning.main', mr: 0.25 }} /> {ratingNumber}
-    </Stack>
-  );
-
-  const renderPrice = (
-    <Stack
-      direction="row"
-      alignItems="center"
-      sx={{
-        top: 8,
-        left: 8,
-        zIndex: 9,
-        borderRadius: 1,
-        bgcolor: 'grey.800',
-        position: 'absolute',
-        p: '2px 6px 2px 4px',
-        color: 'common.white',
-        typography: 'subtitle2',
-      }}
-    >
-      {!!priceSale && (
-        <Box component="span" sx={{ color: 'grey.500', mr: 0.25, textDecoration: 'line-through' }}>
-          {fCurrency(priceSale)}
-        </Box>
-      )}
-      {fCurrency(price)}
-    </Stack>
-  );
 
   const renderImages = (
     <Stack
@@ -100,8 +52,6 @@ export default function TourItem({ tour, onView, onEdit, onDelete }: Props) {
       }}
     >
       <Stack flexGrow={1} sx={{ position: 'relative' }}>
-        {renderPrice}
-        {renderRating}
         <Image alt={images[0]} src={images[0]} sx={{ borderRadius: 1, height: 164, width: 1 }} />
       </Stack>
       <Stack spacing={0.5}>
@@ -119,7 +69,7 @@ export default function TourItem({ tour, onView, onEdit, onDelete }: Props) {
       primary={`Posted date: ${fDateTime(createdAt)}`}
       secondary={
         <Link component={RouterLink} href={paths.dashboard.tour.details(id)} color="inherit">
-          {name}
+         Sacar Australia Tour-2024
         </Link>
       }
       primaryTypographyProps={{
@@ -150,16 +100,12 @@ export default function TourItem({ tour, onView, onEdit, onDelete }: Props) {
 
       {[
         {
-          label: destination,
+          label: 'Sydney',
           icon: <Iconify icon="mingcute:location-fill" sx={{ color: 'error.main' }} />,
         },
         {
           label: shortLabel,
           icon: <Iconify icon="solar:clock-circle-bold" sx={{ color: 'info.main' }} />,
-        },
-        {
-          label: `${bookers.length} Booked`,
-          icon: <Iconify icon="solar:users-group-rounded-bold" sx={{ color: 'primary.main' }} />,
         },
       ].map((item) => (
         <Stack
