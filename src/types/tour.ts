@@ -59,9 +59,17 @@ export type ITourItem = {
   locations:ITourLocation[]
 };
 
+interface EventEnum {
+  PLANNED: 'PLANNED',
+  ONGOING: 'ONGOING',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED',
+}
+
 export interface EventFormSchema {
   eventName: string;
   eventDescription: string;
+  // status:EventEnum;
   artists: {
     name: string;
     genre: string;
@@ -70,7 +78,7 @@ export interface EventFormSchema {
     venueName: string;
     city: string;
     timeZone: string;
-    dateOfEvent: Date;
+    eventDate: Date;
   }[];
   ticketSettings: {
     venueName: string;
@@ -80,6 +88,5 @@ export interface EventFormSchema {
   }[];
   posterImage: File | null; 
   images: File[]; 
-  content: string;
 }
 

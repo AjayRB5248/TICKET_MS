@@ -3,41 +3,28 @@ import { useCallback, useMemo, useEffect, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 // @mui
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import LoadingButton from "@mui/lab/LoadingButton";
-import Chip from "@mui/material/Chip";
 import Card from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
-import Avatar from "@mui/material/Avatar";
-import Switch from "@mui/material/Switch";
 import Grid from "@mui/material/Unstable_Grid2";
-import CardHeader from "@mui/material/CardHeader";
 import Typography from "@mui/material/Typography";
-import FormControlLabel from "@mui/material/FormControlLabel";
 // hooks
 import { useResponsive } from "src/hooks/use-responsive";
-// routes
-import { paths } from "src/routes/paths";
-import { useRouter } from "src/routes/hook";
-// assets
-import { countries } from "src/assets/data";
 // _mock
 import { _tourGuides, TOUR_SERVICE_OPTIONS, _tags } from "src/_mock";
 // components
 import Iconify from "src/components/iconify";
-import { useSnackbar } from "src/components/snackbar";
 import FormProvider, {
   RHFEditor,
   RHFUpload,
   RHFTextField,
-  RHFAutocomplete,
-  RHFMultiCheckbox,
   RHFSelect,
 } from "src/components/hook-form";
 // types
-import { ITourGuide, ITourItem, EventFormSchema } from "src/types/tour";
-import { Button, Divider, MenuItem } from "@mui/material";
+import {  EventFormSchema } from "src/types/tour";
+import { Button, MenuItem } from "@mui/material";
 import { DateTimePicker } from "@mui/x-date-pickers";
+import { useCreateEvent } from "src/api/events";
 
 // ----------------------------------------------------------------------
 
@@ -72,24 +59,22 @@ const timeZones = [
 ];
 
 const EventStatusEnum = {
-  PLANNED: 'Planned',
-  ONGOING: 'Ongoing',
-  COMPLETED: 'Completed',
-  CANCELLED: 'Cancelled',
+  PLANNED: 'PLANNED',
+  ONGOING: 'ONGOING',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED',
 };
 
 
 export default function TourNewEditForm({ currentTour }: Props) {
-  const router = useRouter();
-
   const mdUp = useResponsive("up", "md");
 
-  const { enqueueSnackbar } = useSnackbar();
+  const eventMutation = useCreateEvent()
 
   const NewTourSchema = Yup.object().shape({
     eventName: Yup.string().required("Event name is required"),
     eventDescription: Yup.string().required("Event description is required"),
-    eventStatus:Yup.string().required('Event Status is Required').oneOf(Object.values(EventStatusEnum), 'Invalid event status'),
+    status:Yup.string().required('Event Status is Required').oneOf(Object.values(EventStatusEnum), 'Invalid event status'),
     posterImage: Yup.mixed<any>()
       .nullable()
       .required("Poster image is required")
@@ -124,14 +109,14 @@ export default function TourNewEditForm({ currentTour }: Props) {
           .required("Total seats are required"),
       })
     ),
-    images: Yup.array().min(1, "At least one image is required"),
+    images: Yup.array().optional(),
   });
 
   const defaultValues = useMemo(() => ({
     eventName: currentTour?.eventName || "",
     eventDescription: currentTour?.eventDescription || "",
-    eventStatus:currentTour?.eventStatus || "",
-    artists: currentTour?.artists || [{ name: "", genre: "" }],
+    status:currentTour?.status || "",
+    artists: currentTour?.artists || [{ name: "", genre:""}],
     venues: currentTour?.venues || [{ venueName: "", city: "", timeZone: "", dateOfEvent: new Date() }],
     ticketSettings: currentTour?.ticketSettings || [{ venueName: "", type: "", price: 0, totalSeats: 0 }],
     posterImage: currentTour?.posterImage || null,
@@ -172,16 +157,51 @@ export default function TourNewEditForm({ currentTour }: Props) {
     }
   }, [currentTour, defaultValues, reset]);
 
-  const onSubmit = handleSubmit(async (data) => {
+
+  const onSubmit = handleSubmit(async (data:any) => {
+    const formData = new FormData();
+
+    formData.append('eventName', data.eventName);
+    formData.append('eventDescription', data.eventDescription);
+    formData.append('status',data.status)
+  
+    if (data.posterImage && data.posterImage instanceof File) {
+      formData.append('posterImage', data.posterImage, data.posterImage.name);
+    }
+  
+    data?.images.forEach((image:any, index:any) => {
+      if (image && image instanceof File) {
+        formData.append(`images`, image, image.name);
+      }
+    });
+  
+    data.artists.forEach((artist:any, index:any) => {
+      formData.append(`artists[${index}][name]`, artist.name);
+      formData.append(`artists[${index}][genre]`, artist.genre);
+    });
+  
+    data?.venues.forEach((venue:any, index:any) => {
+      formData.append(`venues[${index}][venueName]`, venue.venueName);
+      formData.append(`venues[${index}][city]`, venue.city);
+      formData.append(`venues[${index}][timeZone]`, venue.timeZone);
+      formData.append(`venues[${index}][dateOfEvent]`, venue.dateOfEvent.toISOString());
+    });
+  
+    data?.ticketSettings.forEach((ticket:any, index:any) => {
+      formData.append(`ticketSettings[${index}][venueName]`, ticket.venueName);
+      formData.append(`ticketSettings[${index}][type]`, ticket.type);
+      formData.append(`ticketSettings[${index}][price]`, ticket.price.toString());
+      formData.append(`ticketSettings[${index}][totalSeats]`, ticket.totalSeats.toString());
+    });
+  
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      enqueueSnackbar("Create success!");
-      console.info("DATA", data);
+      await eventMutation.mutateAsync(formData);
+      reset();
     } catch (error) {
       console.error(error);
     }
   });
-
+  
   const handleDropSingleFile = useCallback(
     (acceptedFiles: File[]) => {
       const file = acceptedFiles[0];
@@ -249,7 +269,7 @@ export default function TourNewEditForm({ currentTour }: Props) {
             </Button>
           </Stack>
         ))}
-        <Button onClick={() => artistsArray.append({ name: "", genre: "" })}>
+        <Button onClick={() => artistsArray.append({ name: '', genre:'' })}>
           Add Artist
         </Button>
       </Stack>
@@ -393,7 +413,7 @@ export default function TourNewEditForm({ currentTour }: Props) {
           </Stack>
         </Grid>
         <Grid xs={12}>
-        <RHFSelect name="eventStatus" label="Event Status" required>
+        <RHFSelect name="status" label="Event Status" required>
           {Object.entries(EventStatusEnum).map(([key, value]) => (
             <MenuItem key={key} value={key}>
               {value}
