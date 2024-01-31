@@ -25,7 +25,7 @@ const navigationItems: NavItem[] = [
   },
   {
     label: "Events",
-    href: "/events",
+    href: "/events/",
     submenu: [],
   },
   { label: "Concerts", href: "/concerts" },
@@ -34,6 +34,7 @@ const navigationItems: NavItem[] = [
 
 const Navbar: React.FC = () => {
   const pathname = usePathname();
+  console.log(pathname, 'pathname')
 
   const { user } = useAuth();
 
