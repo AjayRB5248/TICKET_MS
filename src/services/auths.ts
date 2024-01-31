@@ -5,7 +5,7 @@ const AuthService = {
   login: (data: { email: string; password: string }) => axiosInstance.post(endpoints.auth.login, data),
   sendOTP: (data: any) => axiosInstance.post(endpoints.auth.sendOTP, data),
   verifyOTP: (data: any) => axiosInstance.post(endpoints.auth.verifyOTP, data),
-  refreshToken: () => axiosInstance.post(endpoints.auth.refreshToken),
+  refreshToken: (data: { refreshToken: string }) => axiosInstance.post(endpoints.auth.refreshToken, data),
   sendEmailVerification: (data: any) => axiosInstance.post(endpoints.auth.sendEmailVerification, data),
   forgotPassword: (data: { email: string; tokenType: string }) =>
     axiosInstance.post(endpoints.auth.forgotPassword, data),
