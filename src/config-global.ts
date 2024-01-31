@@ -35,3 +35,5 @@ export const MAPBOX_API = process.env.NEXT_PUBLIC_MAPBOX_API;
 
 // ROOT PATH AFTER LOGIN SUCCESSFUL
 export const PATH_AFTER_LOGIN = paths.dashboard.root; // as '/dashboard'
+export const USER_LOGIN_PATH = paths.auth.user.login;
+export const ADMIN_LOGIN_PATH = paths.auth.company.login;
