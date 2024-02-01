@@ -3,25 +3,12 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
 import { useMemo } from "react";
 
-export function useEvents() {
-  const { data, isLoading, error } = useQuery(["events"], async () => {
-    const res = await EventsService.list();
-    return res?.data;
-  });
 
-  const events = useMemo(() => data || [], [data]);
 
-  return {
-    events,
-    loading: isLoading,
-    error,
-  };
-}
-
-export function useEvent(id: string) {
-  const { data, isLoading, error } = useQuery(["event/id", id], async () => {
+export function useEvent(id: any) {
+  const { data, isLoading, error } = useQuery(["events/id",id], async () => {
     const res = await EventsService.details(id);
-    return res?.data;
+    return res;
   });
 
   const event = useMemo(() => data || {}, [data]);
@@ -32,6 +19,27 @@ export function useEvent(id: string) {
     error,
   };
 }
+
+export function useEvents(queryParameters?:any) {
+  const { data, isLoading, error } = useQuery(["events"], async () => {
+    const res = await EventsService.list(queryParameters);
+    return res?.data?.events;
+  },
+  {
+    keepPreviousData: true,
+  });
+
+
+  const events = useMemo(() => data || [], [data]);
+
+  return {
+    events,
+    loading: isLoading,
+    error,
+  };
+}
+
+
 
 export function useCreateEvent() {
   const { enqueueSnackbar } = useSnackbar();

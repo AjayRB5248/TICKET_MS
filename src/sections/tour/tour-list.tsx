@@ -10,6 +10,7 @@ import { ITourItem } from 'src/types/tour';
 import { useRouter } from 'src/routes/hook';
 //
 import TourItem from './tour-item';
+import { useEvent, useEvents } from 'src/api/events';
 
 // ----------------------------------------------------------------------
 
@@ -19,6 +20,7 @@ type Props = {
 
 export default function TourList({ tours }: Props) {
   const router = useRouter();
+  const {events, loading , error}=useEvents();
 
   const handleView = useCallback(
     (id: string) => {
@@ -49,18 +51,18 @@ export default function TourList({ tours }: Props) {
           md: 'repeat(3, 1fr)',
         }}
       >
-        {tours.map((tour) => (
+        {events?.map((event:any) => (
           <TourItem
-            key={tour.id}
-            tour={tour}
-            onView={() => handleView(tour.id)}
-            onEdit={() => handleEdit(tour.id)}
-            onDelete={() => handleDelete(tour.id)}
+            key={event._id}
+            event={event}
+            onView={() => handleView(event._id)}
+            onEdit={() => handleEdit(event._id)}
+            onDelete={() => handleDelete(event._id)}
           />
         ))}
       </Box>
 
-      {tours.length > 8 && (
+      {events?.length > 8 && (
         <Pagination
           count={8}
           sx={{

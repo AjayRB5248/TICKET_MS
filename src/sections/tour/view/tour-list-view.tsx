@@ -30,6 +30,7 @@ import TourSort from '../tour-sort';
 import TourSearch from '../tour-search';
 import TourFilters from '../tour-filters';
 import TourFiltersResult from '../tour-filters-result';
+import { useEvents } from 'src/api/events';
 
 // ----------------------------------------------------------------------
 
@@ -45,6 +46,8 @@ const defaultFilters: ITourFilters = {
 
 export default function TourListView() {
   const settings = useSettingsContext();
+
+  const {events, loading , error}=useEvents();
 
   const openFilters = useBoolean();
 

@@ -69,7 +69,7 @@ interface EventEnum {
 export interface EventFormSchema {
   eventName: string;
   eventDescription: string;
-  // status:EventEnum;
+  status:EventEnum;
   artists: {
     name: string;
     genre: string;

@@ -3,10 +3,36 @@ import { BASE_URL } from "src/config-global";
 import AuthService from "src/services/auths";
 
 console.log(BASE_URL, " process.env.BASE_URL======");
+const accessToken = localStorage.getItem('accessToken')
+
+console.log({accessToken})
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
+  headers: {
+    'Authorization': `Bearer ${accessToken}`,
+    'Content-Type': undefined,
+  }
 });
+
+// Add a request interceptor
+// axiosInstance.interceptors.request.use(
+//   function(config) {
+//     // Retrieve the accessToken from local storage
+//     const accessToken = localStorage.getItem('accessToken');
+    
+//     // If the token exists, add it to the request's Authorization header
+//     if (accessToken) {
+//       config.headers['Authorization'] = `Bearer ${accessToken}`;
+//     }
+
+//     return config;
+//   }, 
+//   function(error) {
+//     // Do something with request error
+//     return Promise.reject(error);
+//   }
+// );
 
 // axiosInstance.interceptors.response.use(
 //   (res) => res,
@@ -24,19 +50,19 @@ const axiosInstance = axios.create({
 //   }
 // );
 
-axiosInstance.interceptors.request.use(
-  async (config) => {
-    const token = "access-token";
-    if (token) {
-      config.headers["Authorization"] = `Bearer ${token}`;
-    }
-    config.headers["Content-Type"] = "application/json";
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
+// axiosInstance.interceptors.request.use(
+//   async (config) => {
+//     const token = "access-token";
+//     if (token) {
+//       config.headers["Authorization"] = `Bearer ${token}`;
+//     }
+//     config.headers["Content-Type"] = "application/json";
+//     return config;
+//   },
+//   (error) => {
+//     return Promise.reject(error);
+//   }
+// );
 
 export default axiosInstance;
 
@@ -53,10 +79,17 @@ export const endpoints = {
     logout: "/auth/logout",
   },
   events: {
-    list: "/events",
+    list: (queryParameters = {}) => {
+      let url = "/events/fetch-events";
+      const params = new URLSearchParams(queryParameters).toString();
+      if (params) {
+        url += `?${params}`;
+      }
+      return url;
+    },
     create: "/events/add-new-event",
     update: (id: string) => `/event/${id}`,
-    details: (id: string) => `/event/${id}`,
+    details: (id: any) => `/events/${id}`,
     remove: (id: string) => `/event/${id}/disable`,
   },
 };
