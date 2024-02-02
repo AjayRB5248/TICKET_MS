@@ -7,6 +7,10 @@ import DateImg from "src/assets/frontend/images/ticket/date.png";
 import CinemaImg from "src/assets/frontend/images/ticket/cinema.png";
 import TicketSearchBg from "src/assets/frontend/images/event3.jpg";
 import withNiceSelect from "src/layouts/_common/nice-select/withNiceSelect";
+import { SelectField } from "src/components/select-field";
+import { ChangeEvent, useEffect, useState } from "react";
+import { useFetchEvents } from "src/api/events";
+
 const ticketTabItems = [
   {
     label: "Concerts",
@@ -22,7 +26,81 @@ const ticketTabItems = [
   },
 ];
 
+const selectFields = [
+  {
+    label: "city",
+    imageSrc: CityImg,
+    altText: "City",
+    options: [
+      { value: "sydney", label: "Sydney" },
+      { value: "perth", label: "Perth" },
+      { value: "melbourne", label: "Melbourne" },
+      // Add more city options here
+    ],
+  },
+  {
+    label: "date",
+    imageSrc: DateImg,
+    altText: "Date",
+    options: [
+      { value: "23-10-2020", label: "23/10/2020" },
+      { value: "24-10-2020", label: "24/10/2020" },
+      { value: "25-10-2020", label: "25/10/2020" },
+      { value: "26-10-2020", label: "26/10/2020" },
+      // Add more date options here
+    ],
+  },
+  {
+    label: "Location",
+    imageSrc: CinemaImg,
+    altText: "Location",
+    options: [
+      { value: "opera-house", label: "Opera House" },
+      { value: "enmore-theatre", label: "Enmore Theatre" },
+      { value: "city-recital-hall", label: "City Recital Hall" },
+      // Add more location options here
+    ],
+  },
+];
+
 const TicketSearch = () => {
+  const [selectedCity, setSelectedCity] = useState<string>("");
+  const [selectedDate, setSelectedDate] = useState<string>("");
+  const [selectedLocation, setSelectedLocation] = useState<string>("");
+  const [searchText, setSearchText] = useState<string>("");
+
+  const handleSelectChange = (field: string, value: string) => {
+    if (field === "city") {
+      setSelectedCity(value);
+    } else if (field === "date") {
+      setSelectedDate(value);
+    } else if (field === "Location") {
+      setSelectedLocation(value);
+    }
+  };
+
+  const handleSearchTextChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.target.value);
+  };
+
+  const callFilterEventsAPI = () => {
+    const queryData: Record<string, string> = {
+      eventName: searchText,
+      city: selectedCity,
+      eventDate: selectedDate,
+      venueName: selectedLocation,
+    };
+
+    console.log("API call with queryData:", queryData);
+
+    // const { events, loading, error, isFetching } = useFetchEvents(queryData);
+    // console.log(events, 'events==')
+  };
+
+  useEffect(() => {
+    callFilterEventsAPI();
+  }, [selectedCity, selectedDate, selectedLocation, searchText]);
+
   return (
     <section className="search-ticket-section padding-top pt-lg-0">
       <div className="container">
@@ -51,53 +129,26 @@ const TicketSearch = () => {
             <div className="tab-item active">
               <form className="ticket-search-form">
                 <div className="form-group large">
-                  <input type="text" placeholder="Search for Events" />
+                  <input
+                    type="text"
+                    placeholder="Search for Events"
+                    value={searchText}
+                    onChange={handleSearchTextChange}
+                  />
                   <button type="submit">
                     <i className="fas fa-search"></i>
                   </button>
                 </div>
-                <div className="form-group">
-                  <div className="thumb">
-                    <Image src={CityImg} alt="ticket" />
-                  </div>
-                  <span className="type">city</span>
-                  <select className="select-bar">
-                    <option value="london">Sydney</option>
-                    <option value="dhaka">Perth</option>
-                    <option value="rosario">Melbourne</option>
-                    <option value="madrid">Darwin</option>
-                    <option value="koltaka">Adelaide</option>
-                    <option value="rome">Brisbane</option>
-                    <option value="khoksa">Gold Coast</option>
-                  </select>
-                </div>
-                <div className="form-group">
-                  <div className="thumb">
-                    <Image src={DateImg} alt="ticket" />
-                  </div>
-                  <span className="type">date</span>
-                  <select className="select-bar">
-                    <option value="26-12-19">23/10/2020</option>
-                    <option value="26-12-19">24/10/2020</option>
-                    <option value="26-12-19">25/10/2020</option>
-                    <option value="26-12-19">26/10/2020</option>
-                  </select>
-                </div>
-                <div className="form-group">
-                  <div className="thumb">
-                    <Image src={CinemaImg} alt="ticket" />
-                  </div>
-                  <span className="type">Location</span>
-                  <select className="select-bar">
-                    <option value="Awaken">Opera House</option>
-                    <option value="dhaka">Enmore theatre</option>
-                    <option value="rosario">City Recital Hall</option>
-                    <option value="madrid">Hamer Hall</option>
-                    <option value="koltaka">Palias Theatre</option>
-                    <option value="rome">Corner Hotel</option>
-                    <option value="khoksa">Arts Center Melbourne</option>
-                  </select>
-                </div>
+                {selectFields.map((field, index) => (
+                  <SelectField
+                    key={index}
+                    imageSrc={field.imageSrc}
+                    altText={field.altText}
+                    label={field.label}
+                    options={field.options}
+                    onSelectChange={(value) => handleSelectChange(field.label, value)}
+                  />
+                ))}
               </form>
             </div>
             <div className="tab-item">
@@ -108,100 +159,36 @@ const TicketSearch = () => {
                     <i className="fas fa-search"></i>
                   </button>
                 </div>
-                <div className="form-group">
-                  <div className="thumb">
-                    <Image src={CityImg} alt="ticket" />
-                  </div>
-                  <span className="type">city</span>
-                  <select className="select-bar">
-                    <option value="london">London</option>
-                    <option value="dhaka">dhaka</option>
-                    <option value="rosario">rosario</option>
-                    <option value="madrid">madrid</option>
-                    <option value="koltaka">kolkata</option>
-                    <option value="rome">rome</option>
-                    <option value="khoksa">khoksa</option>
-                  </select>
-                </div>
-                <div className="form-group">
-                  <div className="thumb">
-                    <Image src={DateImg} alt="ticket" />
-                  </div>
-                  <span className="type">date</span>
-                  <select className="select-bar">
-                    <option value="26-12-19">23/10/2020</option>
-                    <option value="26-12-19">24/10/2020</option>
-                    <option value="26-12-19">25/10/2020</option>
-                    <option value="26-12-19">26/10/2020</option>
-                  </select>
-                </div>
-                <div className="form-group">
-                  <div className="thumb">
-                    <Image src={CinemaImg} alt="ticket" />
-                  </div>
-                  <span className="type">event</span>
-                  <select className="select-bar">
-                    <option value="angular">angular</option>
-                    <option value="startup">startup</option>
-                    <option value="rosario">rosario</option>
-                    <option value="madrid">madrid</option>
-                    <option value="koltaka">kolkata</option>
-                    <option value="Last-First">Last-First</option>
-                    <option value="wish">wish</option>
-                  </select>
-                </div>
+                {selectFields.map((field, index) => (
+                  <SelectField
+                    key={index}
+                    imageSrc={field.imageSrc}
+                    altText={field.altText}
+                    label={field.label}
+                    options={field.options}
+                    onSelectChange={(value) => handleSelectChange(field.label, value)}
+                  />
+                ))}
               </form>
             </div>
             <div className="tab-item">
               <form className="ticket-search-form">
                 <div className="form-group large">
-                  <input type="text" placeholder="Search fo Sports" />
+                  <input type="text" placeholder="Search for Events" />
                   <button type="submit">
                     <i className="fas fa-search"></i>
                   </button>
                 </div>
-                <div className="form-group">
-                  <div className="thumb">
-                    <Image src={CityImg} alt="ticket" />
-                  </div>
-                  <span className="type">city</span>
-                  <select className="select-bar">
-                    <option value="london">London</option>
-                    <option value="dhaka">dhaka</option>
-                    <option value="rosario">rosario</option>
-                    <option value="madrid">madrid</option>
-                    <option value="koltaka">kolkata</option>
-                    <option value="rome">rome</option>
-                    <option value="khoksa">khoksa</option>
-                  </select>
-                </div>
-                <div className="form-group">
-                  <div className="thumb">
-                    <Image src={DateImg} alt="ticket" />
-                  </div>
-                  <span className="type">date</span>
-                  <select className="select-bar">
-                    <option value="26-12-19">23/10/2020</option>
-                    <option value="26-12-19">24/10/2020</option>
-                    <option value="26-12-19">25/10/2020</option>
-                    <option value="26-12-19">26/10/2020</option>
-                  </select>
-                </div>
-                <div className="form-group">
-                  <div className="thumb">
-                    <Image src={CinemaImg} alt="ticket" />
-                  </div>
-                  <span className="type">sports</span>
-                  <select className="select-bar">
-                    <option value="football">football</option>
-                    <option value="cricket">cricket</option>
-                    <option value="cabadi">cabadi</option>
-                    <option value="madrid">madrid</option>
-                    <option value="gadon">gadon</option>
-                    <option value="rome">rome</option>
-                    <option value="khoksa">khoksa</option>
-                  </select>
-                </div>
+                {selectFields.map((field, index) => (
+                  <SelectField
+                    key={index}
+                    imageSrc={field.imageSrc}
+                    altText={field.altText}
+                    label={field.label}
+                    options={field.options}
+                    onSelectChange={(value) => handleSelectChange(field.label, value)}
+                  />
+                ))}
               </form>
             </div>
           </div>
