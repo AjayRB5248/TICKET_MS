@@ -72,10 +72,10 @@ export function useRemoveEvent() {
   );
 }
 
-export const useFetchEvents = () => {
-  const { data, isLoading, isError, isFetching, error } = useQuery(["events"], async () => {
-    const res = await EventsService.list();
-    setTimeout(() => {}, 10000);
+export const useFetchEvents = (queryData: Record<string, string>) => {
+  const { data, isLoading, isError, isFetching, error } = useQuery(["events", queryData], async () => {
+    const res = await EventsService.list(queryData);
+
     return res?.data?.events;
   });
 
