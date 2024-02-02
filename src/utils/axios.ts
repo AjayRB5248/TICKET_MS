@@ -10,9 +10,6 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   async (config) => {
     try {
-      const isTokenExpired = await checkTokenExpiry();
-      console.log(isTokenExpired, "isTokenExpired!!!!");
-
       const accessToken = getAccessToken();
       if (accessToken) {
         config.headers["Authorization"] = `Bearer ${accessToken}`;
@@ -36,10 +33,8 @@ axiosInstance.interceptors.response.use(
     if (error.response && error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
-        // Refresh the token
         const token = await useRefreshToken();
         if (token) {
-          // Update the headers with the new token
           axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
           return axiosInstance(originalRequest);
         }
@@ -75,7 +70,7 @@ export const endpoints = {
     logout: "/auth/logout",
   },
   events: {
-    list: "/events",
+    list: "/events/fetch-events",
     create: "/events/add-new-event",
     update: (id: string) => `/event/${id}`,
     details: (id: string) => `/event/${id}`,

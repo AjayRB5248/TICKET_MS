@@ -1,11 +1,12 @@
 "use client";
 
-import MainLayout from "src/layouts/main";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "src/lib/queryClient";
 
 type Props = {
   children: React.ReactNode;
 };
 
 export default function Events({ children }: Props) {
-  return <>{children}</>;
+  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 }

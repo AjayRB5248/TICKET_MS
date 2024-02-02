@@ -3,10 +3,12 @@ import FeaturedAd1 from "src/assets/frontend/images/featuredAds/SacarEvent.png";
 import WidgetCheckbox from "./widget-checkbox";
 import FilterMain from "./filter-main";
 import EventGridItem from "./event-grid";
-import mockEvent from "../mockEvent";
 import EventPagination from "./event-pagination";
+import { useFetchEvents } from "src/api/events";
 
 const EventsListing = () => {
+  const { events, loading, error, isFetching } = useFetchEvents();
+
   return (
     <section className="event-section padding-top padding-bottom">
       <div className="container">
@@ -23,14 +25,25 @@ const EventsListing = () => {
               <FilterMain />
 
               <div className="row mb-10 justify-content-center">
-                {mockEvent.map((event) => (
-                  <EventGridItem
-                    imageUrl={event.imageUrl}
-                    date={event.date}
-                    title={event.title}
-                    location={event.venue}
-                  />
-                ))}
+                {isFetching ? (
+                  <div className="spinner-border" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                  </div>
+                ) : (
+                  events?.map((event: any) =>
+                    event.venues.map((eachEventVenue: any) => (
+                      <EventGridItem
+                        key={eachEventVenue._id}
+                        imageUrl={event.eventImages.find((eventImg: any) => eventImg.isPrimary)?.imageurl}
+                        date={eachEventVenue.eventDate}
+                        title={event.eventName}
+                        venue={eachEventVenue.venueName}
+                        city={eachEventVenue.city}
+                        timeZone={eachEventVenue.timeZone}
+                      />
+                    ))
+                  )
+                )}
               </div>
 
               <EventPagination />

@@ -71,3 +71,18 @@ export function useRemoveEvent() {
     }
   );
 }
+
+export const useFetchEvents = () => {
+  const { data, isLoading, isError, isFetching, error } = useQuery(["events"], async () => {
+    const res = await EventsService.list();
+    setTimeout(() => {}, 10000);
+    return res?.data?.events;
+  });
+
+  return {
+    events: data || [],
+    loading: isLoading,
+    error: isError ? error : null,
+    isFetching,
+  };
+};
