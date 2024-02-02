@@ -9,9 +9,10 @@ import { StaticImageData } from "next/image";
 interface EventProps {
   imageUrl: StaticImageData;
   date: string;
-  month: string;
   title: string;
   venue: string;
+  city: string;
+  timeZone: string;
 }
 
 interface EventCarouselItemProps {
@@ -24,7 +25,9 @@ const EventCarouselItem: React.FC<EventCarouselItemProps> = ({ events }) => {
     loop: true,
     margin: 10,
     autoplay: true,
-    nav: true,
+    autoplayTimeout: 1000,
+    nav: false,
+    dots: false,
     responsive: {
       0: {
         items: 1,
@@ -43,9 +46,19 @@ const EventCarouselItem: React.FC<EventCarouselItemProps> = ({ events }) => {
 
   return (
     <OwlCarousel className="owl-theme" {...options}>
-      {events.map((event, index) => (
-        <Event key={index} {...event} />
-      ))}
+      {events.map((event: any) =>
+        event.venues.map((eachEventVenue: any) => (
+          <Event
+            key={eachEventVenue._id}
+            imageUrl={event.eventImages.find((eventImg: any) => eventImg.isPrimary)?.imageurl}
+            date={eachEventVenue.eventDate}
+            title={event.eventName}
+            venue={eachEventVenue.venueName}
+            city={eachEventVenue.city}
+            timeZone={eachEventVenue.timeZone}
+          />
+        ))
+      )}
     </OwlCarousel>
   );
 };

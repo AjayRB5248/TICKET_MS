@@ -11,6 +11,7 @@ import EventImg3 from "src/assets/frontend/images/event/event03.jpg";
 import EventImg4 from "src/assets/frontend/images/event/event04.jpg";
 import EventCarouselItem from "../event-carousel-item";
 import { useState } from "react";
+import { useFetchEvents } from "src/api/events";
 
 interface EventData {
   imageUrl: StaticImageData;
@@ -72,9 +73,12 @@ const tabItems = [
 ];
 
 const EventsCarousel: React.FC = () => {
+  const { events, loading, error, isFetching } = useFetchEvents();
+
   const [activeTab, setActiveTab] = useState<string>("Now Showing");
 
-  const filteredEvents = eventsData.filter((event: any) => event.tags.includes(activeTab));
+  // TODO: Tags Type ? Filter Accordingly
+  const filteredEvents = events.filter((event: any) => !event.tags?.includes(activeTab));
 
   return (
     <section className="event-section padding-top padding-bottom bg-four">

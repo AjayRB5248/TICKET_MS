@@ -1,26 +1,27 @@
+import moment from "moment";
 import Image, { StaticImageData } from "next/image";
 import React from "react";
 
 interface EventProps {
   imageUrl: StaticImageData;
   date: string;
-  month: string;
   title: string;
   venue: string;
+  city: string;
+  timeZone: string;
 }
 
-const Event: React.FC<EventProps> = ({ imageUrl, date, month, title, venue }) => {
-  console.log( imageUrl, date, month, title, venue, "props--")
+const Event: React.FC<EventProps> = ({ imageUrl, date, title, venue, city, timeZone }) => {
   return (
     <div className="item">
       <div className="event-grid">
         <div className="movie-thumb c-thumb">
           <a href="#0">
-            <Image src={imageUrl} alt="event" />
+            <Image src={imageUrl} alt="event" width={800} height={1200} />
           </a>
           <div className="event-date">
-            <h6 className="date-title">{date}</h6>
-            <span>{month}</span>
+            <h6 className="date-title">{moment(date).format("D")}</h6>
+            <span>{moment(date).format("MMM")}</span>
           </div>
         </div>
         <div className="movie-content bg-one">
@@ -28,7 +29,9 @@ const Event: React.FC<EventProps> = ({ imageUrl, date, month, title, venue }) =>
             <a href="#0">{title}</a>
           </h5>
           <div className="movie-rating-percent">
-            <span>{venue}</span>
+            <span>
+              {venue} , {city}
+            </span>
           </div>
         </div>
       </div>
