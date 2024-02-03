@@ -1,10 +1,15 @@
 import axios from "axios";
-import { ADMIN_LOGIN_PATH, BASE_URL, USER_LOGIN_PATH } from "src/config-global";
-import { checkTokenExpiry, getAccessToken, getUserData, useRefreshToken } from "./token-management";
-import { useRouter, useSearchParams } from "src/routes/hook";
+import { getAccessToken, useRefreshToken } from "./token-management";
+import { BASE_URL } from "src/config-global";
+
+const accessToken = localStorage.getItem('accessToken')
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
+  headers: {
+    'Authorization': `Bearer ${accessToken}`,
+    'Content-Type': undefined,
+  }
 });
 
 axiosInstance.interceptors.request.use(
@@ -62,10 +67,17 @@ export const endpoints = {
     logout: "/auth/logout",
   },
   events: {
-    list: "/events/fetch-events",
+    list: (queryParameters = {}) => {
+      let url = "/events/fetch-events";
+      const params = new URLSearchParams(queryParameters).toString();
+      if (params) {
+        url += `?${params}`;
+      }
+      return url;
+    },
     create: "/events/add-new-event",
     update: (id: string) => `/event/${id}`,
-    details: (id: string) => `/event/${id}`,
+    details: (id: any) => `/events/${id}`,
     remove: (id: string) => `/event/${id}/disable`,
   },
 };

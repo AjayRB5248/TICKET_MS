@@ -19,12 +19,14 @@ import FormProvider, {
   RHFUpload,
   RHFTextField,
   RHFSelect,
+  RHFAutocomplete,
 } from "src/components/hook-form";
 // types
 import {  EventFormSchema } from "src/types/tour";
-import { Button, MenuItem } from "@mui/material";
+import { Button, Chip, MenuItem } from "@mui/material";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import { useCreateEvent } from "src/api/events";
+import { EVENT_CATEGORIES, EVENT_TAGS, EventStatusEnum,timeZones } from "./utils";
 
 // ----------------------------------------------------------------------
 
@@ -32,38 +34,6 @@ type Props = {
   currentTour?: EventFormSchema;
 };
 
-const timeZones = [
-  { label: "ACT", value: "Australia/ACT" },
-  { label: "Adelaide", value: "Australia/Adelaide" },
-  { label: "Brisbane", value: "Australia/Brisbane" },
-  { label: "Broken Hill", value: "Australia/Broken_Hill" },
-  { label: "Canberra", value: "Australia/Canberra" },
-  { label: "Currie", value: "Australia/Currie" },
-  { label: "Darwin", value: "Australia/Darwin" },
-  { label: "Eucla", value: "Australia/Eucla" },
-  { label: "Hobart", value: "Australia/Hobart" },
-  { label: "LHI", value: "Australia/LHI" },
-  { label: "Lindeman", value: "Australia/Lindeman" },
-  { label: "Lord Howe", value: "Australia/Lord_Howe" },
-  { label: "Melbourne", value: "Australia/Melbourne" },
-  { label: "NSW", value: "Australia/NSW" },
-  { label: "North", value: "Australia/North" },
-  { label: "Perth", value: "Australia/Perth" },
-  { label: "Queensland", value: "Australia/Queensland" },
-  { label: "South", value: "Australia/South" },
-  { label: "Sydney", value: "Australia/Sydney" },
-  { label: "Tasmania", value: "Australia/Tasmania" },
-  { label: "Victoria", value: "Australia/Victoria" },
-  { label: "West", value: "Australia/West" },
-  { label: "Yancowinna", value: "Australia/Yancowinna" },
-];
-
-const EventStatusEnum = {
-  PLANNED: 'PLANNED',
-  ONGOING: 'ONGOING',
-  COMPLETED: 'COMPLETED',
-  CANCELLED: 'CANCELLED',
-};
 
 
 export default function TourNewEditForm({ currentTour }: Props) {
@@ -74,6 +44,7 @@ export default function TourNewEditForm({ currentTour }: Props) {
   const NewTourSchema = Yup.object().shape({
     eventName: Yup.string().required("Event name is required"),
     eventDescription: Yup.string().required("Event description is required"),
+    eventCategory: Yup.string().required('Event Category is required'),
     status:Yup.string().required('Event Status is Required').oneOf(Object.values(EventStatusEnum), 'Invalid event status'),
     posterImage: Yup.mixed<any>()
       .nullable()
@@ -85,7 +56,8 @@ export default function TourNewEditForm({ currentTour }: Props) {
     artists: Yup.array().of(
       Yup.object().shape({
         name: Yup.string().required("Artist name is required"),
-        genre: Yup.string().required("Genre is required"),
+        genre: Yup.string().optional(),
+        category:Yup.string().required("Artist cateogry is required"),
       })
     ),
     venues: Yup.array().of(
@@ -110,17 +82,22 @@ export default function TourNewEditForm({ currentTour }: Props) {
       })
     ),
     images: Yup.array().optional(),
+    tags: Yup.array()
+    .of(Yup.string())
+    .required("At least one tag is required")
   });
 
   const defaultValues = useMemo(() => ({
     eventName: currentTour?.eventName || "",
+    eventCategory:currentTour?.eventCategory || "",
     eventDescription: currentTour?.eventDescription || "",
     status:currentTour?.status || "",
-    artists: currentTour?.artists || [{ name: "", genre:""}],
+    artists: currentTour?.artists || [{ name: "", genre:"",category:""}],
     venues: currentTour?.venues || [{ venueName: "", city: "", timeZone: "", dateOfEvent: new Date() }],
     ticketSettings: currentTour?.ticketSettings || [{ venueName: "", type: "", price: 0, totalSeats: 0 }],
     posterImage: currentTour?.posterImage || null,
     images: currentTour?.images || [],
+    tags:currentTour?.tags || [],
   }), [currentTour]);
   
 
@@ -162,9 +139,10 @@ export default function TourNewEditForm({ currentTour }: Props) {
     const formData = new FormData();
 
     formData.append('eventName', data.eventName);
+    formData.append('eventCategory', data.eventCategory);
     formData.append('eventDescription', data.eventDescription);
     formData.append('status',data.status)
-  
+    formData.append('tags', data.tags);
     if (data.posterImage && data.posterImage instanceof File) {
       formData.append('posterImage', data.posterImage, data.posterImage.name);
     }
@@ -178,6 +156,7 @@ export default function TourNewEditForm({ currentTour }: Props) {
     data.artists.forEach((artist:any, index:any) => {
       formData.append(`artists[${index}][name]`, artist.name);
       formData.append(`artists[${index}][genre]`, artist.genre);
+      formData.append(`artists[${index}][category]`, artist.category);
     });
   
     data?.venues.forEach((venue:any, index:any) => {
@@ -258,6 +237,11 @@ export default function TourNewEditForm({ currentTour }: Props) {
             <RHFTextField
               name={`artists[${index}].genre`}
               label="Artist Genre"
+              required
+            />
+            <RHFTextField
+              name={`artists[${index}].category`}
+              label="Artist Category"
               required
             />
             <Button
@@ -407,6 +391,16 @@ export default function TourNewEditForm({ currentTour }: Props) {
           <RHFTextField name="eventName" label="Event Name" required />
         </Grid>
         <Grid xs={12}>
+        <RHFSelect name='eventCategory' label='Event Category'>
+           {EVENT_CATEGORIES.map((category) => (
+              <MenuItem key={category.value} value={category.value}>
+                {category.label}
+               </MenuItem>
+           ))}
+              </RHFSelect>
+        </Grid>
+              
+        <Grid xs={12}>
           <Stack spacing={1.5}>
             <Typography variant="subtitle2">Event Description</Typography>
             <RHFEditor simple name="eventDescription" />
@@ -429,6 +423,8 @@ export default function TourNewEditForm({ currentTour }: Props) {
             name="posterImage"
             maxSize={3145728}
             onDrop={handleDropSingleFile}
+            useFsAccessApi
+            disableMultiple
             onDelete={() =>
               setValue("posterImage", null, { shouldValidate: true })
             }
@@ -456,6 +452,31 @@ export default function TourNewEditForm({ currentTour }: Props) {
         </Grid>
 
         <Grid xs={12}>
+        <Stack spacing={1.5}>
+              <Typography variant="subtitle2">Tags</Typography>
+                        <RHFAutocomplete
+            name="tags"
+            placeholder="+ Tags"
+            multiple
+            freeSolo
+            options={EVENT_TAGS}
+            getOptionLabel={(option) => option ? option : ''}
+            renderTags={(selected, getTagProps) =>
+              selected.map((option, index) => (
+                <Chip
+                  {...getTagProps({ index })}
+                  key={option}
+                  label={option}
+                  size="small"
+                  color="info"
+                  variant="soft"
+                />
+              ))
+            }
+          />
+
+
+            </Stack>
           <Stack spacing={1.5}>
             <Typography variant="subtitle2">Images</Typography>
             <RHFUpload
@@ -470,6 +491,7 @@ export default function TourNewEditForm({ currentTour }: Props) {
             />
           </Stack>
         </Grid>
+
 
         <Grid xs={12}>
           <LoadingButton

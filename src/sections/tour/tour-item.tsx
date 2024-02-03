@@ -10,7 +10,7 @@ import ListItemText from '@mui/material/ListItemText';
 import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
 // utils
-import { fDateTime } from 'src/utils/format-time';
+import { fDate, fDateTime } from 'src/utils/format-time';
 import { fCurrency } from 'src/utils/format-number';
 // types
 import { ITourItem } from 'src/types/tour';
@@ -23,25 +23,28 @@ import { shortDateLabel } from 'src/components/custom-date-range-picker';
 // ----------------------------------------------------------------------
 
 type Props = {
-  tour: ITourItem;
+  event: any;
   onView: VoidFunction;
   onEdit: VoidFunction;
   onDelete: VoidFunction;
 };
 
-export default function TourItem({ tour, onView, onEdit, onDelete }: Props) {
+export default function TourItem({ event, onView, onEdit, onDelete }: Props) {
   const popover = usePopover();
-
   const {
-    id,
-    name,
-    images,
+    _id,
+    eventName,
+    eventCategory,
+    eventDescription,
+    status,
+    ticketTypes,
+    artists,
+    venues,
+    eventImages,
+    slug,
     createdAt,
     available,
-    destination,
-  } = tour;
-
-  const shortLabel = shortDateLabel(available.startDate, available.endDate);
+  } = event;
 
   const renderImages = (
     <Stack
@@ -52,12 +55,12 @@ export default function TourItem({ tour, onView, onEdit, onDelete }: Props) {
       }}
     >
       <Stack flexGrow={1} sx={{ position: 'relative' }}>
-        <Image alt={images[0]} src={images[0]} sx={{ borderRadius: 1, height: 164, width: 1 }} />
+        <Image alt={eventImages[0]} src={eventImages[0]?.imageurl} sx={{ borderRadius: 1, height: 164, width: 1 }} />
       </Stack>
-      <Stack spacing={0.5}>
-        <Image alt={images[1]} src={images[1]} ratio="1/1" sx={{ borderRadius: 1, width: 80 }} />
-        <Image alt={images[2]} src={images[2]} ratio="1/1" sx={{ borderRadius: 1, width: 80 }} />
-      </Stack>
+      {eventImages?.length>2 && <Stack spacing={0.5}>
+        <Image alt={eventImages[1]} src={eventImages[1]?.imageurl} ratio="1/1" sx={{ borderRadius: 1, width: 80 }} />
+        <Image alt={eventImages[2]} src={eventImages[2]?.imageurl} ratio="1/1" sx={{ borderRadius: 1, width: 80 }} />
+      </Stack>}
     </Stack>
   );
 
@@ -68,8 +71,8 @@ export default function TourItem({ tour, onView, onEdit, onDelete }: Props) {
       }}
       primary={`Posted date: ${fDateTime(createdAt)}`}
       secondary={
-        <Link component={RouterLink} href={paths.dashboard.tour.details(id)} color="inherit">
-         Sacar Australia Tour-2024
+        <Link component={RouterLink} href={paths.dashboard.tour.details(_id)} color="inherit">
+         {eventName}
         </Link>
       }
       primaryTypographyProps={{
@@ -86,6 +89,9 @@ export default function TourItem({ tour, onView, onEdit, onDelete }: Props) {
     />
   );
 
+  const venueNames = venues?.map((venue:any) => venue.city).join('-');
+  const venuesDate = venues?.map((venue:any) =>  `${fDate(venue.eventDate)}`).join('-');
+
   const renderInfo = (
     <Stack
       spacing={1.5}
@@ -100,12 +106,16 @@ export default function TourItem({ tour, onView, onEdit, onDelete }: Props) {
 
       {[
         {
-          label: 'Sydney',
+          label: venueNames,
           icon: <Iconify icon="mingcute:location-fill" sx={{ color: 'error.main' }} />,
         },
         {
-          label: shortLabel,
+          label: venuesDate,
           icon: <Iconify icon="solar:clock-circle-bold" sx={{ color: 'info.main' }} />,
+        },
+        {
+          label: eventCategory ? eventCategory : "Event",
+          icon: <Iconify icon="tabler:category" sx={{ color: 'success.main' }} />,
         },
       ].map((item) => (
         <Stack

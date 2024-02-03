@@ -68,8 +68,9 @@ interface EventEnum {
 
 export interface EventFormSchema {
   eventName: string;
+  eventCategory:string;
   eventDescription: string;
-  // status:EventEnum;
+  status:EventEnum;
   artists: {
     name: string;
     genre: string;
@@ -88,5 +89,6 @@ export interface EventFormSchema {
   }[];
   posterImage: File | null; 
   images: File[]; 
+  tags:[]
 }
 

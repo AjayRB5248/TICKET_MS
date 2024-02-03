@@ -1,8 +1,10 @@
 import EventsService from "src/services/events";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { useRouter } from "src/routes/hook";
 import { useSnackbar } from "notistack";
 import { useMemo } from "react";
 import { useEventsContext } from "src/context/EventsContextProvider";
+import { paths } from "src/routes/paths";
 
 interface Filters {
   eventName: string;
@@ -11,25 +13,10 @@ interface Filters {
   venueName: string;
 }
 
-export function useEvents() {
-  const { data, isLoading, error } = useQuery(["events"], async () => {
-    const res = await EventsService.list();
-    return res?.data;
-  });
-
-  const events = useMemo(() => data || [], [data]);
-
-  return {
-    events,
-    loading: isLoading,
-    error,
-  };
-}
-
-export function useEvent(id: string) {
-  const { data, isLoading, error } = useQuery(["event/id", id], async () => {
+export function useEvent(id: any) {
+  const { data, isLoading, error } = useQuery(["events/id", id], async () => {
     const res = await EventsService.details(id);
-    return res?.data;
+    return res?.data?.event;
   });
 
   const event = useMemo(() => data || {}, [data]);
@@ -41,12 +28,34 @@ export function useEvent(id: string) {
   };
 }
 
+export function useEvents(queryParameters?: any) {
+  const { data, isLoading, error } = useQuery(
+    ["events"],
+    async () => {
+      const res = await EventsService.list(queryParameters);
+      return res?.data?.events;
+    },
+    {
+      keepPreviousData: true,
+    }
+  );
+
+  const events = useMemo(() => data || [], [data]);
+
+  return {
+    events,
+    loading: isLoading,
+    error,
+  };
+}
+
 export function useCreateEvent() {
+  const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
 
   return useMutation(
     ["event/create"],
-    async (formData) => {
+    async (formData: FormData) => {
       const response = await EventsService.create(formData);
       return response?.data;
     },
@@ -56,6 +65,7 @@ export function useCreateEvent() {
       },
       onSuccess: () => {
         enqueueSnackbar("Event created successfully", { variant: "success" });
+        router.push(paths.dashboard.tour.root);
       },
     }
   );
