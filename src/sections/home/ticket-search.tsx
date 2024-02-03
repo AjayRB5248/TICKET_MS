@@ -10,6 +10,7 @@ import { useFetchEvents } from "src/api/events";
 import { useEventsContext } from "src/context/EventsContextProvider";
 import EventsService from "src/services/events";
 import { EVENT_CATEGORIES } from "../tour/utils";
+import MovieTicket from "src/assets/frontend/images/ticket/ticket-tab01.png";
 
 interface Filters {
   eventName: string;
@@ -19,7 +20,15 @@ interface Filters {
   category: string;
 }
 
-const ticketTabItems = EVENT_CATEGORIES.filter((eachEventCategory: any) => eachEventCategory.isFeatured);
+const ticketTabItems = [
+  {
+    label: "All",
+    value: 'all',
+    isFeatured: true,
+    img: MovieTicket,
+  },
+  ...EVENT_CATEGORIES.filter((eachEventCategory) => eachEventCategory.isFeatured),
+];
 
 const selectFields = [
   {
@@ -77,7 +86,7 @@ const TicketSearch = () => {
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [selectedLocation, setSelectedLocation] = useState<string>("");
   const [searchText, setSearchText] = useState<string>("");
-  const [activeTab, setActiveTab] = useState<string>(ticketTabItems[0].label);
+  const [activeTab, setActiveTab] = useState<string>(ticketTabItems[0].value);
 
   const handleSelectChange = (field: string, value: string) => {
     if (field === "city") {
@@ -161,9 +170,9 @@ const TicketSearch = () => {
               <ul className="tab-menu ticket-tab-menu">
                 {ticketTabItems.map((item, index) => (
                   <li
-                    className={activeTab === item.label ? "active" : ""}
+                    className={activeTab === item.value ? "active" : ""}
                     key={index}
-                    onClick={() => setActiveTab(item.label)}
+                    onClick={() => setActiveTab(item.value)}
                   >
                     {item.img && (
                       <div className="tab-thumb">
@@ -178,7 +187,7 @@ const TicketSearch = () => {
           </div>
           <div className="tab-area">
             {ticketTabItems.map((eachTab: any) => (
-              <div className={`tab-item ${activeTab === eachTab.label ? "active" : ""}`} key={eachTab.index}>
+              <div className={`tab-item ${activeTab === eachTab.value ? "active" : ""}`} key={eachTab.index}>
                 <EventFormComponent />
               </div>
             ))}

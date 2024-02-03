@@ -32,11 +32,15 @@ const navigationItems: NavItem[] = [
     href: "/",
   },
   {
-    label: "Events",
+    label: "Explore Events",
     href: "/events/",
+    submenu: [],
+  },
+  {
+    label: "Event Categories",
+    href: "",
     submenu: eventCategories,
   },
-  { label: "Concerts", href: "/concerts" },
   { label: "Hot Tickets", href: "/hot-tickets" },
 ];
 
