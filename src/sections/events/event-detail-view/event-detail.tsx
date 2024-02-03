@@ -4,6 +4,7 @@ import { usePathname } from "src/routes/hook/use-pathname";
 import EventDetailBanner from "./event-detail-banner";
 import EventsService from "src/services/events";
 import { useEventsContext } from "src/context/EventsContextProvider";
+import EventBookSearch from "./event-book-search";
 
 const EventDetail = () => {
   const pathname = usePathname();
@@ -13,6 +14,7 @@ const EventDetail = () => {
   const [eventDetail, setEventDetail] = useState<any>();
 
   useEffect(() => {
+    console.log(pathname, "pathname===")
     if (pathname) {
       const parts = pathname.split("/").filter((part: string) => !!part);
       const slugPart = parts[parts.length - 1];
@@ -42,12 +44,13 @@ const EventDetail = () => {
 
   console.log(slug, "slug in detail page====");
 
-  console.log(eventDetail, "eventDetail===")
+  console.log(eventDetail, "eventDetail===");
   const primaryBannerImg = eventDetail?.eventImages?.find((eachEventImg: any) => eachEventImg.isPrimary).imageurl;
 
   return (
     <>
       <EventDetailBanner bannerImg={primaryBannerImg} />
+      <EventBookSearch eventName={eventDetail?.eventName} venues={eventDetail?.venues} />
     </>
   );
 };
