@@ -1,10 +1,7 @@
 import axiosInstance, { endpoints } from "src/utils/axios";
 
 const EventsService = {
-  list: (queryData?: { eventName?: string; city?: string; venueName?: string; artist?: string; eventDate?: string }) =>
-    axiosInstance.get(endpoints.events.list, {
-      params: queryData,
-    }),
+  list: (queryParameters = {}) => axiosInstance.get(endpoints.events.list(queryParameters)),
   create: (data: any) => axiosInstance.post(endpoints.events.create, data),
   update: (id: string, data: any) => axiosInstance.patch(endpoints.events.update(id), { ...data }),
   details: (id: any) => axiosInstance.get(endpoints.events.details(id)),
