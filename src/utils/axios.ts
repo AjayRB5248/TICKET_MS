@@ -2,7 +2,7 @@ import axios from "axios";
 import { getAccessToken, useRefreshToken } from "./token-management";
 import { BASE_URL } from "src/config-global";
 
-const accessToken = localStorage.getItem('accessToken')
+const accessToken = getAccessToken();
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
