@@ -20,13 +20,16 @@ import Markdown from 'src/components/markdown';
 import { varTranHover } from 'src/components/animate';
 import Lightbox, { useLightBox } from 'src/components/lightbox';
 import { Paper } from '@mui/material';
+import { SplashScreen } from 'src/components/loading-screen';
+import CarouselThumbnail from '../_examples/extra/carousel-view/carousel-thumbnail';
 
 
 type Props = {
   event: any;
+  isLoading:boolean;
 };
 
-export default function TourDetailsContent({ event }: Props) {
+export default function TourDetailsContent({ event,isLoading }: Props) {
   const {
     _id,
     eventName,
@@ -41,75 +44,15 @@ export default function TourDetailsContent({ event }: Props) {
     available,
   } = event;
 
-  const slides = eventImages?.map((slide:any) => ({
-    src: slide,
-  }));
-
-  const {
-    selected: selectedImage,
-    open: openLightbox,
-    onOpen: handleOpenLightbox,
-    onClose: handleCloseLightbox,
-  } = useLightBox(slides);
+  const carouselData = eventImages?.map(image => ({
+    id: image._id,
+    title: '', 
+    coverUrl: image.imageurl
+}));
 
   const renderGallery = (
     <>
-      <Box
-        gap={1}
-        display="grid"
-        gridTemplateColumns={{
-          xs: 'repeat(1, 1fr)',
-          md: 'repeat(2, 1fr)',
-        }}
-        sx={{
-          mb: { xs: 3, md: 5 },
-        }}
-      >
-        <m.div
-          key={slides?.[0].src}
-          whileHover="hover"
-          variants={{
-            hover: { opacity: 0.8 },
-          }}
-          transition={varTranHover()}
-        >
-          <Image
-            alt={slides?.[0]?.src}
-            src={slides?.[0]?.src}
-            ratio="1/1"
-            onClick={() => handleOpenLightbox(slides?.[0].src)}
-            sx={{ borderRadius: 2, cursor: 'pointer' }}
-          />
-        </m.div>
-
-        <Box gap={1} display="grid" gridTemplateColumns="repeat(2, 1fr)">
-          {slides?.slice(1, 5).map((slide:any) => (
-            <m.div
-              key={slide?.src}
-              whileHover="hover"
-              variants={{
-                hover: { opacity: 0.8 },
-              }}
-              transition={varTranHover()}
-            >
-              <Image
-                alt={slide?.src}
-                src={slide?.src}
-                ratio="1/1"
-                onClick={() => handleOpenLightbox(slide?.src)}
-                sx={{ borderRadius: 2, cursor: 'pointer' }}
-              />
-            </m.div>
-          ))}
-        </Box>
-      </Box>
-
-      <Lightbox
-        index={selectedImage}
-        slides={slides}
-        open={openLightbox}
-        close={handleCloseLightbox}
-      />
+  {isLoading ? <SplashScreen /> : <CarouselThumbnail data={carouselData} />}
     </>
   );
 
@@ -143,14 +86,14 @@ export default function TourDetailsContent({ event }: Props) {
   
 
   function renderEventVenueDetails() {
-    const combinedDetails = venues?.map((venue:any) => {
-      const eventDateTime = new Date(venue.dateOfEvent);
+      const combinedDetails = venues?.map((venue:any) => {
+      const eventDateTime = new Date(venue?.eventDate);
       const ticketsForVenue = ticketTypes?.filter((ticket:any) => ticket.venueName === venue.venueName);
   
       return {
         venueName: venue.venueName,
         city: venue.city,
-        date: eventDateTime.toLocaleDateString(),
+        date: fDate(eventDateTime),
         time: eventDateTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         tickets: ticketsForVenue,
         icon: <Iconify icon="solar:calendar-date-bold" />,
@@ -170,7 +113,7 @@ export default function TourDetailsContent({ event }: Props) {
           }}
           gap={3}
         >
-          {combinedDetails.map((venue:any, index:any) => (
+          {combinedDetails?.map((venue:any, index:any) => (
             <Paper key={index} elevation={3} sx={{ p: 2, borderRadius: 2 }}>
               <Stack spacing={2}>
                 <Stack direction="row" spacing={2} alignItems="center">
@@ -184,7 +127,7 @@ export default function TourDetailsContent({ event }: Props) {
                   Date: {venue.date}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Time: {venue.time}
+                  Starting From: {venue.time}
                 </Typography>
                 <Box>
                   {venue.tickets.map((ticket:any, idx:any) => (

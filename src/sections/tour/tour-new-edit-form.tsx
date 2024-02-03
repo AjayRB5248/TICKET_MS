@@ -429,6 +429,8 @@ export default function TourNewEditForm({ currentTour }: Props) {
             name="posterImage"
             maxSize={3145728}
             onDrop={handleDropSingleFile}
+            useFsAccessApi
+            disableMultiple
             onDelete={() =>
               setValue("posterImage", null, { shouldValidate: true })
             }

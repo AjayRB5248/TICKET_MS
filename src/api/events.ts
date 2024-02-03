@@ -1,14 +1,14 @@
 import EventsService from "src/services/events";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { useRouter } from 'src/routes/hook';
 import { useSnackbar } from "notistack";
 import { useMemo } from "react";
-
-
+import { paths } from "src/routes/paths";
 
 export function useEvent(id: any) {
   const { data, isLoading, error } = useQuery(["events/id",id], async () => {
     const res = await EventsService.details(id);
-    return res;
+    return res?.data?.event;
   });
 
   const event = useMemo(() => data || {}, [data]);
@@ -42,6 +42,7 @@ export function useEvents(queryParameters?:any) {
 
 
 export function useCreateEvent() {
+  const router = useRouter()
   const { enqueueSnackbar } = useSnackbar();
 
   return useMutation(
@@ -56,6 +57,7 @@ export function useCreateEvent() {
       },
       onSuccess: () => {
         enqueueSnackbar("Event created successfully", { variant: "success" });
+        router.push(paths.dashboard.tour.root)
       },
     }
   );

@@ -17,6 +17,7 @@ import { useSettingsContext } from 'src/components/settings';
 import TourDetailsToolbar from '../tour-details-toolbar';
 import TourDetailsContent from '../tour-details-content';
 import TourDetailsBookers from '../tour-details-bookers';
+import { useEvent, useEvents } from 'src/api/events';
 
 // ----------------------------------------------------------------------
 
@@ -27,61 +28,14 @@ export default function TourDetailsView() {
 
   const { id } = params;
 
-  const currentTour = _tours.filter((tour) => tour.id === id)[0];
+  const {event,isLoading} = useEvent(id)
 
-  const [publish, setPublish] = useState(currentTour?.publish);
-
-  const [currentTab, setCurrentTab] = useState('content');
-
-  const handleChangeTab = useCallback((event: React.SyntheticEvent, newValue: string) => {
-    setCurrentTab(newValue);
-  }, []);
-
-  const handleChangePublish = useCallback((newValue: string) => {
-    setPublish(newValue);
-  }, []);
-
-  const renderTabs = (
-    <Tabs
-      value={currentTab}
-      onChange={handleChangeTab}
-      sx={{
-        mb: { xs: 3, md: 5 },
-      }}
-    >
-      {TOUR_DETAILS_TABS.map((tab) => (
-        <Tab
-          key={tab.value}
-          iconPosition="end"
-          value={tab.value}
-          label={tab.label}
-          icon={
-            tab.value === 'bookers' ? (
-              <Label variant="filled">{currentTour?.bookers.length}</Label>
-            ) : (
-              ''
-            )
-          }
-        />
-      ))}
-    </Tabs>
-  );
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
-      <TourDetailsToolbar
-        backLink={paths.dashboard.tour.root}
-        editLink={paths.dashboard.tour.edit(`${currentTour?.id}`)}
-        liveLink="#"
-        publish={publish || ''}
-        onChangePublish={handleChangePublish}
-        publishOptions={TOUR_PUBLISH_OPTIONS}
-      />
-      {renderTabs}
 
-      {currentTab === 'content' && <TourDetailsContent tour={currentTour} />}
+    <TourDetailsContent event={event} isLoading={isLoading} />
 
-      {currentTab === 'bookers' && <TourDetailsBookers bookers={currentTour?.bookers} />}
     </Container>
   );
 }
