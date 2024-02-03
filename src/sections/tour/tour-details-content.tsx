@@ -33,6 +33,7 @@ export default function TourDetailsContent({ event,isLoading }: Props) {
   const {
     _id,
     eventName,
+    eventCategory,
     eventDescription,
     status,
     ticketTypes,
@@ -73,6 +74,11 @@ export default function TourDetailsContent({ event,isLoading }: Props) {
         <Iconify icon={status === 'Planned' ? "ic:baseline-event-available" : "ic:baseline-event-busy"} />
         {status}
       </Stack>
+      <Stack direction="row" alignItems="center" spacing={0.5} sx={{ typography: 'body2' }}>
+        <Iconify icon={"tabler:category"} />
+        {eventCategory ? eventCategory : "Event"}
+      </Stack>
+      
       </Stack>
 
       <Stack direction="row" sx={{ mb: 3 }}>

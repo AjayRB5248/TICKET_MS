@@ -47,7 +47,7 @@ export function useCreateEvent() {
 
   return useMutation(
     ["event/create"],
-    async (formData) => {
+    async (formData:FormData) => {
       const response = await EventsService.create(formData);
       return response?.data;
     },

@@ -34,6 +34,7 @@ export default function TourItem({ event, onView, onEdit, onDelete }: Props) {
   const {
     _id,
     eventName,
+    eventCategory,
     eventDescription,
     status,
     ticketTypes,
@@ -111,6 +112,10 @@ export default function TourItem({ event, onView, onEdit, onDelete }: Props) {
         {
           label: venuesDate,
           icon: <Iconify icon="solar:clock-circle-bold" sx={{ color: 'info.main' }} />,
+        },
+        {
+          label: eventCategory ? eventCategory : "Event",
+          icon: <Iconify icon="tabler:category" sx={{ color: 'success.main' }} />,
         },
       ].map((item) => (
         <Stack
