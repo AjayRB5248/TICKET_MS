@@ -26,22 +26,25 @@ const EventsListing = () => {
               <FilterMain />
 
               <div className="row mb-10 justify-content-center">
-                {events?.map((event: any) =>
-                  event.venues.map((eachEventVenue: any) => (
-                    <EventGridItem
-                      key={eachEventVenue._id}
-                      imageUrl={event.eventImages.find((eventImg: any) => eventImg.isPrimary)?.imageurl}
-                      date={eachEventVenue.eventDate}
-                      title={event.eventName}
-                      venue={eachEventVenue.venueName}
-                      city={eachEventVenue.city}
-                      timeZone={eachEventVenue.timeZone}
-                    />
-                  ))
+                {events && events.length > 0 ? (
+                  events?.map((event: any) =>
+                    event.venues.map((eachEventVenue: any) => (
+                      <EventGridItem
+                        key={eachEventVenue._id}
+                        imageUrl={event.eventImages.find((eventImg: any) => eventImg.isPrimary)?.imageurl}
+                        date={eachEventVenue.eventDate}
+                        title={event.eventName}
+                        venue={eachEventVenue.venueName}
+                        city={eachEventVenue.city}
+                        timeZone={eachEventVenue.timeZone}
+                      />
+                    ))
+                  )
+                ) : (
+                  <p>No Data Found</p>
                 )}
               </div>
-
-              <EventPagination />
+              {events && events.length > 0 && <EventPagination />}
             </div>
           </div>
         </div>
