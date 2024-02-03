@@ -28,4 +28,7 @@ module.exports = {
   sassOptions: {
     includePaths: [path.join(__dirname, "src", "assets", "frontend", "sass")],
   },
+  images: {
+    domains: ["ticketing-app-au.s3.ap-southeast-2.amazonaws.com"],
+  },
 };
