@@ -1,5 +1,6 @@
 import moment from "moment";
 import Image, { StaticImageData } from "next/image";
+import Link from "next/link";
 
 const EventGridItem: React.FC<{
   imageUrl: StaticImageData;
@@ -8,14 +9,16 @@ const EventGridItem: React.FC<{
   venue: string;
   city: string;
   timeZone: string;
-}> = ({ imageUrl, date, title, venue, city, timeZone }) => {
+  slug: string;
+}> = ({ imageUrl, date, title, venue, city, timeZone, slug }) => {
+
   return (
     <div className="col-sm-6 col-lg-4">
       <div className="event-grid">
         <div className="movie-thumb c-thumb">
-          <a href="event-details.html">
+          <Link href={`/event-detail/${slug}`}>
             <Image src={imageUrl} alt="event" width={800} height={1200} />
-          </a>
+          </Link>
           <div className="event-date">
             <h6 className="date-title">{moment(date).format("D")}</h6>
             <span>{moment(date).format("MMM")}</span>
@@ -23,7 +26,7 @@ const EventGridItem: React.FC<{
         </div>
         <div className="movie-content bg-one">
           <h5 className="title m-0">
-            <a href="event-details.html">{title}</a>
+            <Link href={`/event-detail/${slug}`}>{title}</Link>
           </h5>
           <div className="movie-rating-percent">
             <span>
