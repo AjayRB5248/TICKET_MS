@@ -5,6 +5,7 @@ import EventDetailBanner from "./event-detail-banner";
 import EventsService from "src/services/events";
 import { useEventsContext } from "src/context/EventsContextProvider";
 import EventBookSearch from "./event-book-search";
+import EventAbout from "./event-about";
 
 const EventDetail = () => {
   const pathname = usePathname();
@@ -14,7 +15,7 @@ const EventDetail = () => {
   const [eventDetail, setEventDetail] = useState<any>();
 
   useEffect(() => {
-    console.log(pathname, "pathname===")
+    console.log(pathname, "pathname===");
     if (pathname) {
       const parts = pathname.split("/").filter((part: string) => !!part);
       const slugPart = parts[parts.length - 1];
@@ -51,6 +52,11 @@ const EventDetail = () => {
     <>
       <EventDetailBanner bannerImg={primaryBannerImg} />
       <EventBookSearch eventName={eventDetail?.eventName} venues={eventDetail?.venues} />
+      <EventAbout
+        eventName={eventDetail?.eventName}
+        eventDescription={eventDetail?.eventDescription}
+        eventPrimaryImg={primaryBannerImg}
+      />
     </>
   );
 };

@@ -2272,6 +2272,8 @@
     width: 100%;
     position: relative;
     z-index: 9;
+    height: 500px;
+    object-fit: cover;
   }
   &::after {
     @extend %pa;
