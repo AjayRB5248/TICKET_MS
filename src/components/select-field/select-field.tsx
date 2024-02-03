@@ -1,6 +1,8 @@
-import React, { ChangeEvent } from "react";
+import React, { useState, useEffect } from "react";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import Image, { StaticImageData } from "next/image";
 import withNiceSelect from "src/layouts/_common/nice-select/withNiceSelect";
+import moment from "moment";
 
 interface SelectFieldProps {
   imageSrc: StaticImageData;
@@ -11,8 +13,16 @@ interface SelectFieldProps {
 }
 
 const SelectField: React.FC<SelectFieldProps> = ({ imageSrc, altText, label, options, onSelectChange }) => {
-  const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     onSelectChange(label, e.target.value);
+  };
+
+  const handleDateChange = (date: Date | null) => {
+    setSelectedDate(date);
+    const formattedDate = moment(date).format("DD/MM/YYYY");
+    onSelectChange(label, formattedDate);
   };
 
   return (
@@ -21,13 +31,17 @@ const SelectField: React.FC<SelectFieldProps> = ({ imageSrc, altText, label, opt
         <Image src={imageSrc} alt={altText} />
       </div>
       <span className="type">{label}</span>
-      <select className="select-bar" onChange={handleSelectChange}>
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
+      {label === "date" ? (
+        <DatePicker value={selectedDate} onChange={handleDateChange} className="custom-date-picker" />
+      ) : (
+        <select className="select-bar" onChange={handleSelectChange}>
+          {options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+      )}
     </div>
   );
 };
