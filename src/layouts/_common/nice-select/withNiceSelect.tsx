@@ -1,16 +1,18 @@
 import NiceSelect from "./nice-select";
 
 const withNiceSelect = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
-  const withNiceSelect: React.FC<P> = (props) => {
+  const WithNiceSelect: React.FC<
+    React.ComponentProps<typeof WrappedComponent> & { onSelectChange: (label: string, value: string) => void }
+  > = (props) => {
     return (
       <>
-        <NiceSelect />
+        <NiceSelect onSelectChange={props.onSelectChange} />
         <WrappedComponent {...props} />
       </>
     );
   };
 
-  return withNiceSelect;
+  return WithNiceSelect;
 };
 
 export default withNiceSelect;

@@ -2,6 +2,14 @@ import EventsService from "src/services/events";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useSnackbar } from "notistack";
 import { useMemo } from "react";
+import { useEventsContext } from "src/context/EventsContextProvider";
+
+interface Filters {
+  eventName: string;
+  city: string;
+  eventDate: string;
+  venueName: string;
+}
 
 export function useEvents() {
   const { data, isLoading, error } = useQuery(["events"], async () => {
@@ -72,11 +80,14 @@ export function useRemoveEvent() {
   );
 }
 
-export const useFetchEvents = (queryData: Record<string, string>) => {
-  const { data, isLoading, isError, isFetching, error } = useQuery(["events", queryData], async () => {
-    const res = await EventsService.list(queryData);
+export const useFetchEvents = (queryData?: Filters) => {
+  const { setEvents } = useEventsContext();
 
-    return res?.data?.events;
+  const { data, isLoading, isError, isFetching, error } = useQuery(["events", queryData], async () => {
+    const events = await EventsService.list(queryData).then((res) => res?.data?.events);
+
+    setEvents(events);
+    return events;
   });
 
   return {

@@ -8,8 +8,17 @@ import CinemaImg from "src/assets/frontend/images/ticket/cinema.png";
 import TicketSearchBg from "src/assets/frontend/images/event3.jpg";
 import withNiceSelect from "src/layouts/_common/nice-select/withNiceSelect";
 import { SelectField } from "src/components/select-field";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useFetchEvents } from "src/api/events";
+import { useEventsContext } from "src/context/EventsContextProvider";
+import EventsService from "src/services/events";
+
+interface Filters {
+  eventName: string;
+  city: string;
+  eventDate: string;
+  venueName: string;
+}
 
 const ticketTabItems = [
   {
@@ -32,9 +41,10 @@ const selectFields = [
     imageSrc: CityImg,
     altText: "City",
     options: [
-      { value: "sydney", label: "Sydney" },
-      { value: "perth", label: "Perth" },
-      { value: "melbourne", label: "Melbourne" },
+      { value: "all", label: "All" },
+      { value: "Sydney", label: "Sydney" },
+      { value: "Perth", label: "Perth" },
+      { value: "Melbourne", label: "Melbourne" },
       // Add more city options here
     ],
   },
@@ -43,6 +53,7 @@ const selectFields = [
     imageSrc: DateImg,
     altText: "Date",
     options: [
+      { value: "all", label: "All" },
       { value: "23-10-2020", label: "23/10/2020" },
       { value: "24-10-2020", label: "24/10/2020" },
       { value: "25-10-2020", label: "25/10/2020" },
@@ -55,6 +66,7 @@ const selectFields = [
     imageSrc: CinemaImg,
     altText: "Location",
     options: [
+      { value: "all", label: "All" },
       { value: "opera-house", label: "Opera House" },
       { value: "enmore-theatre", label: "Enmore Theatre" },
       { value: "city-recital-hall", label: "City Recital Hall" },
@@ -64,6 +76,8 @@ const selectFields = [
 ];
 
 const TicketSearch = () => {
+  const { events, filters, setFilters, setEvents } = useEventsContext();
+
   const [selectedCity, setSelectedCity] = useState<string>("");
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [selectedLocation, setSelectedLocation] = useState<string>("");
@@ -83,23 +97,34 @@ const TicketSearch = () => {
     setSearchText(e.target.value);
   };
 
-  const callFilterEventsAPI = () => {
-    const queryData: Record<string, string> = {
+  const callFilterEventsAPI = async () => {
+    const queryData: Filters = {
       eventName: searchText,
       city: selectedCity,
       eventDate: selectedDate,
       venueName: selectedLocation,
     };
 
-    console.log("API call with queryData:", queryData);
+    setFilters(queryData);
 
-    // const { events, loading, error, isFetching } = useFetchEvents(queryData);
-    // console.log(events, 'events==')
+    // API call with the queryData above and setEvent
+    const events = await EventsService.list(queryData)
+      .then((res) => res.data?.events)
+      .catch((err) => {
+        console.log(err, "err===");
+      });
+    console.log(events, "events====");
+    setEvents(events);
+  };
+
+  const handleSearchButtonClick = (e: FormEvent) => {
+    e.preventDefault();
+    callFilterEventsAPI();
   };
 
   useEffect(() => {
     callFilterEventsAPI();
-  }, [selectedCity, selectedDate, selectedLocation, searchText]);
+  }, [selectedCity, selectedDate, selectedLocation]);
 
   return (
     <section className="search-ticket-section padding-top pt-lg-0">
@@ -135,7 +160,7 @@ const TicketSearch = () => {
                     value={searchText}
                     onChange={handleSearchTextChange}
                   />
-                  <button type="submit">
+                  <button type="submit" onClick={handleSearchButtonClick}>
                     <i className="fas fa-search"></i>
                   </button>
                 </div>
@@ -146,12 +171,12 @@ const TicketSearch = () => {
                     altText={field.altText}
                     label={field.label}
                     options={field.options}
-                    onSelectChange={(value) => handleSelectChange(field.label, value)}
+                    onSelectChange={(label: string, value: string) => handleSelectChange(label, value)}
                   />
                 ))}
               </form>
             </div>
-            <div className="tab-item">
+            {/* <div className="tab-item">
               <form className="ticket-search-form">
                 <div className="form-group large">
                   <input type="text" placeholder="Search for Events" />
@@ -190,7 +215,7 @@ const TicketSearch = () => {
                   />
                 ))}
               </form>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

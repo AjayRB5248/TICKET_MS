@@ -5,9 +5,10 @@ import FilterMain from "./filter-main";
 import EventGridItem from "./event-grid";
 import EventPagination from "./event-pagination";
 import { useFetchEvents } from "src/api/events";
+import { useEventsContext } from "src/context/EventsContextProvider";
 
 const EventsListing = () => {
-  const { events, loading, error, isFetching } = useFetchEvents();
+  const { events } = useEventsContext();
 
   return (
     <section className="event-section padding-top padding-bottom">
@@ -25,24 +26,18 @@ const EventsListing = () => {
               <FilterMain />
 
               <div className="row mb-10 justify-content-center">
-                {isFetching ? (
-                  <div className="spinner-border" role="status">
-                    <span className="visually-hidden">Loading...</span>
-                  </div>
-                ) : (
-                  events?.map((event: any) =>
-                    event.venues.map((eachEventVenue: any) => (
-                      <EventGridItem
-                        key={eachEventVenue._id}
-                        imageUrl={event.eventImages.find((eventImg: any) => eventImg.isPrimary)?.imageurl}
-                        date={eachEventVenue.eventDate}
-                        title={event.eventName}
-                        venue={eachEventVenue.venueName}
-                        city={eachEventVenue.city}
-                        timeZone={eachEventVenue.timeZone}
-                      />
-                    ))
-                  )
+                {events?.map((event: any) =>
+                  event.venues.map((eachEventVenue: any) => (
+                    <EventGridItem
+                      key={eachEventVenue._id}
+                      imageUrl={event.eventImages.find((eventImg: any) => eventImg.isPrimary)?.imageurl}
+                      date={eachEventVenue.eventDate}
+                      title={event.eventName}
+                      venue={eachEventVenue.venueName}
+                      city={eachEventVenue.city}
+                      timeZone={eachEventVenue.timeZone}
+                    />
+                  ))
                 )}
               </div>
 

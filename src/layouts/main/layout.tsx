@@ -25,7 +25,6 @@ import "react-phone-number-input/style.css";
 import "src/assets/frontend/sass/main.scss";
 
 // js
-import "src/assets/frontend/js/jquery-3.3.1.min.js";
 import "src/assets/frontend/js/modernizr-3.6.0.min.js";
 import "src/assets/frontend/js/plugins.js";
 import "bootstrap/dist/js/bootstrap.min.js";

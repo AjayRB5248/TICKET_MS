@@ -34,7 +34,6 @@ const navigationItems: NavItem[] = [
 
 const Navbar: React.FC = () => {
   const pathname = usePathname();
-  console.log(pathname, 'pathname')
 
   const { user } = useAuth();
 

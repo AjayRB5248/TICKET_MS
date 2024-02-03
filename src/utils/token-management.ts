@@ -6,11 +6,14 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 export const storeTokens = (accessToken: string, refreshToken: string, userData?: {}) => {
   queryClient.setQueryData(["accessToken"], accessToken);
   queryClient.setQueryData(["refreshToken"], refreshToken);
-  queryClient.setQueryData(["user"], userData);
 
   localStorage.setItem("accessToken", accessToken);
   localStorage.setItem("refreshToken", refreshToken);
-  localStorage.setItem("user", JSON.stringify(userData));
+
+  if (userData && Object.keys(userData).length > 0) {
+    queryClient.setQueryData(["user"], userData);
+    localStorage.setItem("user", JSON.stringify(userData));
+  }
 };
 
 export const getAccessToken = (): string | null => {

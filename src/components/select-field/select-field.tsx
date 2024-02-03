@@ -7,12 +7,12 @@ interface SelectFieldProps {
   altText: string;
   label: string;
   options: { value: string; label: string }[];
-  onSelectChange: (value: string) => void;
+  onSelectChange: (fieldLabel: string, value: string) => void;
 }
 
 const SelectField: React.FC<SelectFieldProps> = ({ imageSrc, altText, label, options, onSelectChange }) => {
   const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    onSelectChange(e.target.value);
+    onSelectChange(label, e.target.value);
   };
 
   return (
