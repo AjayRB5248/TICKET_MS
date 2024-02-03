@@ -1,7 +1,4 @@
 import Image from "next/image";
-import MovieTicket from "src/assets/frontend/images/ticket/ticket-tab01.png";
-import EventsTicket from "src/assets/frontend/images/ticket/ticket-tab02.png";
-import SportsTicket from "src/assets/frontend/images/ticket/ticket-tab03.png";
 import CityImg from "src/assets/frontend/images/ticket/city.png";
 import DateImg from "src/assets/frontend/images/ticket/date.png";
 import CinemaImg from "src/assets/frontend/images/ticket/cinema.png";
@@ -12,28 +9,17 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useFetchEvents } from "src/api/events";
 import { useEventsContext } from "src/context/EventsContextProvider";
 import EventsService from "src/services/events";
+import { EVENT_CATEGORIES } from "../tour/utils";
 
 interface Filters {
   eventName: string;
   city: string;
   eventDate: string;
   venueName: string;
+  category: string;
 }
 
-const ticketTabItems = [
-  {
-    label: "Concerts",
-    img: MovieTicket,
-  },
-  {
-    label: "events",
-    img: EventsTicket,
-  },
-  {
-    label: "sports",
-    img: SportsTicket,
-  },
-];
+const ticketTabItems = EVENT_CATEGORIES.filter((eachEventCategory: any) => eachEventCategory.isFeatured);
 
 const selectFields = [
   {
@@ -91,6 +77,7 @@ const TicketSearch = () => {
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [selectedLocation, setSelectedLocation] = useState<string>("");
   const [searchText, setSearchText] = useState<string>("");
+  const [activeTab, setActiveTab] = useState<string>(ticketTabItems[0].label);
 
   const handleSelectChange = (field: string, value: string) => {
     if (field === "city") {
@@ -112,6 +99,7 @@ const TicketSearch = () => {
       city: selectedCity,
       eventDate: selectedDate,
       venueName: selectedLocation,
+      category: activeTab,
     };
 
     setFilters(queryData);
@@ -133,7 +121,30 @@ const TicketSearch = () => {
 
   useEffect(() => {
     callFilterEventsAPI();
-  }, [selectedCity, selectedDate, selectedLocation]);
+  }, [selectedCity, selectedDate, selectedLocation, activeTab]);
+
+  const EventFormComponent: React.FC = () => {
+    return (
+      <form className="ticket-search-form">
+        <div className="form-group large">
+          <input type="text" placeholder="Search for Events" value={searchText} onChange={handleSearchTextChange} />
+          <button type="submit" onClick={handleSearchButtonClick}>
+            <i className="fas fa-search"></i>
+          </button>
+        </div>
+        {selectFields.map((field, index) => (
+          <SelectField
+            key={index}
+            imageSrc={field.imageSrc}
+            altText={field.altText}
+            label={field.label}
+            options={field.options}
+            onSelectChange={(label: string, value: string) => handleSelectChange(label, value)}
+          />
+        ))}
+      </form>
+    );
+  };
 
   return (
     <section className="search-ticket-section padding-top pt-lg-0">
@@ -149,10 +160,16 @@ const TicketSearch = () => {
             <div className="col-lg-6 mb-20">
               <ul className="tab-menu ticket-tab-menu">
                 {ticketTabItems.map((item, index) => (
-                  <li className="active" key={index}>
-                    <div className="tab-thumb">
-                      <Image src={item.img} alt="ticket" />
-                    </div>
+                  <li
+                    className={activeTab === item.label ? "active" : ""}
+                    key={index}
+                    onClick={() => setActiveTab(item.label)}
+                  >
+                    {item.img && (
+                      <div className="tab-thumb">
+                        <Image src={item.img} alt="ticket" />
+                      </div>
+                    )}
                     <span>{item?.label}</span>
                   </li>
                 ))}
@@ -160,71 +177,11 @@ const TicketSearch = () => {
             </div>
           </div>
           <div className="tab-area">
-            <div className="tab-item active">
-              <form className="ticket-search-form">
-                <div className="form-group large">
-                  <input
-                    type="text"
-                    placeholder="Search for Events"
-                    value={searchText}
-                    onChange={handleSearchTextChange}
-                  />
-                  <button type="submit" onClick={handleSearchButtonClick}>
-                    <i className="fas fa-search"></i>
-                  </button>
-                </div>
-                {selectFields.map((field, index) => (
-                  <SelectField
-                    key={index}
-                    imageSrc={field.imageSrc}
-                    altText={field.altText}
-                    label={field.label}
-                    options={field.options}
-                    onSelectChange={(label: string, value: string) => handleSelectChange(label, value)}
-                  />
-                ))}
-              </form>
-            </div>
-            {/* <div className="tab-item">
-              <form className="ticket-search-form">
-                <div className="form-group large">
-                  <input type="text" placeholder="Search for Events" />
-                  <button type="submit">
-                    <i className="fas fa-search"></i>
-                  </button>
-                </div>
-                {selectFields.map((field, index) => (
-                  <SelectField
-                    key={index}
-                    imageSrc={field.imageSrc}
-                    altText={field.altText}
-                    label={field.label}
-                    options={field.options}
-                    onSelectChange={(value) => handleSelectChange(field.label, value)}
-                  />
-                ))}
-              </form>
-            </div>
-            <div className="tab-item">
-              <form className="ticket-search-form">
-                <div className="form-group large">
-                  <input type="text" placeholder="Search for Events" />
-                  <button type="submit">
-                    <i className="fas fa-search"></i>
-                  </button>
-                </div>
-                {selectFields.map((field, index) => (
-                  <SelectField
-                    key={index}
-                    imageSrc={field.imageSrc}
-                    altText={field.altText}
-                    label={field.label}
-                    options={field.options}
-                    onSelectChange={(value) => handleSelectChange(field.label, value)}
-                  />
-                ))}
-              </form>
-            </div> */}
+            {ticketTabItems.map((eachTab: any) => (
+              <div className={`tab-item ${activeTab === eachTab.label ? "active" : ""}`} key={eachTab.index}>
+                <EventFormComponent />
+              </div>
+            ))}
           </div>
         </div>
       </div>

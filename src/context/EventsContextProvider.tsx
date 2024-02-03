@@ -5,6 +5,7 @@ interface Filters {
   city: string;
   eventDate: string;
   venueName: string;
+  category: string;
 }
 
 interface EventsContextType {
@@ -30,6 +31,7 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     city: "",
     eventDate: "",
     venueName: "",
+    category: "",
   });
 
   const [events, setEvents] = useState<Event[]>([]);

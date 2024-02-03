@@ -4,6 +4,7 @@ import { useLogout } from "src/api/auth";
 import { useAuth } from "src/auth/context/users/auth-context";
 import UserAccountPopover from "src/layouts/_common/user-account-popover";
 import { usePathname, useRouter } from "src/routes/hook";
+import { EVENT_CATEGORIES } from "src/sections/tour/utils";
 
 interface SubmenuItem {
   label: string;
@@ -18,6 +19,13 @@ interface NavItem {
   submenu?: SubmenuItem[];
 }
 
+const eventCategories = EVENT_CATEGORIES.map((eachEventCategory: any) => {
+  return {
+    ...eachEventCategory,
+    href: "/",
+  };
+});
+
 const navigationItems: NavItem[] = [
   {
     label: "Home",
@@ -26,7 +34,7 @@ const navigationItems: NavItem[] = [
   {
     label: "Events",
     href: "/events/",
-    submenu: [],
+    submenu: eventCategories,
   },
   { label: "Concerts", href: "/concerts" },
   { label: "Hot Tickets", href: "/hot-tickets" },

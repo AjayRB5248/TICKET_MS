@@ -1,3 +1,7 @@
+import MovieTicket from "src/assets/frontend/images/ticket/ticket-tab01.png";
+import EventsTicket from "src/assets/frontend/images/ticket/ticket-tab02.png";
+import SportsTicket from "src/assets/frontend/images/ticket/ticket-tab03.png";
+
 export const timeZones = [
   { label: "ACT", value: "Australia/ACT" },
   { label: "Adelaide", value: "Australia/Adelaide" },
@@ -82,10 +86,10 @@ export const EventStatusEnum = {
 };
 
 export const EVENT_CATEGORIES = [
-  { label: "Music & Concerts", value: "music_concerts" },
+  { label: "Music & Concerts", value: "music_concerts", isFeatured: true, img: EventsTicket },
   { label: "Fundraisers", value: "fundraisers" },
-  { label: "Arts & Culture", value: "arts_culture" },
-  { label: "Sports", value: "sports_fitness" },
+  { label: "Arts & Culture", value: "arts_culture", isFeatured: true, img: MovieTicket },
+  { label: "Sports", value: "sports_fitness", isFeatured: true, img: SportsTicket },
   { label: "Food & Drink", value: "food_drink" },
   { label: "Holiday Events", value: "holiday_events" },
   { label: "Conferences & Seminars", value: "conferences_seminars" },
