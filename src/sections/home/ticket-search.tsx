@@ -23,7 +23,7 @@ interface Filters {
 const ticketTabItems = [
   {
     label: "All",
-    value: 'all',
+    value: "all",
     isFeatured: true,
     img: MovieTicket,
   },
@@ -132,29 +132,6 @@ const TicketSearch = () => {
     callFilterEventsAPI();
   }, [selectedCity, selectedDate, selectedLocation, activeTab]);
 
-  const EventFormComponent: React.FC = () => {
-    return (
-      <form className="ticket-search-form">
-        <div className="form-group large">
-          <input type="text" placeholder="Search for Events" value={searchText} onChange={handleSearchTextChange} />
-          <button type="submit" onClick={handleSearchButtonClick}>
-            <i className="fas fa-search"></i>
-          </button>
-        </div>
-        {selectFields.map((field, index) => (
-          <SelectField
-            key={index}
-            imageSrc={field.imageSrc}
-            altText={field.altText}
-            label={field.label}
-            options={field.options}
-            onSelectChange={(label: string, value: string) => handleSelectChange(label, value)}
-          />
-        ))}
-      </form>
-    );
-  };
-
   return (
     <section className="search-ticket-section padding-top pt-lg-0">
       <div className="container">
@@ -186,11 +163,31 @@ const TicketSearch = () => {
             </div>
           </div>
           <div className="tab-area">
-            {ticketTabItems.map((eachTab: any) => (
-              <div className={`tab-item ${activeTab === eachTab.value ? "active" : ""}`} key={eachTab.index}>
-                <EventFormComponent />
-              </div>
-            ))}
+            <div className="tab-item active">
+              <form className="ticket-search-form">
+                <div className="form-group large">
+                  <input
+                    type="text"
+                    placeholder="Search for Events"
+                    value={searchText}
+                    onChange={handleSearchTextChange}
+                  />
+                  <button type="submit" onClick={handleSearchButtonClick}>
+                    <i className="fas fa-search"></i>
+                  </button>
+                </div>
+                {selectFields.map((field, index) => (
+                  <SelectField
+                    key={index}
+                    imageSrc={field.imageSrc}
+                    altText={field.altText}
+                    label={field.label}
+                    options={field.options}
+                    onSelectChange={(label: string, value: string) => handleSelectChange(label, value)}
+                  />
+                ))}
+              </form>
+            </div>
           </div>
         </div>
       </div>
