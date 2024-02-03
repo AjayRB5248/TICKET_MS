@@ -40,14 +40,6 @@ axiosInstance.interceptors.response.use(
         }
       } catch (refreshError) {
         console.error("Error refreshing token:", refreshError);
-
-        const router = useRouter();
-        const searchParams = useSearchParams();
-
-        const returnTo = searchParams.get("returnTo");
-        const userData = getUserData();
-
-        router.push(returnTo || userData?.role === "customer" ? USER_LOGIN_PATH : ADMIN_LOGIN_PATH);
         throw refreshError;
       }
     }

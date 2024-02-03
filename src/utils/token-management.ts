@@ -35,18 +35,16 @@ export const clearTokens = () => {
   queryClient.removeQueries(["user"]);
 };
 
-export const useRefreshToken = () => {
-  return useMutation(async () => {
-    const refreshToken = getRefreshToken();
-    if (!refreshToken) throw new Error("No refresh token available");
+export const useRefreshToken = async () => {
+  const refreshToken = getRefreshToken();
 
-    const response = await AuthService.refreshToken({ refreshToken }).then((res) => res.data.tokens);
-    console.log(response, "response====refresh tokens");
+  if (!refreshToken) throw new Error("No refresh token available");
 
-    storeTokens(response.access.token, response.refresh.token);
+  const response = await AuthService.refreshToken({ refreshToken }).then((res) => res.data);
 
-    return response.access.token;
-  });
+  storeTokens(response.access.token, response.refresh.token);
+
+  return response.access.token;
 };
 
 export const checkTokenExpiry = async () => {
@@ -54,12 +52,10 @@ export const checkTokenExpiry = async () => {
 
   if (accessToken) {
     const decodedToken = jwt.decode(accessToken) as JwtPayload;
-    console.log(decodedToken, "decodedToken===");
+
     const currentTime = Math.floor(Date.now() / 1000);
 
-    // Check if the token is close to expiration (e.g., within the next 5 minutes)
     if (decodedToken && (decodedToken.exp ?? 0) - currentTime < 300) {
-      // Token is close to expiration or has already expired, refresh it
       await useRefreshToken();
     }
   }
