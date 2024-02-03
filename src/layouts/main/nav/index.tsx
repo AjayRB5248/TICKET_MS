@@ -22,7 +22,7 @@ interface NavItem {
 const eventCategories = EVENT_CATEGORIES.map((eachEventCategory: any) => {
   return {
     ...eachEventCategory,
-    href: "/",
+    href: "/[category]",
   };
 });
 
@@ -63,7 +63,9 @@ const Navbar: React.FC = () => {
                   <ul className="submenu">
                     {item.submenu.map((subItem, subIndex) => (
                       <li key={subIndex}>
-                        <Link href={subItem.href}>{subItem.label}</Link>
+                        <Link href={subItem.href} as={`/events/${subItem.label}`} passHref>
+                          {subItem.label}
+                        </Link>
                       </li>
                     ))}
                   </ul>

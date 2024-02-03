@@ -4,6 +4,6 @@ export const metadata = {
   title: "Browse  Hulya Events",
 };
 
-export default function LoginAsPage() {
+export default function EventsListPage() {
   return <EventsList />;
 }
