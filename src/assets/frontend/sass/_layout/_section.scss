@@ -4286,16 +4286,23 @@
 
 // Custom Date Picker
 .custom-date-picker {
-  padding-left: 18px!important;
-  padding-right: 30px!important;
-  
+  padding-left: 18px !important;
+  padding-right: 30px !important;
+
   input {
-    color: #fff!important;
-    padding-right: 0!important;
-    border-bottom: 0!important;
+    color: #fff !important;
+    padding-right: 0 !important;
+    border-bottom: 0 !important;
   }
 
   fieldset {
     border: none;
   }
+}
+
+.date-clear-icon {
+  position: absolute;
+  top: 15px;
+  left: 90px;
+  cursor: pointer;
 }

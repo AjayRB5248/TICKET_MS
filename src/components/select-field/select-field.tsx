@@ -21,7 +21,7 @@ const SelectField: React.FC<SelectFieldProps> = ({ imageSrc, altText, label, opt
 
   const handleDateChange = (date: Date | null) => {
     setSelectedDate(date);
-    const formattedDate = moment(date).format("DD/MM/YYYY");
+    const formattedDate = date ? moment(date).format("DD/MM/YYYY") : "";
     onSelectChange(label, formattedDate);
   };
 
@@ -32,7 +32,14 @@ const SelectField: React.FC<SelectFieldProps> = ({ imageSrc, altText, label, opt
       </div>
       <span className="type">{label}</span>
       {label === "date" ? (
-        <DatePicker value={selectedDate} onChange={handleDateChange} className="custom-date-picker" />
+        <div className="position-relative">
+          <DatePicker value={selectedDate} onChange={handleDateChange} className="custom-date-picker" />
+          {selectedDate && (
+            <span className="date-clear-icon" onClick={() => handleDateChange(null)}>
+              <i className="fa fa-times"></i>
+            </span>
+          )}
+        </div>
       ) : (
         <select className="select-bar" onChange={handleSelectChange}>
           {options.map((option) => (

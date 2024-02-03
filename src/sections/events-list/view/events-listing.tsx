@@ -44,7 +44,7 @@ const EventsListing = () => {
                   <p>No Data Found</p>
                 )}
               </div>
-              {events && events.length > 0 && <EventPagination />}
+              {/* {events && events.length > 0 && <EventPagination />} */}
             </div>
           </div>
         </div>

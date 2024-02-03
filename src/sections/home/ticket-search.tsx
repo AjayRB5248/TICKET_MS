@@ -41,40 +41,34 @@ const selectFields = [
     imageSrc: CityImg,
     altText: "City",
     options: [
-      { value: "sydney", label: "Sydney" },
-      { value: "melbourne", label: "Melbourne" },
-      { value: "brisbane", label: "Brisbane" },
-      { value: "perth", label: "Perth" },
-      { value: "adelaide", label: "Adelaide" },
-      { value: "gold coast", label: "Gold Coast" },
-      { value: "canberra", label: "Canberra" },
-      { value: "newcastle", label: "Newcastle" },
-      { value: "hobart", label: "Hobart" },
-      { value: "darwin", label: "Darwin" },
-      { value: "cairns", label: "Cairns" },
-      { value: "townsville", label: "Townsville" },
-      { value: "wollongong", label: "Wollongong" },
-      { value: "geelong", label: "Geelong" },
-      { value: "ballarat", label: "Ballarat" },
-      { value: "toowoomba", label: "Toowoomba" },
-      { value: "sunshine coast", label: "Sunshine Coast" },
-      { value: "mackay", label: "Mackay" },
-      { value: "rockhampton", label: "Rockhampton" },
-      { value: "bendigo", label: "Bendigo" },
+      { value: "all", label: "All" },
+      { value: "Sydney", label: "Sydney" },
+      { value: "Melbourne", label: "Melbourne" },
+      { value: "Brisbane", label: "Brisbane" },
+      { value: "Perth", label: "Perth" },
+      { value: "Adelaide", label: "Adelaide" },
+      { value: "Gold Coast", label: "Gold Coast" },
+      { value: "Canberra", label: "Canberra" },
+      { value: "Newcastle", label: "Newcastle" },
+      { value: "Hobart", label: "Hobart" },
+      { value: "Darwin", label: "Darwin" },
+      { value: "Cairns", label: "Cairns" },
+      { value: "Townsville", label: "Townsville" },
+      { value: "Wollongong", label: "Wollongong" },
+      { value: "Geelong", label: "Geelong" },
+      { value: "Ballarat", label: "Ballarat" },
+      { value: "Toowoomba", label: "Toowoomba" },
+      { value: "Sunshine coast", label: "Sunshine Coast" },
+      { value: "Mackay", label: "Mackay" },
+      { value: "Rockhampton", label: "Rockhampton" },
+      { value: "Bendigo", label: "Bendigo" },
     ],
   },
   {
     label: "date",
     imageSrc: DateImg,
     altText: "Date",
-    options: [
-      { value: "all", label: "All" },
-      { value: "23-10-2020", label: "23/10/2020" },
-      { value: "24-10-2020", label: "24/10/2020" },
-      { value: "25-10-2020", label: "25/10/2020" },
-      { value: "26-10-2020", label: "26/10/2020" },
-      // Add more date options here
-    ],
+    options: [],
   },
   {
     label: "Location",
@@ -82,9 +76,9 @@ const selectFields = [
     altText: "Location",
     options: [
       { value: "all", label: "All" },
-      { value: "opera-house", label: "Opera House" },
-      { value: "enmore-theatre", label: "Enmore Theatre" },
-      { value: "city-recital-hall", label: "City Recital Hall" },
+      { value: "Opera House", label: "Opera House" },
+      { value: "Enmore Theatre", label: "Enmore Theatre" },
+      { value: "City Recital Hall", label: "City Recital Hall" },
       // Add more location options here
     ],
   },
@@ -100,11 +94,11 @@ const TicketSearch = () => {
 
   const handleSelectChange = (field: string, value: string) => {
     if (field === "city") {
-      setSelectedCity(value);
+      setSelectedCity(value === "all" ? "" : value);
     } else if (field === "date") {
       setSelectedDate(value);
     } else if (field === "Location") {
-      setSelectedLocation(value);
+      setSelectedLocation(value === "all" ? "" : value);
     }
   };
 
