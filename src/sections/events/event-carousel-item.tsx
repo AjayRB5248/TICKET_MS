@@ -56,6 +56,7 @@ const EventCarouselItem: React.FC<EventCarouselItemProps> = ({ events }) => {
             venue={eachEventVenue.venueName}
             city={eachEventVenue.city}
             timeZone={eachEventVenue.timeZone}
+            slug={event.slug}
           />
         ))
       )}

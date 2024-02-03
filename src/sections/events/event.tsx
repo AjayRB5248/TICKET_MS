@@ -1,5 +1,6 @@
 import moment from "moment";
 import Image, { StaticImageData } from "next/image";
+import Link from "next/link";
 import React from "react";
 
 interface EventProps {
@@ -9,16 +10,17 @@ interface EventProps {
   venue: string;
   city: string;
   timeZone: string;
+  slug: string;
 }
 
-const Event: React.FC<EventProps> = ({ imageUrl, date, title, venue, city, timeZone }) => {
+const Event: React.FC<EventProps> = ({ imageUrl, date, title, venue, city, timeZone, slug }) => {
   return (
     <div className="item">
       <div className="event-grid">
         <div className="movie-thumb c-thumb">
-          <a href="#0">
+          <Link href={`/event-detail/${slug}`}>
             <Image src={imageUrl} alt="event" width={800} height={1200} />
-          </a>
+          </Link>
           <div className="event-date">
             <h6 className="date-title">{moment(date).format("D")}</h6>
             <span>{moment(date).format("MMM")}</span>
@@ -26,7 +28,7 @@ const Event: React.FC<EventProps> = ({ imageUrl, date, title, venue, city, timeZ
         </div>
         <div className="movie-content bg-one">
           <h5 className="title m-0">
-            <a href="#0">{title}</a>
+            <Link href={`/event-detail/${slug}`}>{title}</Link>
           </h5>
           <div className="movie-rating-percent">
             <span>
