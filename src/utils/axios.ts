@@ -2,12 +2,11 @@ import axios from "axios";
 import { getAccessToken, useRefreshToken } from "./token-management";
 import { BASE_URL } from "src/config-global";
 
-const accessToken = getAccessToken();
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
   headers: {
-    'Authorization': `Bearer ${accessToken}`,
+    // 'Authorization': `Bearer ${accessToken}`,
     'Content-Type': undefined,
   }
 });
