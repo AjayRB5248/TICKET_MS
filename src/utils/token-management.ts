@@ -1,3 +1,5 @@
+"use client"
+
 import { queryClient } from "src/lib/queryClient";
 import AuthService from "src/services/auths";
 import { useMutation } from "@tanstack/react-query";

@@ -27,7 +27,7 @@ import "react-lazy-load-image-component/src/effects/blur.css";
 // ----------------------------------------------------------------------
 
 // redux
-import ReduxProvider from "src/redux/redux-provider";
+// import ReduxProvider from "src/redux/redux-provider";
 // locales
 import { LocalizationProvider } from "src/locales";
 // theme
@@ -39,7 +39,7 @@ import MotionLazy from "src/components/animate/motion-lazy";
 import SnackbarProvider from "src/components/snackbar/snackbar-provider";
 import { SettingsProvider, SettingsDrawer } from "src/components/settings";
 // auth
-import { AuthConsumer } from "src/auth/context/jwt";
+// import { AuthConsumer } from "src/auth/context/jwt";
 import { AuthProvider } from "src/auth/context/users/auth-context";
 
 // import { AuthProvider, AuthConsumer } from 'src/auth/context/auth0';
@@ -89,7 +89,7 @@ export default function RootLayout({ children }: Props) {
     <html lang="en" className={primaryFont.className}>
       <body>
         <AuthProvider>
-          <ReduxProvider>
+          {/* <ReduxProvider> */}
             <LocalizationProvider>
               <SettingsProvider
                 defaultSettings={{
@@ -106,13 +106,16 @@ export default function RootLayout({ children }: Props) {
                     <SnackbarProvider>
                       <SettingsDrawer />
                       <ProgressBar />
-                      <AuthConsumer>{children}</AuthConsumer>
+                      {/* <AuthConsumer> */}
+                      {children}
+
+                      {/* </AuthConsumer> */}
                     </SnackbarProvider>
                   </MotionLazy>
                 </ThemeProvider>
               </SettingsProvider>
             </LocalizationProvider>
-          </ReduxProvider>
+          {/* </ReduxProvider> */}
         </AuthProvider>
       </body>
     </html>

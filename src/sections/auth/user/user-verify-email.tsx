@@ -10,11 +10,11 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import { useContext, useEffect, useState } from "react";
 
 import { useRegister, verifyEmail } from "src/api/auth";
-import { AuthContext } from "src/auth/context/user/auth-context";
+import { useAuth } from "src/auth/context/users/auth-context";
 import { useRouter } from "src/routes/hook/use-router";
 
 const UserVerifyEmail = () => {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   console.log(user, "User Fetched in Verify Email PAge");
 
   const verifyEmailMutation = verifyEmail();

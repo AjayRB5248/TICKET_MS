@@ -13,6 +13,7 @@ interface User {
   email: string;
   mobileNumber: string;
   id: string;
+  photoURL: string;
 }
 
 interface UserToken {
