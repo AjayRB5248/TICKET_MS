@@ -25,17 +25,17 @@ import "react-phone-number-input/style.css";
 import "src/assets/frontend/sass/main.scss";
 
 // js
-import "src/assets/frontend/js/modernizr-3.6.0.min.js";
-import "src/assets/frontend/js/plugins.js";
-import "bootstrap/dist/js/bootstrap.min.js";
-import "src/assets/frontend/js/heandline.js";
-import "src/assets/frontend/js/isotope.pkgd.min.js";
-import "src/assets/frontend/js/magnific-popup.min.js";
-import "src/assets/frontend/js/owl.carousel.min.js";
-import "src/assets/frontend/js/wow.min.js";
-import "src/assets/frontend/js/countdown.min.js";
-import "src/assets/frontend/js/odometer.min.js";
-import "src/assets/frontend/js/viewport.jquery.js";
+// import "src/assets/frontend/js/modernizr-3.6.0.min.js";
+// import "src/assets/frontend/js/plugins.js";
+// import "bootstrap/dist/js/bootstrap.min.js";
+// import "src/assets/frontend/js/heandline.js";
+// import "src/assets/frontend/js/isotope.pkgd.min.js";
+// import "src/assets/frontend/js/magnific-popup.min.js";
+// import "src/assets/frontend/js/owl.carousel.min.js";
+// import "src/assets/frontend/js/wow.min.js";
+// import "src/assets/frontend/js/countdown.min.js";
+// import "src/assets/frontend/js/odometer.min.js";
+// import "src/assets/frontend/js/viewport.jquery.js";
 import "src/assets/frontend/js/main.js";
 
 // components
