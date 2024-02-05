@@ -1,7 +1,7 @@
 import * as Yup from "yup";
 import { useCallback, useMemo, useEffect, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm, Controller, useFieldArray } from "react-hook-form";
+import { useForm, Controller, useFieldArray, useFormState } from "react-hook-form";
 // @mui
 import LoadingButton from "@mui/lab/LoadingButton";
 import Card from "@mui/material/Card";
@@ -34,8 +34,6 @@ type Props = {
   currentTour?: EventFormSchema;
 };
 
-
-
 export default function TourNewEditForm({ currentTour }: Props) {
   const mdUp = useResponsive("up", "md");
 
@@ -60,6 +58,7 @@ export default function TourNewEditForm({ currentTour }: Props) {
         category:Yup.string().required("Artist cateogry is required"),
       })
     ),
+    videoUrl: Yup.string().optional(),
     venues: Yup.array().of(
       Yup.object().shape({
         venueName: Yup.string().required("Venue name is required"),
@@ -87,17 +86,47 @@ export default function TourNewEditForm({ currentTour }: Props) {
     .required("At least one tag is required")
   });
 
+  const getVenueName = (venueId:string) => {
+    const venue = currentTour?.venues?.find(v => v._id === venueId);
+    return venue ? venue.venueName : '';
+  };
+  const artistsFormatted = currentTour?.artists?.map(artist => ({
+    name: artist?.artistName || "",
+    genre: artist?.genre || "", 
+    category: artist?.category || "" 
+  })) || [{ name: "", genre: "", category: "" }];
+
+  const mappedImages = currentTour?.eventImages?.map(image => ({
+    ...image,
+    preview: image.imageurl,
+  })) || [];
+  
+  const defaultPosterImage = currentTour?.posterImage ? {
+    preview: currentTour.posterImage
+  } : null;
+  
+
   const defaultValues = useMemo(() => ({
     eventName: currentTour?.eventName || "",
     eventCategory:currentTour?.eventCategory || "",
     eventDescription: currentTour?.eventDescription || "",
     status:currentTour?.status || "",
-    artists: currentTour?.artists || [{ name: "", genre:"",category:""}],
-    venues: currentTour?.venues || [{ venueName: "", city: "", timeZone: "", dateOfEvent: new Date() }],
-    ticketSettings: currentTour?.ticketSettings || [{ venueName: "", type: "", price: 0, totalSeats: 0 }],
-    posterImage: currentTour?.posterImage || null,
-    images: currentTour?.images || [],
-    tags:currentTour?.tags || [],
+    artists: artistsFormatted,
+    videoUrl:currentTour?.videoUrl || "",
+    venues: currentTour?.venues ? currentTour.venues.map(venue => ({
+      ...venue,
+      dateOfEvent: new Date(venue.eventDate) || new Date() 
+    })) : [{ venueName: "", city: "", timeZone: "", dateOfEvent: new Date() }],
+    ticketSettings: currentTour?.ticketTypes ? currentTour?.ticketTypes.map(ticketType => ({
+      ...ticketType,
+      venueName: getVenueName(ticketType.venueId),
+      type: ticketType.type,
+      price: ticketType.price,
+      totalSeats: ticketType.totalSeats,
+    })) : [{ venueName: "", type: "", price: 0, totalSeats: 0 }],
+    posterImage: defaultPosterImage,
+    images: mappedImages,
+    tags: currentTour?.tags?.length > 0 ? currentTour?.tags[0].split(',') : [],
   }), [currentTour]);
   
 
@@ -115,6 +144,8 @@ export default function TourNewEditForm({ currentTour }: Props) {
     watch,
     reset
   } = methods;
+
+  const { isDirty } = useFormState({ control });
 
   const venueNames = watch("venues").map((venue) => venue.venueName).filter(Boolean);
 
@@ -134,6 +165,14 @@ export default function TourNewEditForm({ currentTour }: Props) {
     }
   }, [currentTour, defaultValues, reset]);
 
+  const eventName = watch("eventName");
+
+  // useEffect(() => {
+  //   if (isDirty && eventName !== currentTour.eventName) {
+  //     updateEventName(eventName);
+  //   }
+  // }, [isDirty, eventName, currentTour.eventName]);
+
 
   const onSubmit = handleSubmit(async (data:any) => {
     const formData = new FormData();
@@ -143,6 +182,7 @@ export default function TourNewEditForm({ currentTour }: Props) {
     formData.append('eventDescription', data.eventDescription);
     formData.append('status',data.status)
     formData.append('tags', data.tags);
+    formData.append('videoUrl', data.videoUrl);
     if (data.posterImage && data.posterImage instanceof File) {
       formData.append('posterImage', data.posterImage, data.posterImage.name);
     }
@@ -214,7 +254,7 @@ export default function TourNewEditForm({ currentTour }: Props) {
   const handleRemoveFile = useCallback(
     (inputFile: File | string) => {
       const filtered =
-        values.images && values.images?.filter((file) => file !== inputFile);
+        values.images && values.images?.filter((file:any) => file !== inputFile);
       setValue("images", filtered);
     },
     [setValue, values.images]
@@ -253,7 +293,7 @@ export default function TourNewEditForm({ currentTour }: Props) {
             </Button>
           </Stack>
         ))}
-        <Button onClick={() => artistsArray.append({ name: '', genre:'' })}>
+        <Button onClick={() => artistsArray.append({ name: '', genre:'' ,category:''})}>
           Add Artist
         </Button>
       </Stack>
@@ -440,6 +480,12 @@ export default function TourNewEditForm({ currentTour }: Props) {
         </Grid>
         <Grid xs={12}>
           <Typography variant="h4" sx={{ mb: 3 }}>
+            Video Url 
+          </Typography>
+          <RHFTextField name="videoUrl" label="Artist Youtube Video URL"  />
+        </Grid>
+        <Grid xs={12}>
+          <Typography variant="h4" sx={{ mb: 3 }}>
             Venues
           </Typography>
           {renderVenues()}
@@ -460,6 +506,7 @@ export default function TourNewEditForm({ currentTour }: Props) {
             multiple
             freeSolo
             options={EVENT_TAGS}
+            defaultValue={defaultValues?.tags}
             getOptionLabel={(option) => option ? option : ''}
             renderTags={(selected, getTagProps) =>
               selected.map((option, index) => (
