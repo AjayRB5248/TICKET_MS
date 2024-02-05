@@ -87,8 +87,9 @@ export interface EventFormSchema {
     price: number;
     totalSeats: number;
   }[];
-  posterImage: File | null; 
+  posterImage: string; 
   images: File[]; 
-  tags:[]
+  tags:[];
+  videoUrl:string;
 }
 

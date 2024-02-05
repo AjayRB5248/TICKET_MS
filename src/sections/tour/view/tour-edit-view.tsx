@@ -12,6 +12,7 @@ import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 //
 import TourNewEditForm from '../tour-new-edit-form';
+import { useEvent } from 'src/api/events';
 
 // ----------------------------------------------------------------------
 
@@ -21,6 +22,7 @@ export default function TourEditView() {
   const params = useParams();
 
   const { id } = params;
+  const { event, isLoading} = useEvent(id)
 
   const currentTour = _tours.find((tour) => tour.id === id);
 
@@ -44,7 +46,7 @@ export default function TourEditView() {
         }}
       />
 
-      <TourNewEditForm currentTour={currentTour} />
+      <TourNewEditForm currentTour={event} />
     </Container>
   );
 }
