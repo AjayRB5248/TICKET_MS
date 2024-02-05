@@ -43,8 +43,8 @@ export default function JwtRegisterView() {
   const forgotPasswordMutation = useForgotPassword();
 
   const defaultValues = {
-    email: "dibyamagar5@gmail.com",
-    password: "123456A!",
+    email: "",
+    password: "",
   };
 
   const [loggedInUser, setLoggedInUser] = useState(defaultValues);

@@ -61,11 +61,11 @@ export default function JwtRegisterView() {
   });
 
   const defaultValues = {
-    name: "Dibya Events Management Company",
-    email: "dibyamagar5@gmail.com",
-    password: "123456A!",
-    mobileNumber: "+977 9860315482",
-    confirmPassword: "123456A!",
+    name: "",
+    email: "",
+    password: "",
+    mobileNumber: "",
+    confirmPassword: "",
   };
 
   const methods = useForm({

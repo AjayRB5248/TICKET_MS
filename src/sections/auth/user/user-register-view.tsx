@@ -45,11 +45,11 @@ const UserRegisterView: React.FC = () => {
   });
 
   const defaultValues: FormData = {
-    name: "Dibya Magar",
-    email: "dibyamagar56@gmail.com",
-    password: "1234567A!",
-    confirmPassword: "1234567A!",
-    mobileNumber: "+97 9860315483",
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    mobileNumber: "",
   };
 
   const methods = useForm<FormData>({

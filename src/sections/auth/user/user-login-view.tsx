@@ -24,8 +24,8 @@ const UserRegisterView: React.FC = () => {
   const forgotPasswordMutation = useForgotPassword();
 
   const defaultValues: FormData = {
-    email: "dibyamagar56@gmail.com",
-    password: "1234567A!",
+    email: "",
+    password: "",
   };
 
   const [loggedInUser, setLoggedInUser] = useState(defaultValues);
