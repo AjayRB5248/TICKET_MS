@@ -1,4 +1,8 @@
-import NiceSelect from "./nice-select";
+import dynamic from "next/dynamic";
+
+const NiceSelect = dynamic(() => import("./nice-select"), {
+  ssr: false,
+});
 
 const withNiceSelect = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
   const WithNiceSelect: React.FC<

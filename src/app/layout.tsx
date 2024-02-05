@@ -46,6 +46,21 @@ import { AuthProvider } from "src/auth/context/users/auth-context";
 // import { AuthProvider, AuthConsumer } from 'src/auth/context/amplify';
 // import { AuthProvider, AuthConsumer } from 'src/auth/context/firebase';
 
+// plugin css
+import "bootstrap/dist/css/bootstrap.min.css";
+import "src/assets/frontend/css/all.min.css";
+import "src/assets/frontend/css/animate.css";
+import "src/assets/frontend/css/flaticon.css";
+import "src/assets/frontend/css/magnific-popup.css";
+import "src/assets/frontend/css/odometer.css";
+import "src/assets/frontend/css/owl.carousel.min.css";
+import "src/assets/frontend/css/owl.theme.default.min.css";
+import "src/assets/frontend/css/animatedheadline.css";
+import "react-phone-number-input/style.css";
+
+// custom css
+import "src/assets/frontend/sass/main.scss";
+
 // ----------------------------------------------------------------------
 
 export const metadata = {
@@ -90,31 +105,31 @@ export default function RootLayout({ children }: Props) {
       <body>
         <AuthProvider>
           {/* <ReduxProvider> */}
-            <LocalizationProvider>
-              <SettingsProvider
-                defaultSettings={{
-                  themeMode: "light", // 'light' | 'dark'
-                  themeDirection: "ltr", //  'rtl' | 'ltr'
-                  themeContrast: "default", // 'default' | 'bold'
-                  themeLayout: "vertical", // 'vertical' | 'horizontal' | 'mini'
-                  themeColorPresets: "default", // 'default' | 'cyan' | 'purple' | 'blue' | 'orange' | 'red'
-                  themeStretch: false,
-                }}
-              >
-                <ThemeProvider>
-                  <MotionLazy>
-                    <SnackbarProvider>
-                      <SettingsDrawer />
-                      <ProgressBar />
-                      {/* <AuthConsumer> */}
-                      {children}
+          <LocalizationProvider>
+            <SettingsProvider
+              defaultSettings={{
+                themeMode: "light", // 'light' | 'dark'
+                themeDirection: "ltr", //  'rtl' | 'ltr'
+                themeContrast: "default", // 'default' | 'bold'
+                themeLayout: "vertical", // 'vertical' | 'horizontal' | 'mini'
+                themeColorPresets: "default", // 'default' | 'cyan' | 'purple' | 'blue' | 'orange' | 'red'
+                themeStretch: false,
+              }}
+            >
+              <ThemeProvider>
+                <MotionLazy>
+                  <SnackbarProvider>
+                    <SettingsDrawer />
+                    <ProgressBar />
+                    {/* <AuthConsumer> */}
+                    {children}
 
-                      {/* </AuthConsumer> */}
-                    </SnackbarProvider>
-                  </MotionLazy>
-                </ThemeProvider>
-              </SettingsProvider>
-            </LocalizationProvider>
+                    {/* </AuthConsumer> */}
+                  </SnackbarProvider>
+                </MotionLazy>
+              </ThemeProvider>
+            </SettingsProvider>
+          </LocalizationProvider>
           {/* </ReduxProvider> */}
         </AuthProvider>
       </body>

@@ -1,10 +1,14 @@
 // EventCarouselItem.tsx
 import React from "react";
-import OwlCarousel from "react-owl-carousel";
+import dynamic from "next/dynamic";
 import "owl.carousel/dist/assets/owl.carousel.css";
 import "owl.carousel/dist/assets/owl.theme.default.css";
 import Event from "./event";
 import { StaticImageData } from "next/image";
+
+const OwlCarousel = dynamic(() => import("react-owl-carousel"), {
+  ssr: false,
+});
 
 interface EventProps {
   imageUrl: StaticImageData;
