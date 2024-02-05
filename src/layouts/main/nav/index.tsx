@@ -1,5 +1,6 @@
 import { Avatar } from "@mui/material";
 import Link from "next/link";
+import { useState } from "react";
 import { useLogout } from "src/api/auth";
 import { useAuth } from "src/auth/context/users/auth-context";
 import UserAccountPopover from "src/layouts/_common/user-account-popover";
@@ -44,23 +45,47 @@ const navigationItems: NavItem[] = [
   { label: "Hot Tickets", href: "/hot-tickets" },
 ];
 
-const Navbar: React.FC = () => {
+interface NavbarProps {
+  isToggleMenuActive: boolean;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ isToggleMenuActive }) => {
   const pathname = usePathname();
 
   const { user } = useAuth();
 
+  const [openMenuItems, setOpenMenuItems] = useState<number[]>([]);
+
+  const handleMenuItemClick = (index: number) => {
+    if (openMenuItems.includes(index)) {
+      setOpenMenuItems((prevOpenItems) => prevOpenItems.filter((item) => item !== index));
+    } else {
+      setOpenMenuItems((prevOpenItems) => [...prevOpenItems, index]);
+    }
+  };
+
   return (
     <>
-      <ul className="menu">
+      <ul className={`menu ${isToggleMenuActive ? "active" : ""} `}>
         {navigationItems.map((item, index) => (
           <>
-            <li key={index} className={item.submenu && item.submenu.length ? "menu-item-has-children" : ""}>
+            <li
+              key={index}
+              className={`${item.submenu && item.submenu.length ? "menu-item-has-children" : ""} ${
+                openMenuItems.includes(index) ? "open" : ""
+              }`}
+            >
               {item.submenu && item.submenu.length > 0 ? (
                 <>
-                  <Link href={"/"} legacyBehavior>
-                    <a className={`${item.href === pathname ? "active" : ""}`}>{item.label}</a>
-                  </Link>
-                  <ul className="submenu">
+                  <a
+                    href={`#${index}`}
+                    className={`${item.href === pathname ? "active" : ""}`}
+                    onClick={() => handleMenuItemClick(index)}
+                  >
+                    {item.label}
+                  </a>
+
+                  <ul className={`submenu ${openMenuItems.includes(index) ? "d-block" : ""}`}>
                     {item.submenu.map((subItem, subIndex) => (
                       <li key={subIndex}>
                         <Link href={subItem.href} as={`/events/${subItem.label}`} passHref>

@@ -6,6 +6,11 @@ import Logo from "src/assets/frontend/images/hulyalogo.png";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isToggleMenuActive, setIsToggleMenuActive] = useState(false);
+
+  const handleToggleMenu = () => {
+    setIsToggleMenuActive(!isToggleMenuActive);
+  };
 
   const handleScroll = () => {
     if (window.scrollY > 0) {
@@ -25,22 +30,25 @@ export default function Header() {
 
   const headerClass = isScrolled ? "header-section header-active" : "header-section";
   return (
-    <header className={headerClass}>
-      <div className="container">
-        <div className="header-wrapper">
-          <div className="logo">
-            <Link href="/">
-              <Image width={200} src={Logo} alt="Logo" />
-            </Link>
-          </div>
-          <Navbar />
-          <div className="header-bar d-lg-none">
-            <span></span>
-            <span></span>
-            <span></span>
+    <>
+      <div className={`overlay ${isToggleMenuActive ? "active" : ""}`}></div>
+      <header className={headerClass}>
+        <div className="container">
+          <div className="header-wrapper">
+            <div className="logo">
+              <Link href="/">
+                <Image width={200} src={Logo} alt="Logo" />
+              </Link>
+            </div>
+            <Navbar isToggleMenuActive={isToggleMenuActive} />
+            <div className={`header-bar d-lg-none ${isToggleMenuActive ? "active" : ""}`} onClick={handleToggleMenu}>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
           </div>
         </div>
-      </div>
-    </header>
+      </header>
+    </>
   );
 }
