@@ -29,7 +29,7 @@ const EventCarouselItem: React.FC<EventCarouselItemProps> = ({ events }) => {
     loop: true,
     margin: 10,
     autoplay: true,
-    autoplayTimeout: 1000,
+    autoplayTimeout: 3000,
     nav: false,
     dots: false,
     responsive: {
