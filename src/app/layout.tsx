@@ -49,9 +49,9 @@ import { AuthProvider } from "src/auth/context/users/auth-context";
 // ----------------------------------------------------------------------
 
 export const metadata = {
-  title: "Minimal UI Kit",
+  title: "Hulya Events",
   description:
-    "The starting point for your next project with Minimal UI Kit, built on the newest version of Material-UI ©, ready to be customized to your style",
+    "Event Management Company in Australia",
   keywords: "react,material,kit,application,dashboard,admin,template",
   // themeColor: "#000000",
   manifest: "/manifest.json",
