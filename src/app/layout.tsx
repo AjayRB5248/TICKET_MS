@@ -46,21 +46,6 @@ import { AuthProvider } from "src/auth/context/users/auth-context";
 // import { AuthProvider, AuthConsumer } from 'src/auth/context/amplify';
 // import { AuthProvider, AuthConsumer } from 'src/auth/context/firebase';
 
-// plugin css
-import "bootstrap/dist/css/bootstrap.min.css";
-import "src/assets/frontend/css/all.min.css";
-import "src/assets/frontend/css/animate.css";
-import "src/assets/frontend/css/flaticon.css";
-import "src/assets/frontend/css/magnific-popup.css";
-import "src/assets/frontend/css/odometer.css";
-import "src/assets/frontend/css/owl.carousel.min.css";
-import "src/assets/frontend/css/owl.theme.default.min.css";
-import "src/assets/frontend/css/animatedheadline.css";
-import "react-phone-number-input/style.css";
-
-// custom css
-import "src/assets/frontend/sass/main.scss";
-
 // ----------------------------------------------------------------------
 
 export const metadata = {
