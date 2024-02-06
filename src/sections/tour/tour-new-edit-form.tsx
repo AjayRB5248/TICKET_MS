@@ -41,17 +41,17 @@ export default function TourNewEditForm({ currentTour }: Props) {
   const eventMutation = useCreateEvent();
   const [file, setFile] = useState<any>(null);
   const getVenueName = (venueId: string) => {
-    const venue = currentTour?.venues?.find((v) => v._id === venueId);
+    const venue = currentTour?.venues?.find((v: any) => v._id === venueId);
     return venue ? venue.venueName : '';
   };
-  const artistsFormatted = currentTour?.artists?.map((artist) => ({
+  const artistsFormatted = currentTour?.artists?.map((artist: any) => ({
     name: artist?.artistName || '',
     genre: artist?.genre || '',
     category: artist?.category || '',
   })) || [{ name: '', genre: '', category: '' }];
 
   const mappedImages =
-    currentTour?.eventImages?.map((image) => ({
+    (currentTour as any)?.eventImages?.map((image: any) => ({
       ...image,
       preview: image.imageurl,
     })) || [];

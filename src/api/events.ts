@@ -56,14 +56,14 @@ export function useCreateEvent() {
   return useMutation(
     ['event/create'],
     async (formData: FormData) => {
-      console.log('this is data', formData);
-
       const response = await EventsService.create(formData);
       return response?.data;
     },
     {
-      onError: () => {
-        enqueueSnackbar('Error creating event', { variant: 'error' });
+      onError: (error: any) => {
+        enqueueSnackbar(error.response.data.message || 'Error creating event', {
+          variant: 'error',
+        });
       },
       onSuccess: () => {
         enqueueSnackbar('Event created successfully', { variant: 'success' });
