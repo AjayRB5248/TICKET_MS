@@ -5,8 +5,8 @@ import Container from '@mui/material/Container';
 // routes
 import { paths } from 'src/routes/paths';
 // components
-import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
+import { useSettingsContext } from 'src/components/settings';
 //
 import TourNewEditForm from '../tour-new-edit-form';
 
@@ -18,7 +18,7 @@ export default function TourCreateView() {
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading="Create a new Event"
+        heading='Create a new Event'
         links={[
           {
             name: 'Dashboard',
