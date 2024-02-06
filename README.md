@@ -21,3 +21,16 @@ The Ticket Management System Frontend is a web application designed to manage an
 - **Commenting:** Users and administrators can add comments to tickets for communication purposes.
 - **Responsive Design:** A mobile-friendly design to ensure accessibility on various devices.
 
+## NODE.JS
+
+- Node 16.x || 18.x
+
+## USING YARN (Recommend)
+
+- yarn install
+- yarn dev
+
+## USING NPM
+
+- npm i OR npm i --legacy-peer-deps
+- npm run dev
