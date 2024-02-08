@@ -34,7 +34,6 @@ export type ITourLocation = {
   eventDateTime: Date | null; // Adding the eventDateTime field
 };
 
-
 export type ITourItem = {
   id: string;
   name: string;
@@ -56,40 +55,68 @@ export type ITourItem = {
     startDate: Date;
     endDate: Date;
   };
-  locations:ITourLocation[]
+  locations: ITourLocation[];
 };
 
 interface EventEnum {
-  PLANNED: 'PLANNED',
-  ONGOING: 'ONGOING',
-  COMPLETED: 'COMPLETED',
-  CANCELLED: 'CANCELLED',
+  PLANNED: 'PLANNED';
+  ONGOING: 'ONGOING';
+  COMPLETED: 'COMPLETED';
+  CANCELLED: 'CANCELLED';
 }
 
-export interface EventFormSchema {
+export interface ITicketType {
+  _id: string;
+  soldSeats: number;
+  eventId: string;
+  venueId: string;
+  eventOwner: string;
+  type: string;
+  price: number;
+  totalSeats: number;
+  availableSeats: number;
+  __v: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type TArtist = {
+  _id: string;
+  artistName: string;
+  genre: string;
+  category: string;
+};
+
+export type TVenue = {
+  _id: string;
+  venueName: string;
+  city: string;
+  timeZone: string;
+  eventDate: string;
+};
+
+export type TEventImage = {
+  isPrimary: boolean;
+  _id: string;
+  imageurl: string;
+};
+
+export type IEvent = {
+  _id: string;
+  status: string;
+  ticketTypes: ITicketType[];
+  tags: string[];
+  isDeleted: boolean;
   eventName: string;
-  eventCategory:string;
   eventDescription: string;
-  status:EventEnum;
-  artists: {
-    name: string;
-    genre: string;
-  }[];
-  venues: {
-    venueName: string;
-    city: string;
-    timeZone: string;
-    eventDate: Date;
-  }[];
-  ticketSettings: {
-    venueName: string;
-    type: string;
-    price: number;
-    totalSeats: number;
-  }[];
-  posterImage: string; 
-  images: File[]; 
-  tags:[];
-  videoUrl:string;
-}
-
+  eventOwner: string;
+  artists: TArtist[];
+  venues: TVenue[];
+  eventImages: TEventImage[];
+  eventCategory: string;
+  videoUrl: string;
+  createdAt: string;
+  updatedAt: string;
+  slug: string;
+  __v: number;
+};

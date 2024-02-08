@@ -83,8 +83,10 @@ export const endpoints = {
       return url;
     },
     create: '/events/add-new-event',
-    update: (id: string) => `/event/${id}`,
+    update: (id: string) => `/events/edit/${id}`,
     details: (id: any) => `/events/${id}`,
     remove: (id: string) => `/event/${id}/disable`,
+    removeItem: (id: string) => `/events/edit/remove-event-items/${id}`,
+    addItem: (id: string) => `/events/edit/add-event-items/${id}`,
   },
 };

@@ -13,6 +13,8 @@ interface Filters {
   venueName: string;
 }
 
+// router.push(paths.dashboard.tour.root);
+
 export function useEvent(id: any) {
   const { data, isLoading, error } = useQuery(['events/id', id], async () => {
     const res = await EventsService.details(id);
@@ -73,6 +75,28 @@ export function useCreateEvent() {
   );
 }
 
+export function useUpdateEvent() {
+  const router = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
+
+  return useMutation(
+    ['event/update'],
+    async (data: any) => {
+      const { formData, id } = data;
+
+      const response = await EventsService.update(id, formData);
+      return response?.data;
+    },
+    {
+      onError: (error: any) => {
+        enqueueSnackbar(error.response.data.message || 'Error creating event', {
+          variant: 'error',
+        });
+      },
+    }
+  );
+}
+
 export function useRemoveEvent() {
   const { enqueueSnackbar } = useSnackbar();
   return useMutation(
@@ -87,6 +111,41 @@ export function useRemoveEvent() {
       },
       onSuccess: () => {
         enqueueSnackbar('Event Removed Successfully', { variant: 'success' });
+      },
+    }
+  );
+}
+
+export function useAddEventItem() {
+  const { enqueueSnackbar } = useSnackbar();
+  return useMutation(
+    ['event/addItem'],
+    async (data: any) => {
+      const { formData, id } = data;
+
+      const res = await EventsService.addItem(id, formData);
+      return res?.data;
+    },
+    {
+      onError: () => {
+        enqueueSnackbar('Error Removing Event', { variant: 'error' });
+      },
+    }
+  );
+}
+export function useRemoveEventItem() {
+  const { enqueueSnackbar } = useSnackbar();
+  return useMutation(
+    ['event/removeItem'],
+    async (data: any) => {
+      const { formData, id } = data;
+
+      const res = await EventsService.removeItem(id, formData);
+      return res?.data;
+    },
+    {
+      onError: () => {
+        enqueueSnackbar('Error Removing Event', { variant: 'error' });
       },
     }
   );

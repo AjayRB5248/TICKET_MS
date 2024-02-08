@@ -8,12 +8,21 @@ export const EventSchema = Yup.object().shape({
   status: Yup.string()
     .required('Event Status is Required')
     .oneOf(Object.values(EventStatusEnum), 'Invalid event status'),
-  posterImage: Yup.mixed<any>()
+  posterImage: Yup.mixed()
     .nullable()
     .required('Poster image is required')
-    .test('fileType', 'Invalid file format', (value: any) => {
-      if (!value) return true;
-      return ['image/jpeg', 'image/jpg', 'image/png'].includes(value.type);
+    .test('validImageOrUrl', 'Invalid image or URL', (value) => {
+      if (!value) return true; // Allow null or undefined
+      // Check if the value is a valid URL
+      if (typeof value === 'string' && Yup.string().url().isValidSync(value)) {
+        return true; // It's a valid URL
+      }
+      // Check if the value is a valid file type
+      if (value instanceof File) {
+        // Add your file type validation logic here
+        return ['image/jpeg', 'image/jpg', 'image/png'].includes(value.type);
+      }
+      return false; // Neither a valid URL nor a valid file type
     }),
   artists: Yup.array().of(
     Yup.object().shape({
