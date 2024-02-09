@@ -17,7 +17,7 @@ axiosInstance.interceptors.request.use(
       if (accessToken) {
         config.headers['Authorization'] = `Bearer ${accessToken}`;
       }
-      // config.headers['Content-Type'] = 'multipart/form-data';
+      // config.headers['Content-Type'] = 'application/json';
       return config;
     } catch (error) {
       console.error('Error handling token expiry:', error);
@@ -83,8 +83,10 @@ export const endpoints = {
       return url;
     },
     create: '/events/add-new-event',
-    update: (id: string) => `/event/${id}`,
+    update: (id: string) => `/events/edit/${id}`,
     details: (id: any) => `/events/${id}`,
     remove: (id: string) => `/event/${id}/disable`,
+    removeItem: (id: string) => `/events/edit/remove-event-items/${id}`,
+    addItem: (id: string) => `/events/edit/add-event-items/${id}`,
   },
 };

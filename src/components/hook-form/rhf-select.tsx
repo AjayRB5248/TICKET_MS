@@ -1,16 +1,16 @@
-import { useFormContext, Controller } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 // @mui
-import { Theme, SxProps } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import Chip from '@mui/material/Chip';
-import MenuItem from '@mui/material/MenuItem';
 import Checkbox from '@mui/material/Checkbox';
-import InputLabel from '@mui/material/InputLabel';
+import Chip from '@mui/material/Chip';
 import FormControl from '@mui/material/FormControl';
-import OutlinedInput from '@mui/material/OutlinedInput';
 import FormHelperText from '@mui/material/FormHelperText';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import OutlinedInput from '@mui/material/OutlinedInput';
 import Select, { SelectProps } from '@mui/material/Select';
 import TextField, { TextFieldProps } from '@mui/material/TextField';
+import { SxProps, Theme } from '@mui/material/styles';
 
 // ----------------------------------------------------------------------
 
@@ -48,7 +48,8 @@ export function RHFSelect({
               PaperProps: {
                 sx: {
                   ...(!native && {
-                    maxHeight: typeof maxHeight === 'number' ? maxHeight : 'unset',
+                    maxHeight:
+                      typeof maxHeight === 'number' ? maxHeight : 'unset',
                   }),
                   ...PaperPropsSx,
                 },
@@ -96,11 +97,13 @@ export function RHFMultiSelect({
   const { control } = useFormContext();
 
   const renderValues = (selectedIds: string[]) => {
-    const selectedItems = options.filter((item) => selectedIds.includes(item.value));
+    const selectedItems = options.filter((item) =>
+      selectedIds.includes(item.value)
+    );
 
     if (!selectedItems.length && placeholder) {
       return (
-        <Box component="em" sx={{ color: 'text.disabled' }}>
+        <Box component='em' sx={{ color: 'text.disabled' }}>
           {placeholder}
         </Box>
       );
@@ -110,7 +113,7 @@ export function RHFMultiSelect({
       return (
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
           {selectedItems.map((item) => (
-            <Chip key={item.value} size="small" label={item.label} />
+            <Chip key={item.value} size='small' label={item.label} />
           ))}
         </Box>
       );
@@ -137,7 +140,7 @@ export function RHFMultiSelect({
             {...other}
           >
             {placeholder && (
-              <MenuItem disabled value="">
+              <MenuItem disabled value=''>
                 <em> {placeholder} </em>
               </MenuItem>
             )}
@@ -147,7 +150,9 @@ export function RHFMultiSelect({
 
               return (
                 <MenuItem key={option.value} value={option.value}>
-                  {checkbox && <Checkbox size="small" disableRipple checked={selected} />}
+                  {checkbox && (
+                    <Checkbox size='small' disableRipple checked={selected} />
+                  )}
 
                   {option.label}
                 </MenuItem>
@@ -156,7 +161,9 @@ export function RHFMultiSelect({
           </Select>
 
           {(!!error || helperText) && (
-            <FormHelperText error={!!error}>{error ? error?.message : helperText}</FormHelperText>
+            <FormHelperText error={!!error}>
+              {error ? error?.message : helperText}
+            </FormHelperText>
           )}
         </FormControl>
       )}
